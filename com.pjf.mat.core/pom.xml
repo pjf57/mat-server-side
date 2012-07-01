@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (c) 2012 PJF.
+All rights reserved. This program and the accompanying materials
+are made available under the terms of the Eclipse Distribution License v1.0
+which accompanies this distribution, and is available at
+http://www.eclipse.org/org/documents/edl-v10.php
+Contributors:
+Peter Fall - initial implementation
+Laurent Mihalkovic - Maven support & editor
+-->
+
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.pjf.mat</groupId>
+    <artifactId>mat</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../</relativePath>
+  </parent>
+
+  <name>MAT Core</name>
+  <artifactId>com.pjf.mat.core</artifactId>
+  <packaging>jar</packaging>
+
+  <dependencies>
+  	<dependency>
+  		<groupId>log4j</groupId>
+  		<artifactId>log4j</artifactId>
+  		<type>jar</type>
+  	</dependency>
+  </dependencies>
+  
+</project>
