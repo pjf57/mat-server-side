@@ -51,9 +51,8 @@
 
 	<modules>
 		<module>com.pjf.mat.core</module>
-		<!-- 
+		<module>com.pjf.mat.model</module>
 		<module>editor/com.pjf.matedit.releng</module>
-		 -->
 	</modules>
 
 </project>

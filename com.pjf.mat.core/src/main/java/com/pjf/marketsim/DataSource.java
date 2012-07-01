@@ -18,7 +18,7 @@ public class DataSource {
 			fstream = new FileInputStream(source);
 			in = new DataInputStream(fstream);
 			br = new BufferedReader(new InputStreamReader(in));
-			String line = br.readLine(); // read and discard headers
+			br.readLine(); // read and discard headers
 		} catch (Exception e) {
 			logger.error("unable to initialise DataSource:" + source);
 			throw new Exception("unable to initialise DataSource:" + source,e);

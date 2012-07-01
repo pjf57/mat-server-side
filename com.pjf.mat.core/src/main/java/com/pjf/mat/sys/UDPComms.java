@@ -312,7 +312,7 @@ public class UDPComms implements Comms {
 			if (srcElement != null) {
 				srcName = srcElement.getType();
 			}
-			logger.info("Event from element " + src + ":" + srcName + " InstrId=" + instrId + " val=" + value);
+			logger.info("Event from element=" + src + ":" + srcName + " InstrId=" + instrId + " val=" + value);
 		}		
 	}
 
