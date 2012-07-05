@@ -64,5 +64,10 @@ public class ElementStatus implements Status{
 	public int getRawRunState() {
 		return el_state;
 	}
+	
+	@Override
+	public String toString() {
+		return "[" + basis_state + "," + el_state + "," + evt_cnt + "]";
+	}
 
 }

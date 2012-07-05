@@ -9,13 +9,34 @@ import com.pjf.marketsim.EventFeed;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
+import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.impl.MatInterface;
 
 public abstract class MatSystem {
 	protected final static Logger logger = Logger.getLogger(MatSystem.class);
 	private MatInterface mat = null;
 	private EventFeed feed;
-	
+
+	class NotificationHandler implements NotificationCallback {
+
+		@Override
+		public void notifyEventLog(Element src, int intrument_id, int rawValue,
+				String dispValue) {
+			logger.info("Event: src=" + src.getId() +
+						" type=" + src.getType() +
+						" instrument=" + intrument_id +
+						" value=" + dispValue);			
+		}
+
+		@Override
+		public void notifyElementStatusUpdate(Element element) {
+			logger.info("Status Update: element=" + element.getId() +
+						" type=" + element.getType() +
+						" state=" + element.getElementStatus());			
+		}
+		
+	}
+
 	public MatSystem(){
 	}
 	
@@ -41,7 +62,9 @@ public abstract class MatSystem {
 	 * @throws Exception
 	 */
 	protected void sendTradeBurst(EventFeed feed) throws Exception {
-		feed.sendTradeBurst("resources/GLP_27667_1.csv",20,10,1);
+		if (feed != null) {
+			feed.sendTradeBurst("resources/GLP_27667_1.csv",20,10,1);
+		}
 	}
 
 
@@ -53,11 +76,18 @@ public abstract class MatSystem {
 	 */
 	protected void init(String propsResource) throws Exception {
 		Properties props = loadProperties(propsResource);
-		UDPComms comms = new UDPComms("192.168.0.9",2000);
+		BaseComms comms;
+		if (System.getProperty("dummy") != null) {
+			comms = new DummyComms();
+		} else {
+			comms = new UDPComms("192.168.0.9",2000);
+		}
+		comms.addNotificationSubscriber(new NotificationHandler());
 		mat = new MatInterface(props,comms);
 		comms.setMat(mat);
-		feed = new EventFeed(comms.getCxn(),15000);
-		
+		if (System.getProperty("dummy") == null) {
+			feed = new EventFeed(comms.getCxn(),15000);
+		}
 	}
 
 	protected void run() throws Exception {
