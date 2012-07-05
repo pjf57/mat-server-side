@@ -19,6 +19,9 @@ public interface Element {
 	public List<OutputPort> getOutputs();
 	/** @model type="Cmd" containment="true" */
 	public List<Cmd> getCmds();
+	/** @model transient="true" volatile="true" changeable="false" */
+	public Status getElementStatus();
 	
 	public Attribute getAttribute(String name);	// return null if not found
+	public void setStatus(Status newStatus);
 }

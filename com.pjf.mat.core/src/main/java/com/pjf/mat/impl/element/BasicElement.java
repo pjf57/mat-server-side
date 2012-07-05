@@ -11,6 +11,7 @@ import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.OutputPort;
+import com.pjf.mat.api.Status;
 
 public class BasicElement implements Element {
 
@@ -113,7 +114,7 @@ public class BasicElement implements Element {
 
 	@Override
 	public Collection<Attribute> getStatusAttrs() {
-		return status.getAsAttributes();
+		return status.getAttributes();
 	}
 	
 	@Override
@@ -170,11 +171,23 @@ public class BasicElement implements Element {
 			buf.append(x); buf.append(' ');
 		}
 		buf.append(" Status:"); 	
-		for (Attribute x : status.getAsAttributes()) {
+		for (Attribute x : status.getAttributes()) {
 			buf.append(x); buf.append(' ');
 		}
 		buf.append(']');
 		return buf.toString();
+	}
+
+	@Override
+	public Status getElementStatus() {
+		return status;
+	}
+
+	@Override
+	public void setStatus(Status newStatus) {
+		this.status = new ElementStatus(newStatus.getBaseState(),
+							newStatus.getRawRunState(),
+							newStatus.getEventInCount());
 	}
 
 }

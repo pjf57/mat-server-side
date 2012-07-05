@@ -11,4 +11,5 @@ public interface Comms {
 	public Status requestStatus(Element element) throws Exception;
 	public void sendCmd(Cmd cmd) throws Exception;
 	public void shutdown();
+	public void addNotificationSubscriber(NotificationCallback subscriber);
 }

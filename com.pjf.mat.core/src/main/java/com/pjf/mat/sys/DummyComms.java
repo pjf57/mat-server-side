@@ -8,7 +8,7 @@ import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.Status;
 
-public class DummyComms implements Comms {
+public class DummyComms extends BaseComms implements Comms {
 	
 	private final static Logger logger = Logger.getLogger(DummyComms.class);
 

@@ -1,6 +1,5 @@
 package com.pjf.mat.impl.element;
 
-import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.AttributeType;
 import com.pjf.mat.impl.util.Conversion;
 

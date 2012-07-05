@@ -4,6 +4,7 @@ package com.pjf.mat.sys;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
@@ -14,13 +15,15 @@ import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.MatApi;
+import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.impl.MatInterface;
+import com.pjf.mat.impl.element.ElementStatus;
 import com.pjf.mat.impl.util.Conversion;
 import com.pjf.udp.UDPCxn;
 
-public class UDPComms implements Comms {
+public class UDPComms extends BaseComms implements Comms {
 	private final static Logger logger = Logger.getLogger(UDPComms.class);
 	private UDPCxn cxn;
 	private final String ip;
@@ -134,6 +137,7 @@ public class UDPComms implements Comms {
 		this.ip = ip;
 		this.port = port;
 		this.mat = null;
+		notificationSubscribers = new ArrayList<NotificationCallback>();
 		this.reader = new Reader();
 		reader.start();
 	}
@@ -278,9 +282,25 @@ public class UDPComms implements Comms {
 
 	private void processNewStatusUpdate(int id, String type,
 			String basisState, int intState, int evtCount) {
-		logger.info("Status Update: id=" + id + " type=" + type +
+		
+		Element element = mat.getElement(id);
+		String srcName = "unknown";
+		if (element != null) {			
+			srcName = element.getType();
+			// Update status in the element
+			Status newStatus = new ElementStatus(basisState,intState,evtCount);
+			element.setStatus(newStatus);
+		}
+
+		logger.info("Status Update: id=" + id + 
+				" name=" + srcName + 
+				" type=" + type +
 				" basis-state=" + basisState + " int-state=" + intState +
 				" event-count=" + evtCount);
+		for (NotificationCallback subscriber : notificationSubscribers) {
+			subscriber.notifyElementStatusUpdate(element);
+		}
+
 	}
 
 	private void processEventLogMsg(byte[] msg) {
@@ -312,7 +332,10 @@ public class UDPComms implements Comms {
 			if (srcElement != null) {
 				srcName = srcElement.getType();
 			}
-			logger.info("Event from element=" + src + ":" + srcName + " InstrId=" + instrId + " val=" + value);
+			logger.debug("Event from element=" + src + ":" + srcName + " InstrId=" + instrId + " val=" + value);
+			for (NotificationCallback subscriber : notificationSubscribers) {
+				subscriber.notifyEventLog(srcElement, instrId, data, value);
+			}
 		}		
 	}
 
@@ -329,6 +352,7 @@ public class UDPComms implements Comms {
 	public UDPCxn getCxn() {
 		return cxn;
 	}
+
 
 	
 
