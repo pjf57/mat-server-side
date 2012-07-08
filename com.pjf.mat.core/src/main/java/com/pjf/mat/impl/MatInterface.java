@@ -247,6 +247,54 @@ public class MatInterface implements MatApi{
 		comms.shutdown();		
 	}
 
+	/**
+	 * Check that the HW signature matches with the configuration we have loaded.
+	 * 
+	 * @throws Exception if the configuration doesn't match
+	 */
+	@Override
+	public void checkHWSignature() throws Exception {
+		long signatureHW = comms.getHWSignature();
+		long signatureSW = getSWSignature();
+		logger.info("Signatures HW=" + signatureHW + " SW=" + signatureSW);
+		if (signatureHW != signatureSW) {
+			String msg = "Configuration signatatures dont match: Signatures HW=" + 
+						signatureHW + " SW=" + signatureSW;
+			logger.error(msg);
+			throw new Exception(msg);
+		}
+	}
+
+
+	/**
+	 * Calculate SW configuration signature using the same alg as is used in the HW
+	 * 
+	 * @return 65 bit signature
+	 */
+	@Override
+	public long getSWSignature() {
+		// start by making a map of exactly one of each type of element - the one with the lowest ID
+		HashMap<String,Element> elbytype = new HashMap<String,Element>(); // index by type
+		for (Element el : elements.values()) {
+			// check if we already have this one in the map
+			Element el1 = elbytype.get(el.getType());
+			if (el1 == null) {
+				elbytype.put(el.getType(),el);
+			} else {
+				// got this type already, retain the one with the lowest id
+				if (el.getId() < el1.getId()) {
+					elbytype.put(el.getType(),el);					
+				}
+			}
+		}
+		// Now perform the alg on these
+		long sig = 1;
+		for (Element el : elbytype.values()) {
+			sig *= (el.getId() + 2);
+		}
+		return sig;
+	}
+
 
 
 

@@ -16,11 +16,11 @@ public class RealValues {
 	}
 	
 	void doSingle() {
-		System.out.println(Integer.toHexString(Float.floatToIntBits(1.555555f)));
-		System.out.println(Integer.toHexString(Float.floatToIntBits(1.785184f)));
-		System.out.println(Integer.toHexString(Float.floatToIntBits(13f)));
-		System.out.println(Integer.toHexString(Float.floatToIntBits(14f)));
-		System.out.println(Float.intBitsToFloat(Integer.parseInt("3e800000", 16)));
+		System.out.println(Integer.toHexString(Float.floatToIntBits(19f)));
+		System.out.println(Integer.toHexString(Float.floatToIntBits(20f)));
+		System.out.println(Integer.toHexString(Float.floatToIntBits(25f)));
+		System.out.println(Integer.toHexString(Float.floatToIntBits(30f)));
+		System.out.println(Float.intBitsToFloat(Integer.parseInt("4608b800", 16)));
 		System.out.println(Float.intBitsToFloat(Integer.parseInt("41200000", 16)));
 		System.out.println(Float.intBitsToFloat(Integer.parseInt("40000000", 16)));
 	}

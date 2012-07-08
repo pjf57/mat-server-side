@@ -175,4 +175,9 @@ public class DummyComms extends BaseComms implements Comms {
 		return null;
 	}
 
+	@Override
+	public long getHWSignature() throws Exception {
+		return mat.getSWSignature();
+	}
+
 }

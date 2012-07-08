@@ -26,4 +26,12 @@ public interface MatApi {
 	 * @model 
 	 */
 	public Status getHWStatus();				// get status from HW
+	/**
+	 * @model 
+	 */
+	public long getSWSignature();
+	/**
+	 * @model 
+	 */
+	public void checkHWSignature() throws Exception;
 }

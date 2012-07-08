@@ -85,6 +85,7 @@ public abstract class MatSystem {
 		comms.addNotificationSubscriber(new NotificationHandler());
 		mat = new MatInterface(props,comms);
 		comms.setMat(mat);
+		mat.checkHWSignature();
 		if (System.getProperty("dummy") == null) {
 			feed = new EventFeed(comms.getCxn(),15000);
 		}
