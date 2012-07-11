@@ -19,10 +19,8 @@
 		<developerConnection>scm:git:git@github.com:pjf57/mat-server-side.git</developerConnection>
 	</scm>
 
-	<name>MAT Parent</name>
-	<groupId>com.pjf.mat</groupId>
-	<artifactId>mat</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<name>MAT Lib</name>
+	<artifactId>com.pjf.mat</artifactId>
 	<packaging>pom</packaging>
 	
 	<build>
@@ -50,10 +48,17 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>lib</module>
-		<!--
-		<module>editor</module>
-		-->
+		<module>com.pjf.mat.core</module>
+		<module>com.pjf.mat.model</module>
+<!--
+		<module>bundle</module>
+-->
 	</modules>
 
+	<parent>
+		<groupId>com.pjf.mat</groupId>
+		<artifactId>mat</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 </project>
