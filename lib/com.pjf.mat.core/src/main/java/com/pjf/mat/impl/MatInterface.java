@@ -36,7 +36,7 @@ public class MatInterface implements MatApi{
 	private Map<Integer,Element> elements;	// holds the actual configured elements
 	private Map<String,Element> types;		// holds the different element types (key=type)
 	
-	public MatInterface(Properties props, Comms comms) {
+	public MatInterface(Properties props, Comms comms) throws Exception {
 		this.props = props;
 		this.comms = comms;
 		elements = new HashMap<Integer,Element>();
@@ -89,7 +89,7 @@ public class MatInterface implements MatApi{
 	}
 
 	
-	private void initialise() {
+	private void initialise() throws Exception {
 		// read info about the basic types of element
 		
 		int id = 1;
@@ -129,13 +129,22 @@ public class MatInterface implements MatApi{
 
 
 	// read one type from properties - return null if non existent
-	private Element readType(int id) {
+	private Element readType(int id) throws Exception {
 		BasicElement type = null;
 		String t = "type" + id;
 		String ids = props.getProperty(t + ".id");
 		if (ids != null) {
-			String typeName = props.getProperty(t + ".name");
-			type = new BasicElement(Integer.parseInt(ids),typeName);
+			String tName = props.getProperty(t + ".name");
+			String[] components = tName.split(":");
+			if (components.length != 2) {
+				String msg = "Bad type format in type index=" + id +
+					", should be [typename:hwtype] is [" + tName + "]";
+				logger.error("readType(): " + msg);
+				throw new Exception(msg);
+			}
+			String typeName = components[0];
+			int hwType = Integer.parseInt(components[1]);
+			type = new BasicElement(Integer.parseInt(ids),typeName,hwType);
 		}
 		// read attributes
 		int an = 1;
@@ -269,30 +278,41 @@ public class MatInterface implements MatApi{
 	/**
 	 * Calculate SW configuration signature using the same alg as is used in the HW
 	 * 
-	 * @return 65 bit signature
+	 * @return 64 bit signature
 	 */
 	@Override
 	public long getSWSignature() {
-		// start by making a map of exactly one of each type of element - the one with the lowest ID
-		HashMap<String,Element> elbytype = new HashMap<String,Element>(); // index by type
-		for (Element el : elements.values()) {
-			// check if we already have this one in the map
-			Element el1 = elbytype.get(el.getType());
-			if (el1 == null) {
-				elbytype.put(el.getType(),el);
-			} else {
-				// got this type already, retain the one with the lowest id
-				if (el.getId() < el1.getId()) {
-					elbytype.put(el.getType(),el);					
-				}
+		int id = 0;
+		Element el;
+		long crc = 0;
+		while ((el = getElement(id)) != null) {
+			crc = crc40(crc,el.getHWType());
+			id++;
+		}
+		return crc;
+	}
+
+	private long crc40(long init, int data) {
+		long crc = init;
+		int d = data;
+		for (int bitnum=7; bitnum>=0; bitnum--) {
+			// calc feedback bit
+			boolean nextbit = false;
+			if ((crc & 0x4000000) != 0) { nextbit = !nextbit; }
+			if ((crc & 0x0800000) != 0) { nextbit = !nextbit; }
+			if ((crc & 0x0010000) != 0) { nextbit = !nextbit; }
+			if ((crc & 0x0000008) != 0) { nextbit = !nextbit; }
+			if ((crc & 0x0000001) != 0) { nextbit = !nextbit; }
+			if ((d & 0x80) != 0) { nextbit = !nextbit; }
+			// feed the feedback bit into the crc
+			crc *= 2;
+			if (nextbit) {
+				crc += 1;
 			}
-		}
-		// Now perform the alg on these
-		long sig = 1;
-		for (Element el : elbytype.values()) {
-			sig *= (el.getId() + 2);
-		}
-		return sig;
+			crc = crc & 0xffffffffffL;
+			d *= 2;
+			}
+		return crc;
 	}
 
 

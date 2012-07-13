@@ -9,6 +9,8 @@ public interface Element {
 	public int getId();
 	/** @model */
 	public String getType();
+	/** @model */
+	public int getHWType();
 	/** @model transient="true" volatile="true" changeable="false" */
 	public Collection<Attribute> getAttributes();
 	/** @model transient="true" volatile="true" changeable="false" */

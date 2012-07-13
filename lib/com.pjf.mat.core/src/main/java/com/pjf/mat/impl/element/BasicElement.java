@@ -17,6 +17,7 @@ public class BasicElement implements Element {
 
 	private final int id;
 	private final String type;
+	private final int hwType;					// the HW ID for this type
 	private List<InputPort> inputs;
 	private List<OutputPort> outputs;
 	private Map<String,Attribute> attributes;	// key = name
@@ -29,9 +30,10 @@ public class BasicElement implements Element {
 	 * @param id
 	 * @param type
 	 */
-	public BasicElement(int id, String type) {
+	public BasicElement(int id, String type, int hwType) {
 		this.id = id;
 		this.type = type;
+		this.hwType = hwType;
 		this.inputs = new ArrayList<InputPort>();
 		this.outputs = new ArrayList<OutputPort>();
 		this.attributes = new HashMap<String,Attribute>();
@@ -49,6 +51,7 @@ public class BasicElement implements Element {
 	public BasicElement(int id, String elType, Element type) {
 		this.id = id;
 		this.type = elType;
+		this.hwType = type.getHWType();
 		this.inputs = cloneInputsFromType(type);
 		this.outputs = cloneOutputsFromType(type);
 		this.attributes = cloneAttributesFromType(type);
@@ -100,6 +103,11 @@ public class BasicElement implements Element {
 	@Override
 	public String getType() {
 		return type;
+	}
+
+	@Override
+	public int getHWType() {
+		return hwType;
 	}
 
 	@Override
@@ -189,5 +197,6 @@ public class BasicElement implements Element {
 							newStatus.getRawRunState(),
 							newStatus.getEventInCount());
 	}
+
 
 }
