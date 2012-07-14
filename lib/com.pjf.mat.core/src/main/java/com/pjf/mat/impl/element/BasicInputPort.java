@@ -8,14 +8,14 @@ public class BasicInputPort implements InputPort {
 	private final String name;
 	private final String type;
 	private OutputPort src;
-	
+
+
 	public BasicInputPort(int id, String name, String type) {
 		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.src = null;
 	}
-
 
 	public BasicInputPort(InputPort ip) {
 		this.id = ip.getId();

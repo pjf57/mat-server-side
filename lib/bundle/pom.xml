@@ -23,7 +23,7 @@ Contributors:
   </parent>
 
   <name>MAT Library Bundle</name>
-  <artifactId>model</artifactId>
+  <artifactId>lib</artifactId>
   <packaging>bundle</packaging>
 
   <dependencies>

@@ -198,5 +198,17 @@ public class BasicElement implements Element {
 							newStatus.getEventInCount());
 	}
 
-
+	@Override
+	public int hashCode() {
+		return ( 31 * id + (31 * type.hashCode()) * 17 ) * 17;
+	}
+	
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof Element)) return false;
+		Element other = (Element) object;
+		return id == other.getId() 
+				&& ((type != null && type.equals(other.getType()))
+					|| other.getType() == null);		
+	}
 }
