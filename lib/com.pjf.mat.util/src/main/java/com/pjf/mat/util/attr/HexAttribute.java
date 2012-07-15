@@ -1,7 +1,7 @@
-package com.pjf.mat.impl.element;
+package com.pjf.mat.util.attr;
 
 import com.pjf.mat.api.AttributeType;
-import com.pjf.mat.impl.util.Conversion;
+import com.pjf.mat.util.Conversion;
 
 public class HexAttribute extends IntegerAttribute {
 

@@ -3,10 +3,10 @@ package com.pjf.marketsim;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-
 import org.apache.log4j.Logger;
 
-import com.pjf.udp.UDPCxn;
+import com.pjf.mat.util.comms.UDPCxn;
+
 
 public class EventFeed {
 	private final static Logger logger = Logger.getLogger(EventFeed.class);

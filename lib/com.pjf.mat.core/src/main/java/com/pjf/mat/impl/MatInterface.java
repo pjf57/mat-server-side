@@ -21,12 +21,12 @@ import com.pjf.mat.impl.element.BasicCmd;
 import com.pjf.mat.impl.element.BasicElement;
 import com.pjf.mat.impl.element.BasicInputPort;
 import com.pjf.mat.impl.element.BasicOutputPort;
-import com.pjf.mat.impl.element.FloatAttribute;
 import com.pjf.mat.impl.element.FloatOutputPort;
-import com.pjf.mat.impl.element.HexAttribute;
-import com.pjf.mat.impl.element.IntegerAttribute;
 import com.pjf.mat.impl.element.IntegerOutputPort;
-import com.pjf.mat.impl.element.StringAttribute;
+import com.pjf.mat.util.attr.StringAttribute;
+import com.pjf.mat.util.attr.FloatAttribute;
+import com.pjf.mat.util.attr.HexAttribute;
+import com.pjf.mat.util.attr.IntegerAttribute;
 
 
 public class MatInterface implements MatApi{

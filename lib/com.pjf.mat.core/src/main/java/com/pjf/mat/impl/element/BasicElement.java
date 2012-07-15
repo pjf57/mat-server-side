@@ -12,6 +12,7 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.util.ElementStatus;
 
 public class BasicElement implements Element {
 

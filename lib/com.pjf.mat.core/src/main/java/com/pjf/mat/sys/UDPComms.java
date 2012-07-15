@@ -12,7 +12,8 @@ import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.Status;
-import com.pjf.udp.UDPCxn;
+import com.pjf.mat.util.comms.BaseComms;
+import com.pjf.mat.util.comms.UDPCxn;
 
 public class UDPComms extends BaseComms implements Comms {
 	private final static Logger logger = Logger.getLogger(UDPComms.class);

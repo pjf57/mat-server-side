@@ -10,4 +10,6 @@ public interface Cmd {
 	public Element getParent();		// get element that contains this cmd
 	/** @model */
 	public String getFullName();	// get full name including element ID, element Type
+	/** @model */
+	public int getData();			// get data associated with the cmd
 }

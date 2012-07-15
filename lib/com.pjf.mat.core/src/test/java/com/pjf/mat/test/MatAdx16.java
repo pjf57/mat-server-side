@@ -65,7 +65,7 @@ public class MatAdx16 extends MatSystem {
 	 * @throws Exception
 	 */
 	@Override
-	protected void sendTradeBurst(EventFeed feed) throws Exception {
+	protected void sendTradeBurst(MatApi mat, EventFeed feed) throws Exception {
 		if (feed != null) {
 			feed.sendTradeBurst("resources/GLP_27667_1.csv",3,5,1);
 		}
