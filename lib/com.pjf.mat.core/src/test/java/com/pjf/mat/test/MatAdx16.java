@@ -1,9 +1,12 @@
 package com.pjf.mat.test;
 
+import java.util.Properties;
+
 import com.pjf.marketsim.EventFeed;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
+import com.pjf.mat.sys.MatSystemLoader;
 
 public class MatAdx16 extends MatSystem {
 
@@ -14,6 +17,10 @@ public class MatAdx16 extends MatSystem {
 	
 	@Override
 	protected void configure(MatApi mat) throws Exception {
+		Properties p = loadProperties("resources/matAdx16.matdef");
+		MatSystemLoader loader = new MatSystemLoader(p);
+		loader.initialize(mat);
+		
 		Element mfd = mat.getElement(15);
 		Element ema_p = mat.getElement(3);
 		Element ema_q = mat.getElement(4);

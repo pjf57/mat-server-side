@@ -1,19 +1,16 @@
 package com.pjf.mat.impl;
 
-import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
-
-import javax.net.ssl.SSLEngineResult.Status;
 
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Cmd;
-import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
-import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.impl.element.BasicCmd;
 import com.pjf.mat.impl.element.BasicElement;
@@ -27,63 +24,28 @@ import com.pjf.mat.impl.element.IntegerOutputPort;
 import com.pjf.mat.impl.element.StringAttribute;
 
 
-public class MatInterface implements MatApi {
-	private final static Logger logger = Logger.getLogger(MatInterface.class);
-	private final Properties props;
-	private final Comms comms;
-	private final MatHardwareModel model;
+public class MatHardwareModel {
+	private final static Logger logger = Logger.getLogger(MatHardwareModel.class);
+	protected final Properties props;
+	protected Map<Integer,Element> elements;	// holds the actual configured elements
+	protected Map<String,Element> types;		// holds the different element types (key=type)
 	
-	public MatInterface(Properties props, Comms comms, MatHardwareModel model) throws Exception {
+	public MatHardwareModel(Properties props) throws Exception {
 		this.props = props;
-		this.comms = comms;
-		this.model = model;
+		elements = new HashMap<Integer,Element>();
+		types = new HashMap<String,Element>();	
 		initialise();
 	}
 
-
-	@Override
 	public Collection<Element> getElements() {
-		return model.elements.values();
+		return elements.values();
 	}
 
 
-	@Override
+//	@Override
 	public Element getElement(int id) {
-		return model.elements.get(new Integer(id));
+		return elements.get(new Integer(id));
 	}
-	
-	@Override
-	public Status getHWStatus() {
-		try {
-			comms.requestStatus();
-		} catch (Exception e) {
-			logger.error("Error requesting status: " + e);
-		}		
-		return null;
-	}
-
-	@Override
-	public void configureHW() throws Exception {
-		logger.info("About to encode the following configuration:");
-		for (Element el : getElements()){
-			logger.info("Element: " + el);
-		}
-		try {
-			comms.sendConfig(model.elements.values());
-		} catch (IOException e) {
-			logger.error("Error sending conifg: " + e);
-		}		
-	}
-	
-	@Override
-	public void sendCmd(Cmd cmd) {
-		try {
-			comms.sendCmd(cmd);
-		} catch (Exception e) {
-			logger.error("Error sending cmd[" + cmd + "]: " + e);
-		}
-	}
-
 	
 	private void initialise() throws Exception {
 		// read info about the basic types of element
@@ -92,7 +54,7 @@ public class MatInterface implements MatApi {
 		Element type = null;
 		while((type=readType(id)) != null) {
 			logger.info("Found type: " + type);
-			model.types.put(type.getType(), type);
+			types.put(type.getType(), type);
 			id++;
 		}
 
@@ -101,11 +63,9 @@ public class MatInterface implements MatApi {
 		Element element = null;
 		while((element=readElement(id)) != null) {
 			logger.info("Found Element: " + element);
-			model.elements.put(new Integer(id),element);
+			elements.put(new Integer(id),element);
 			id++;
 		}
-		
-		
 	}
 
 	// read one element from properties - return null if non existent
@@ -114,7 +74,7 @@ public class MatInterface implements MatApi {
 		String e = "element" + id;
 		String elType = props.getProperty(e + ".type");
 		if (elType != null) {
-			Element type = model.types.get(elType);
+			Element type = types.get(elType);
 			if (type == null) {
 				logger.error("No such type: " + elType + " for element " + id);
 			}
@@ -241,79 +201,50 @@ public class MatInterface implements MatApi {
 
 	@Override
 	public String toString() {
-		for (Element el : model.elements.values()) {
+		for (Element el : elements.values()) {
 			logger.info(el);
 		}
-		return "[mat: " + model.elements.size() + " elements]";
+		return "[mat: " + elements.size() + " elements]";
 	}
-
-
-	public void shutdown() {
-		comms.shutdown();		
-	}
-
-	/**
-	 * Check that the HW signature matches with the configuration we have loaded.
-	 * 
-	 * @throws Exception if the configuration doesn't match
-	 */
-	@Override
-	public void checkHWSignature() throws Exception {
-		long signatureHW = comms.getHWSignature();
-		long signatureSW = getSWSignature();
-		logger.info("Signatures HW=" + signatureHW + " SW=" + signatureSW);
-		if (signatureHW != signatureSW) {
-			String msg = "Configuration signatatures dont match: Signatures HW=" + 
-						signatureHW + " SW=" + signatureSW;
-			logger.error(msg);
-			throw new Exception(msg);
-		}
-	}
-
 
 	/**
 	 * Calculate SW configuration signature using the same alg as is used in the HW
 	 * 
 	 * @return 64 bit signature
 	 */
-	@Override
+//	@Override
 	public long getSWSignature() {
-		return model.getSWSignature();
-//		int id = 0;
-//		Element el;
-//		long crc = 0;
-//		while ((el = getElement(id)) != null) {
-//			crc = crc40(crc,el.getHWType());
-//			id++;
-//		}
-//		return crc;
+		int id = 0;
+		Element el;
+		long crc = 0;
+		while ((el = getElement(id)) != null) {
+			crc = crc40(crc,el.getHWType());
+			id++;
+		}
+		return crc;
 	}
-//
-//	private long crc40(long init, int data) {
-//		long crc = init;
-//		int d = data;
-//		for (int bitnum=7; bitnum>=0; bitnum--) {
-//			// calc feedback bit
-//			boolean nextbit = false;
-//			if ((crc & 0x4000000) != 0) { nextbit = !nextbit; }
-//			if ((crc & 0x0800000) != 0) { nextbit = !nextbit; }
-//			if ((crc & 0x0010000) != 0) { nextbit = !nextbit; }
-//			if ((crc & 0x0000008) != 0) { nextbit = !nextbit; }
-//			if ((crc & 0x0000001) != 0) { nextbit = !nextbit; }
-//			if ((d & 0x80) != 0) { nextbit = !nextbit; }
-//			// feed the feedback bit into the crc
-//			crc *= 2;
-//			if (nextbit) {
-//				crc += 1;
-//			}
-//			crc = crc & 0xffffffffffL;
-//			d *= 2;
-//			}
-//		return crc;
-//	}
 
-
-
-
+	private long crc40(long init, int data) {
+		long crc = init;
+		int d = data;
+		for (int bitnum=7; bitnum>=0; bitnum--) {
+			// calc feedback bit
+			boolean nextbit = false;
+			if ((crc & 0x4000000) != 0) { nextbit = !nextbit; }
+			if ((crc & 0x0800000) != 0) { nextbit = !nextbit; }
+			if ((crc & 0x0010000) != 0) { nextbit = !nextbit; }
+			if ((crc & 0x0000008) != 0) { nextbit = !nextbit; }
+			if ((crc & 0x0000001) != 0) { nextbit = !nextbit; }
+			if ((d & 0x80) != 0) { nextbit = !nextbit; }
+			// feed the feedback bit into the crc
+			crc *= 2;
+			if (nextbit) {
+				crc += 1;
+			}
+			crc = crc & 0xffffffffffL;
+			d *= 2;
+			}
+		return crc;
+	}
 
 }
