@@ -49,4 +49,18 @@ public class InstrumentStore {
 		return name + " instrument store";
 	}
 
+	public void logState() {
+		StringBuffer buf = new StringBuffer();
+		buf.append(name + ":) ");
+		for (int instr=0; instr<MatElementDefs.MAX_INSTRUMENTS; instr++) {
+			if (values[instr].isValid()) {
+				buf.append(instr);
+				buf.append("/");
+				buf.append(values[instr]);
+				buf.append(" ");
+			}
+		}
+		logger.debug(buf);
+	}
+
 }

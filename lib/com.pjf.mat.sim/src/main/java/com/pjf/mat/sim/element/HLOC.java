@@ -70,6 +70,12 @@ public class HLOC extends BaseElement implements SimElement {
 		public String toString() {
 			return name + " metric store";
 		}
+
+		public void logState() {
+			for (Metric m : Metric.values()) {
+				store.get(m).logState();
+			}
+		}
 	}
 
 	/**
@@ -139,9 +145,9 @@ public class HLOC extends BaseElement implements SimElement {
 	public HLOC(int id, SimHost host) {
 		super(id, MatElementDefs.EL_TYP_HLOC,host);
 		store = new HashMap<Period,MetricStore>();
-		store.put(Period.CURRENT,new MetricStore("Current"));
-		store.put(Period.PREV,new MetricStore("N"));
-		store.put(Period.PRVM1,new MetricStore("N-1"));
+		store.put(Period.CURRENT,new MetricStore(" "));
+		store.put(Period.PREV,new MetricStore(" "));
+		store.put(Period.PRVM1,new MetricStore(" "));
 		c_period = 0;
 		c_opMetric = MatElementDefs.EL_HLOC_L_PREV_H;
 		c_throttle = 0;
@@ -220,8 +226,9 @@ public class HLOC extends BaseElement implements SimElement {
 					iset.clear();
 					store.put(Period.PRVM1, store.get(Period.PREV));
 					store.put(Period.PREV, store.get(Period.CURRENT));
-					store.put(Period.CURRENT,new MetricStore("Current"));
+					store.put(Period.CURRENT,new MetricStore(" "));
 				}
+				logState();
 				opDrv.emitEvents(instrSet);
 			} else {
 				periodCnt++;
@@ -231,10 +238,10 @@ public class HLOC extends BaseElement implements SimElement {
 	
 	@Override
 	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
-		LookupResult result = new LookupResult(LookupValidity.TIMEOUT);
+		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT);
 		FloatValue data = getHLOCData(instrumentId,lookupKey);
 		if (data != null) {
-			result = new LookupResult(data);
+			result = new LookupResult(elementId,data);
 		}
 		return result;
 	}
@@ -253,20 +260,20 @@ public class HLOC extends BaseElement implements SimElement {
 		FloatValue result = null;
 		InstrumentStore st = null;
 		switch (lookupKey) {
-		case MatElementDefs.EL_HLOC_L_CURR_H: st = store.get(Period.CURRENT).getStore(Metric.HIGH);
-		case MatElementDefs.EL_HLOC_L_CURR_L: st = store.get(Period.CURRENT).getStore(Metric.LOW);
-		case MatElementDefs.EL_HLOC_L_CURR_O: st = store.get(Period.CURRENT).getStore(Metric.OPEN);
-		case MatElementDefs.EL_HLOC_L_CURR_C: st = store.get(Period.CURRENT).getStore(Metric.CLOSE);
+		case MatElementDefs.EL_HLOC_L_CURR_H: st = store.get(Period.CURRENT).getStore(Metric.HIGH); break;
+		case MatElementDefs.EL_HLOC_L_CURR_L: st = store.get(Period.CURRENT).getStore(Metric.LOW); break;
+		case MatElementDefs.EL_HLOC_L_CURR_O: st = store.get(Period.CURRENT).getStore(Metric.OPEN); break;
+		case MatElementDefs.EL_HLOC_L_CURR_C: st = store.get(Period.CURRENT).getStore(Metric.CLOSE); break;
 
-		case MatElementDefs.EL_HLOC_L_PREV_H: st = store.get(Period.PREV).getStore(Metric.HIGH);
-		case MatElementDefs.EL_HLOC_L_PREV_L: st = store.get(Period.PREV).getStore(Metric.LOW);
-		case MatElementDefs.EL_HLOC_L_PREV_O: st = store.get(Period.PREV).getStore(Metric.OPEN);
-		case MatElementDefs.EL_HLOC_L_PREV_C: st = store.get(Period.PREV).getStore(Metric.CLOSE);
+		case MatElementDefs.EL_HLOC_L_PREV_H: st = store.get(Period.PREV).getStore(Metric.HIGH); break;
+		case MatElementDefs.EL_HLOC_L_PREV_L: st = store.get(Period.PREV).getStore(Metric.LOW); break;
+		case MatElementDefs.EL_HLOC_L_PREV_O: st = store.get(Period.PREV).getStore(Metric.OPEN); break;
+		case MatElementDefs.EL_HLOC_L_PREV_C: st = store.get(Period.PREV).getStore(Metric.CLOSE); break;
 
-		case MatElementDefs.EL_HLOC_L_PRVM1_H: st = store.get(Period.PRVM1).getStore(Metric.HIGH);
-		case MatElementDefs.EL_HLOC_L_PRVM1_L: st = store.get(Period.PRVM1).getStore(Metric.LOW);
-		case MatElementDefs.EL_HLOC_L_PRVM1_O: st = store.get(Period.PRVM1).getStore(Metric.OPEN);
-		case MatElementDefs.EL_HLOC_L_PRVM1_C: st = store.get(Period.PRVM1).getStore(Metric.CLOSE);
+		case MatElementDefs.EL_HLOC_L_PRVM1_H: st = store.get(Period.PRVM1).getStore(Metric.HIGH); break;
+		case MatElementDefs.EL_HLOC_L_PRVM1_L: st = store.get(Period.PRVM1).getStore(Metric.LOW); break;
+		case MatElementDefs.EL_HLOC_L_PRVM1_O: st = store.get(Period.PRVM1).getStore(Metric.OPEN); break;
+		case MatElementDefs.EL_HLOC_L_PRVM1_C: st = store.get(Period.PRVM1).getStore(Metric.CLOSE); break;
 		}
 		if (st != null) {
 			result = st.get(instrumentId);
@@ -284,6 +291,15 @@ public class HLOC extends BaseElement implements SimElement {
 	@Override
 	protected String getTypeName() {
 		return "HLOC";
+	}
+	
+	/**
+	 * Output the store state via the logger at debug level
+	 */
+	public void logState() {
+		logger.debug(getIdStr() + "CURRENT:");	store.get(Period.CURRENT).logState();
+		logger.debug(getIdStr() + "PREV:");		store.get(Period.PREV).logState();
+		logger.debug(getIdStr() + "PREV-1:");	store.get(Period.PRVM1).logState();
 	}
 
 }

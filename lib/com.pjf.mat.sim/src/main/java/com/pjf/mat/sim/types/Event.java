@@ -8,7 +8,7 @@ import com.pjf.mat.util.Conversion;
  * @author pjf
  *
  */
-public class Event {
+public class Event implements Comparable<Event> {
 	private final int rawData;
 	private final int src;
 	private final int instrument_id;
@@ -46,6 +46,11 @@ public class Event {
 		return "[src" + src + 
 		",InstrId=" + instrument_id + 
 		",data=" + Conversion.toHexIntString(rawData) + "]";
+	}
+
+	@Override
+	public int compareTo(Event o) {
+		return src - o.src;
 	}
 	
 	

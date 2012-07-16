@@ -111,7 +111,7 @@ public class ADX extends BaseElement implements SimElement {
 		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT);
 		switch (lookupKey) {
 		case MatElementDefs.EL_ADX_L_ADX:
-			result = new LookupResult(elementId,adxStore.get(instrumentId));
+			result = new LookupResult(elementId,adxStore.get(instrumentId)); break;
 		}
 		return result;
 	}

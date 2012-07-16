@@ -4,6 +4,7 @@ element2.type=TG1
 element3.type=EMA
 element4.type=HLOC
 element5.type=ATR
+element6.type=ADX
 
 type1.id=1
 type1.name=EMA:16

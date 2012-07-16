@@ -20,9 +20,10 @@ public class MatSimTest extends MatSystem {
 		Element ema1 = mat.getElement(3);
 		Element hloc = mat.getElement(4);
 		Element atr = mat.getElement(5);
+		Element adx = mat.getElement(6);
 
 		// configure element attributes
-		tg1.getAttribute("len").setValue("50");
+		tg1.getAttribute("len").setValue("100");
 		tg1.getAttribute("gap").setValue("1");
 		tg1.getAttribute("initial value").setValue("50");
 		tg1.getAttribute("p1").setValue("0.25");
@@ -34,13 +35,19 @@ public class MatSimTest extends MatSystem {
 		atr.getAttribute("len").setValue("3");
 		atr.getAttribute("alpha").setValue("0.5");
 		atr.getAttribute("IP_Has_Close(N-1)").setValue("1");
+		adx.getAttribute("PDN EMA len").setValue("3");
+		adx.getAttribute("PDN EMA alpha").setValue("0.5");
+		adx.getAttribute("NDN EMA len").setValue("3");
+		adx.getAttribute("NDN EMA alpha").setValue("0.5");
+		adx.getAttribute("ADX EMA len").setValue("3");
+		adx.getAttribute("ADX EMA alpha").setValue("0.5");
 		
-
 		// configure element connections
 		hloc.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 		atr.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
-		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
-		lgr.getInputs().get(1).connectTo(atr.getOutputs().get(0));
+		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
+//		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
+		lgr.getInputs().get(1).connectTo(adx.getOutputs().get(0));
 		logger.info("mat is: " + mat);
 
 		mat.configureHW();
@@ -49,6 +56,7 @@ public class MatSimTest extends MatSystem {
 	@Override
 	protected void sendTradeBurst(MatApi mat, EventFeed feed) throws Exception {
 		sendCmd(2,"start");
+		Thread.sleep(5000);
 	}
 
 	public static void main(String[] args) {

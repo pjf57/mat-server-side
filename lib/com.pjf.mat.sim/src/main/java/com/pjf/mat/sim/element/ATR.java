@@ -90,7 +90,7 @@ public class ATR extends BaseElement implements SimElement {
 		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT);
 		switch (lookupKey) {
 		case MatElementDefs.EL_ATR_L_ATR:
-			result = new LookupResult(elementId,atrStore.get(instrumentId));
+			result = new LookupResult(elementId,atrStore.get(instrumentId)); break;
 		}
 		return result;
 	}
