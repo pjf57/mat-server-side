@@ -62,8 +62,8 @@ public class MatSim extends BaseComms implements Comms, SimHost {
 							try {
 								se.putEvent(evt);
 							} catch (Exception e) {
-								String msg = "Simulation error processing event:" +
-								evt + " - " + e.getMessage();
+								String msg = "Simulation error processing event into:" +
+									se + " Event=" + evt + " - " + e.getMessage();
 								logger.error(msg);
 								notifyError(msg);
 							}
@@ -187,7 +187,10 @@ public class MatSim extends BaseComms implements Comms, SimHost {
 
 	@Override
 	public void shutdown() {
-		logger.info("shutdown()");
+		logger.info("shutdown(): shutting down ...");
+		for (SimElement se : simElements) {
+			se.shutdown();
+		}
 		evtDistr.shutdown();
 		clk.shutdown();
 	}
@@ -243,19 +246,22 @@ public class MatSim extends BaseComms implements Comms, SimHost {
 	}
 
 	@Override
-	public LookupResult lookup(int instrumentId, int lookupKey)
+	public LookupResult lookup(int source, int instrumentId, int lookupKey)
 			throws Exception {
+		String logstr = "lookup(src=" + source + ",instr=" + instrumentId +
+			",key=" + lookupKey + "): ";
 		LookupResult result = null;
 		for (SimElement se : simElements) {
-			result = se.lookup(instrumentId, lookupKey);
+			result = se.handleLookup(instrumentId, lookupKey);
 			if (!result.getValidity().equals(LookupValidity.TIMEOUT)) {
 				break;
 			}
 		}
 		if (result == null) {
-			String msg = "Unexpected null value when looking up key " +
-				lookupKey + " for instrument " + instrumentId;
+			String msg = logstr + "Unexpected null value";
 			notifyError(msg);
+		} else {
+			logger.debug(logstr + " returned " + result);
 		}
 		return result;
 	}
