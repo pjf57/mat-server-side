@@ -12,6 +12,7 @@ public class BooleanValue extends BaseValue implements Value {
 
 	public BooleanValue(boolean val) {
 		super();
+		valid = true;
 		data = val;
 	}
 
@@ -27,6 +28,14 @@ public class BooleanValue extends BaseValue implements Value {
 	@Override
 	public int getRawData() {
 		return (data) ? 1 : 0;
+	}
+
+	@Override
+	public String toString() {
+		if (valid) {
+			return Boolean.toString(data);
+		}
+		return "invalid";
 	}
 
 

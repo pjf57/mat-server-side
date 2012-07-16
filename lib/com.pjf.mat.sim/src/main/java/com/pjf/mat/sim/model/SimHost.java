@@ -48,11 +48,12 @@ public interface SimHost {
 	 * Lookup an instrument based value in the system
 	 * (all elements will be polled to see if one of them can proved this data)
 	 * 
+	 * @param id 			- id of element doing the lookup
 	 * @param instrumentId - instrument to look up data for
 	 * @param lookupKey		- type of data to find
 	 * @return				- lookup result including validity
 	 * @throws Exception	- if an element had a problem replying
 	 */
-	public LookupResult lookup(int instrumentId, int lookupKey) throws Exception;
+	public LookupResult lookup(int id, int instrumentId, int lookupKey) throws Exception;
 
 }

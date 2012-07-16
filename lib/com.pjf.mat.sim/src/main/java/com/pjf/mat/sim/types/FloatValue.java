@@ -12,6 +12,7 @@ public class FloatValue extends BaseValue implements Value {
 
 	public FloatValue(float val) {
 		super();
+		valid = true;
 		data = val;
 	}
 	
@@ -29,5 +30,12 @@ public class FloatValue extends BaseValue implements Value {
 		return Float.floatToIntBits(data);
 	}
 
+	@Override
+	public String toString() {
+		if (valid) {
+			return Float.toString(data);
+		}
+		return "invalid";
+	}
 
 }

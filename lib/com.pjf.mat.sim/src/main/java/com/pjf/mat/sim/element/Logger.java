@@ -1,7 +1,7 @@
 package com.pjf.mat.sim.element;
 
 import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.sim.model.BaseElement;
+import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.types.ConfigItem;

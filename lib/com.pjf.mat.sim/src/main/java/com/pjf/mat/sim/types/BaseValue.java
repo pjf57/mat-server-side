@@ -11,7 +11,6 @@ public abstract class BaseValue implements Value {
 
 	@Override
 	public boolean isValid() {
-		// TODO Auto-generated method stub
 		return valid;
 	}
 

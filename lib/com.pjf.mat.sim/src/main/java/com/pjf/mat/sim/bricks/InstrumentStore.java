@@ -1,8 +1,9 @@
-package com.pjf.mat.sim.types;
+package com.pjf.mat.sim.bricks;
 
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.sim.types.FloatValue;
 
 /**
  * Stores a single value with validity flags for each instrument

@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.sim.model.BaseElement;
+import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.model.BaseState;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.SimElement;

@@ -1,9 +1,14 @@
-package com.pjf.mat.sim.model;
+package com.pjf.mat.sim.bricks;
 
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.sim.model.BaseState;
+import com.pjf.mat.sim.model.ClockTick;
+import com.pjf.mat.sim.model.LookupResult;
+import com.pjf.mat.sim.model.LookupValidity;
+import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
@@ -63,6 +68,7 @@ public abstract class BaseElement implements SimElement {
 				processReset();
 				break;
 			case MatElementDefs.EL_C_CFG_DONE: 
+				processConfigDone();
 				setBaseState(BaseState.RUN);
 				break;
 			default:
@@ -71,6 +77,20 @@ public abstract class BaseElement implements SimElement {
 			}
 		}
 	}
+
+	/**
+	 * Lookup a value from the lookup bus
+	 * 
+	 * @param instrumentId
+	 * @param lookupKey
+	 * @return lookup result
+	 * @throws Exception if an error occurred
+	 */
+	protected LookupResult lookup(int instrumentId, int lookupKey) throws Exception {
+		LookupResult result = host.lookup(elementId, instrumentId, lookupKey);
+		return result;
+	}
+
 
 	protected void processReset() {
 		// default behaviour is to move to the cfg phase
@@ -95,18 +115,44 @@ public abstract class BaseElement implements SimElement {
 		}		
 	}
 
+	
 	@Override
 	public void processTick(ClockTick tick) {
 		// default behaviour is to ignore clock ticks
 	}
 
+	/**
+	 * Template method to process a config item
+	 * 
+	 * @param cfg
+	 */
 	protected abstract void processConfig(ConfigItem cfg);
 	
+	/**
+	 * Template method called when all configuration is complete
+	 * 
+	 */
+	protected void processConfigDone() {
+		// default behaviour is nothing
+	}
+	
+	/**
+	 * Template method to process a command
+	 * 
+	 * @param cmd
+	 */
 	protected void processCmd(Cmd cmd) {
 		// default behaviour is to log a warning
 		logger.warn(getIdStr() + "unexpected cmd:" + cmd);		
 	}
-	
+
+	/**
+	 * Template method to process an event
+	 * 
+	 * @param input - which input the event arrived on
+	 * @param evt
+	 * @throws Exception
+	 */
 	protected void processEvent(int input, Event evt) throws Exception {
 		// default behaviour is to log a warning
 		logger.warn(getIdStr() + "unexpected event:" + evt);		
@@ -130,7 +176,8 @@ public abstract class BaseElement implements SimElement {
 	}
 	
 	@Override
-	public LookupResult lookup(int instrumentId, int lookupKey) throws Exception {
-		return new LookupResult(LookupValidity.TIMEOUT);
+	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
+		// default behaviour is timeout
+		return new LookupResult(elementId,LookupValidity.TIMEOUT);
 	}
 }

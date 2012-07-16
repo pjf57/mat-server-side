@@ -1,13 +1,14 @@
 package com.pjf.mat.sim.element;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
+import java.util.Set;
+import java.util.concurrent.Semaphore;
 import org.apache.log4j.Logger;
 import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.sim.model.BaseElement;
+import com.pjf.mat.sim.bricks.BaseElement;
+import com.pjf.mat.sim.bricks.InstrumentStore;
 import com.pjf.mat.sim.model.BaseState;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.LookupResult;
@@ -17,7 +18,6 @@ import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.sim.types.FloatValue;
-import com.pjf.mat.sim.types.InstrumentStore;
 
 /**
  *--		processes price events on input and maintains
@@ -35,11 +35,12 @@ import com.pjf.mat.sim.types.InstrumentStore;
 public class HLOC extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(HLOC.class);
 	private int c_period;			// num ticks in period (int)
-	private Metric c_metric;		// metric to use for data in output events
+	private int c_opMetric;			// metric to use for data in output events (lku req)
 	private int c_throttle;			// min # (8ns) clks between outputs
 	private int periodCnt;
 	private Map<Period,MetricStore> store;	// store of metrics
 	private OutputDriver opDrv;		// thread to emit output events
+	private Set<Integer> iset;		// set of instruments that changed during the period
 
 	enum Metric {HIGH,LOW,OPEN,CLOSE};
 	enum Period {CURRENT,PREV,PRVM1};
@@ -77,54 +78,61 @@ public class HLOC extends BaseElement implements SimElement {
 	 * @author pjf
 	 */
 	class OutputDriver extends Thread {
-		private Lock lock;
+		private Semaphore sem;
 		private boolean shutdown;
+		private Set<Integer> instrToOp;
 		
 		public OutputDriver() {
 			setName("HLOC OP DRV");
 			shutdown = false;
-			lock = new ReentrantLock();
-			lock.lock();	// take the lock, will be unlocked at end of period
+			sem = new Semaphore(0);
 			start();
 		}
 		
 		@Override
 		public void run() {
 			while (!shutdown) {
-				lock.lock();
-				int instr = 0;
-				InstrumentStore st = store.get(Period.PREV).getStore(c_metric);
-				while ((instr < MatElementDefs.MAX_INSTRUMENTS) && !shutdown) {
-					FloatValue val;
-					try {
-						val = st.get(instr);
-						if (val.isValid()) {
-							Event evt = new Event(elementId,instr,val.getRawData());
-							host.publishEvent(evt);
-							// wait for throttle period
-							// TODO - this is not really well timed cf hardware
-							Thread.sleep(c_throttle);
+				try {
+					sem.acquire();
+					logger.debug("Start emitting output events for period");
+					for (Integer instr : instrToOp) {
+						if (shutdown) {
+							break;
 						}
-					} catch (Exception e) {
-						String msg = "HLOC(" + elementId + "): error outputting event: " + e.getMessage();
-						logger.error(msg);
-						host.notifyError(msg);
+						FloatValue val;
+						try {
+							val = getHLOCData(instr, c_opMetric);
+							logger.debug(getIdStr() + "Emit instr=" + instr + "/" + val);
+							if (val.isValid()) {
+								Event evt = new Event(elementId,instr,val.getRawData());
+								host.publishEvent(evt);
+								// wait for throttle period
+								// TODO - this is not really well timed cf hardware
+								Thread.sleep(c_throttle);
+							}
+						} catch (Exception e) {
+							String msg = getIdStr() + "Error outputting event: " + e.getMessage();
+							host.notifyError(msg);
+						}
+						instr++;
 					}
-					instr++;
+					logger.debug("Done emitting output events for period");
+				} catch (InterruptedException e1) {
+					logger.debug("run() - interrupted lock on sem");
 				}
-				logger.debug("Done emitting output events");
 			}
 			logger.info("Shutdown.");
 		}
 		
-		public void emitEvents() {
+		public void emitEvents(Set<Integer> instrSet) {
 			logger.debug("Emitting events ...");
-			lock.unlock();
+			instrToOp = instrSet;
+			sem.release();
 		}
 
 		public void shutdown() {
 			shutdown = true;
-			lock.unlock();
+			sem.release();
 		}
 	}
 	
@@ -135,10 +143,11 @@ public class HLOC extends BaseElement implements SimElement {
 		store.put(Period.PREV,new MetricStore("N"));
 		store.put(Period.PRVM1,new MetricStore("N-1"));
 		c_period = 0;
-		c_metric = Metric.HIGH;
+		c_opMetric = MatElementDefs.EL_HLOC_L_PREV_H;
 		c_throttle = 0;
 		periodCnt = 0;
 		opDrv = new OutputDriver();
+		iset = new HashSet<Integer>();
 	}
 
 	@Override
@@ -146,15 +155,7 @@ public class HLOC extends BaseElement implements SimElement {
 		switch (cfg.getItemId()) {
 		case MatElementDefs.EL_HLOC_C_PERIOD: 		c_period 	= cfg.getRawData();	break;
 		case MatElementDefs.EL_HLOC_C_OP_THROT: 	c_throttle 	= cfg.getRawData();	break;
-		case MatElementDefs.EL_HLOC_C_OP_METRIC:
-			switch(cfg.getRawData()) {
-			case MatElementDefs.EL_HLOC_L_PREV_H: c_metric = Metric.HIGH;	break;
-			case MatElementDefs.EL_HLOC_L_PREV_L: c_metric = Metric.LOW;	break;
-			case MatElementDefs.EL_HLOC_L_PREV_O: c_metric = Metric.OPEN;	break;
-			case MatElementDefs.EL_HLOC_L_PREV_C: c_metric = Metric.CLOSE;	break;
-			default: logger.warn(getIdStr() + "Unexpected configuration metric: " + cfg); break;
-			}
-			break;
+		case MatElementDefs.EL_HLOC_C_OP_METRIC:	c_opMetric  = cfg.getRawData(); break;
 		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
 		}
 	}
@@ -163,29 +164,35 @@ public class HLOC extends BaseElement implements SimElement {
 	protected void processEvent(int input, Event evt) throws Exception {
 		int instr = evt.getInstrument_id();
 		float val = evt.getFloatData();
-		synchronized(store){
+		iset.add(new Integer(instr));
+		synchronized(this){
 			MetricStore st = store.get(Period.CURRENT);
 			// high
 			FloatValue currentHigh = st.getStore(Metric.HIGH).get(instr);
 			if (currentHigh.isValid()) {
 				if (val > currentHigh.getValue()) {
+					logger.debug(getIdStr() + "New High=" + val);
 					currentHigh.set(val);
 				}
 			} else {
+				logger.debug(getIdStr() + "First High=" + val);
 				st.getStore(Metric.HIGH).put(val, instr);
 			}
-			// high
+			// low
 			FloatValue currentLow = st.getStore(Metric.LOW).get(instr);
 			if (currentLow.isValid()) {
 				if (val < currentLow.getValue()) {
+					logger.debug(getIdStr() + "New Low=" + val);
 					currentLow.set(val);
 				}
 			} else {
+				logger.debug(getIdStr() + "First Low=" + val);
 				st.getStore(Metric.LOW).put(val, instr);
 			}
 			// Open
 			FloatValue currentOpen = st.getStore(Metric.OPEN).get(instr);
 			if (!currentOpen.isValid()) {
+				logger.debug(getIdStr() + "Open=" + val);
 				st.getStore(Metric.OPEN).put(val, instr);
 			}
 			// Close
@@ -193,6 +200,7 @@ public class HLOC extends BaseElement implements SimElement {
 			if (currentClose.isValid()) {
 				currentClose.set(val);
 			} else {
+				logger.debug(getIdStr() + "First Close=" + val);
 				st.getStore(Metric.CLOSE).put(val, instr);
 			}
 		}
@@ -204,18 +212,45 @@ public class HLOC extends BaseElement implements SimElement {
 		if (baseState == BaseState.RUN) {
 			if (periodCnt >= c_period) {
 				periodCnt = 0;
-				synchronized(store) {
+				// end of period -- switch stores and then emit events
+				logger.info(getIdStr() + "End of period.");
+				Set<Integer> instrSet;
+				synchronized(this) {
+					instrSet = new HashSet<Integer>(iset);
+					iset.clear();
 					store.put(Period.PRVM1, store.get(Period.PREV));
 					store.put(Period.PREV, store.get(Period.CURRENT));
 					store.put(Period.CURRENT,new MetricStore("Current"));
 				}
-			}	
-		}		
+				opDrv.emitEvents(instrSet);
+			} else {
+				periodCnt++;
+			}
+		}
 	}
 	
 	@Override
-	public LookupResult lookup(int instrumentId, int lookupKey) throws Exception {
+	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
 		LookupResult result = new LookupResult(LookupValidity.TIMEOUT);
+		FloatValue data = getHLOCData(instrumentId,lookupKey);
+		if (data != null) {
+			result = new LookupResult(data);
+		}
+		return result;
+	}
+	
+
+	
+	/**
+	 * Get data from store based on lookup key
+	 * 
+	 * @param instrumentId
+	 * @param lookupKey
+	 * @return value or null (if lookup key did not translate to a store)
+	 * @throws Exception if instrumentId out of range
+	 */
+	private FloatValue getHLOCData(int instrumentId, int lookupKey) throws Exception {
+		FloatValue result = null;
 		InstrumentStore st = null;
 		switch (lookupKey) {
 		case MatElementDefs.EL_HLOC_L_CURR_H: st = store.get(Period.CURRENT).getStore(Metric.HIGH);
@@ -234,7 +269,7 @@ public class HLOC extends BaseElement implements SimElement {
 		case MatElementDefs.EL_HLOC_L_PRVM1_C: st = store.get(Period.PRVM1).getStore(Metric.CLOSE);
 		}
 		if (st != null) {
-			result = new LookupResult(st.get(instrumentId));
+			result = st.get(instrumentId);
 		}
 		return result;
 	}

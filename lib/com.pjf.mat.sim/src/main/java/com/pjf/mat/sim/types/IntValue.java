@@ -12,6 +12,7 @@ public class IntValue extends BaseValue implements Value {
 
 	public IntValue(int val) {
 		super();
+		valid = true;
 		data = val;
 	}
 
@@ -29,5 +30,12 @@ public class IntValue extends BaseValue implements Value {
 		return data;
 	}
 
+	@Override
+	public String toString() {
+		if (valid) {
+			return Integer.toString(data);
+		}
+		return "invalid";
+	}
 
 }
