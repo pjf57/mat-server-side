@@ -1,12 +1,9 @@
 package com.pjf.mat.test;
 
-import java.util.Properties;
-
 import com.pjf.marketsim.EventFeed;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
-import com.pjf.mat.sys.MatSystemLoader;
 
 public class MatAdx16 extends MatSystem {
 
@@ -17,18 +14,18 @@ public class MatAdx16 extends MatSystem {
 	
 	@Override
 	protected void configure(MatApi mat) throws Exception {
-		Properties p = loadProperties("resources/matAdx16.matdef");
-		MatSystemLoader loader = new MatSystemLoader(p);
-		loader.initialize(mat);
+//		MatProperties p = loadProperties("resources/matAdx16.matdef");
+//		MatSystemLoader loader = new MatSystemLoader(p);
+//		loader.initialize(mat);
 		
-		Element mfd = mat.getElement(15);
-		Element ema_p = mat.getElement(3);
-		Element ema_q = mat.getElement(4);
-		Element ema_s = mat.getElement(5);
-		Element a4ip_macd = mat.getElement(9);
-		Element a4ip_hist = mat.getElement(10);
-		Element lgr = mat.getElement(1);
-		Element hloc = mat.getElement(12);
+		Element mfd = mat.getModel().getElement(15);
+		Element ema_p = mat.getModel().getElement(3);
+		Element ema_q = mat.getModel().getElement(4);
+		Element ema_s = mat.getModel().getElement(5);
+		Element a4ip_macd = mat.getModel().getElement(9);
+		Element a4ip_hist = mat.getModel().getElement(10);
+		Element lgr = mat.getModel().getElement(1);
+		Element hloc = mat.getModel().getElement(12);
 
 		// configure element attributes
 		mfd.getAttribute("udp listen port").setValue("15000");

@@ -14,13 +14,13 @@ public class Mat8 extends MatSystem {
 	
 	@Override
 	protected void configure(MatApi mat) throws Exception {
-		Element mfd = mat.getElement(7);
-		Element ema_p = mat.getElement(2);
-		Element ema_q = mat.getElement(3);
-		Element ema_s = mat.getElement(4);
-		Element a4ip_macd = mat.getElement(5);
-		Element a4ip_hist = mat.getElement(6);
-		Element lgr = mat.getElement(1);
+		Element mfd = mat.getModel().getElement(7);
+		Element ema_p = mat.getModel().getElement(2);
+		Element ema_q = mat.getModel().getElement(3);
+		Element ema_s = mat.getModel().getElement(4);
+		Element a4ip_macd = mat.getModel().getElement(5);
+		Element a4ip_hist = mat.getModel().getElement(6);
+		Element lgr = mat.getModel().getElement(1);
 
 		// configure element attributes
 		mfd.getAttribute("udp listen port").setValue("15000");

@@ -4,9 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 /** @model */
-public interface Element {
-	/** @model */
-	public int getId();
+public interface Element extends Item {
 	/** @model */
 	public String getType();
 	/** @model */

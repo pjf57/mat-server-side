@@ -164,7 +164,7 @@ public abstract class BaseComms implements Comms {
 	protected void processNewStatusUpdate(int id, String type,
 			String basisState, int intState, int evtCount) {
 		
-		Element element = mat.getElement(id);
+		Element element = mat.getModel().getElement(id);
 		String srcName = "unknown";
 		if (element != null) {			
 			srcName = element.getType();
@@ -194,7 +194,7 @@ public abstract class BaseComms implements Comms {
 			upto+=2;
 			OutputPort op = null;
 			if (src > 0  &&  mat != null) {
-				Element el = mat.getElement(src);
+				Element el = mat.getModel().getElement(src);
 				if (el != null) {
 					if (el.getOutputs().size() > 0) {
 						op = el.getOutputs().get(0);
@@ -210,7 +210,7 @@ public abstract class BaseComms implements Comms {
 				float fval = Float.intBitsToFloat(data);
 				value = Float.toString(fval);
 			}
-			Element srcElement = mat.getElement(src);
+			Element srcElement = mat.getModel().getElement(src);
 			String srcName = "unknown";
 			if (srcElement != null) {
 				srcName = srcElement.getType();

@@ -1,19 +1,13 @@
 package com.pjf.mat.api;
 
-import java.util.Collection;
-
 import javax.net.ssl.SSLEngineResult.Status;
 
 /** @model */
 public interface MatApi {	
-	/** 
-	 * @model type="Element" containment="true" 
-	 */
-	public Collection<Element> getElements();	// return collection of mutable elements
 	/**
 	 * @model
 	 */
-	public Element getElement(int id);			// return element for this id or null
+	public MatModel getModel();					// access the model	
 	/**
 	 * @model
 	 */
@@ -26,10 +20,6 @@ public interface MatApi {
 	 * @model 
 	 */
 	public Status getHWStatus();				// get status from HW
-	/**
-	 * @model 
-	 */
-	public long getSWSignature();
 	/**
 	 * @model 
 	 */

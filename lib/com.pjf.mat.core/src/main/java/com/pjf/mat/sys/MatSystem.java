@@ -11,7 +11,7 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.impl.MatInterface;
-import com.pjf.mat.impl.MatHardwareModel;
+import com.pjf.mat.impl.MatInterfaceModel;
 
 public abstract class MatSystem {
 	protected final static Logger logger = Logger.getLogger(MatSystem.class);
@@ -84,10 +84,10 @@ public abstract class MatSystem {
 			comms = new UDPComms("192.168.0.9",2000);
 		}
 		comms.addNotificationSubscriber(new NotificationHandler());
-		MatHardwareModel model = new MatHardwareModel(props);
-		mat = new MatInterface(props,comms,model);
+		MatInterfaceModel model = new MatInterfaceModel(props);
+		mat = new MatInterface(comms,model);
 		comms.setMat(mat);
-//		mat.checkHWSignature();
+		mat.checkHWSignature();
 		if (System.getProperty("dummy") == null) {
 			feed = new EventFeed(comms.getCxn(),15000);
 		}
@@ -121,7 +121,7 @@ public abstract class MatSystem {
 
 
 	protected void sendCmd(int elId, String cmdName) {
-		Element el = mat.getElement(elId);
+		Element el = mat.getModel().getElement(elId);
 		if (el != null) {
 			Cmd cmd = el.getCmds().get(0);
 			mat.sendCmd(cmd);

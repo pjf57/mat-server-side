@@ -203,7 +203,6 @@ type9.output1.type=float
 type10.id=10
 type10.name=ADX:98
 type10.attr1.id=3
-type10.attr1.id=3
 type10.attr1.name=PDN EMA alpha
 type10.attr1.type=float
 type10.attr1.config=3
@@ -233,3 +232,8 @@ type10.input1.type=float
 type10.output1.id=0
 type10.output1.name=output
 type10.output1.type=float
+
+type11.id=11
+type11.background.type=gradient
+type11.background.start=FFFF00
+type11.background.end=FF4040

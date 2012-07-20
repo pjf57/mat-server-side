@@ -11,6 +11,7 @@ import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
+import com.pjf.mat.api.MatModel;
 import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.impl.element.BasicCmd;
 import com.pjf.mat.impl.element.BasicElement;
@@ -24,25 +25,40 @@ import com.pjf.mat.impl.element.IntegerOutputPort;
 import com.pjf.mat.impl.element.StringAttribute;
 
 
-public class MatHardwareModel {
-	private final static Logger logger = Logger.getLogger(MatHardwareModel.class);
+public class MatInterfaceModel implements MatModel {
+	private final static Logger logger = Logger.getLogger(MatInterfaceModel.class);
 	protected final Properties props;
 	protected Map<Integer,Element> elements;	// holds the actual configured elements
 	protected Map<String,Element> types;		// holds the different element types (key=type)
 	
-	public MatHardwareModel(Properties props) throws Exception {
+	public MatInterfaceModel(Properties props) throws Exception {
 		this.props = props;
 		elements = new HashMap<Integer,Element>();
 		types = new HashMap<String,Element>();	
 		initialise();
 	}
 
+	@Override
 	public Collection<Element> getElements() {
 		return elements.values();
 	}
 
+	@Override
+	public Element getType(String typeName) {
+		if (types.containsKey(typeName)) {
+			return types.get(typeName);
+		}
+		return null;
+	}
 
-//	@Override
+	@Override
+	public MatModel copy() throws Exception {
+		Properties p = new Properties(props);
+		MatInterfaceModel copy = new MatInterfaceModel(p);
+		return copy;
+	}
+
+	@Override
 	public Element getElement(int id) {
 		return elements.get(new Integer(id));
 	}
@@ -245,6 +261,11 @@ public class MatHardwareModel {
 			d *= 2;
 			}
 		return crc;
+	}
+
+	@Override
+	public Properties getProperties() {
+		return this.props;
 	}
 
 }

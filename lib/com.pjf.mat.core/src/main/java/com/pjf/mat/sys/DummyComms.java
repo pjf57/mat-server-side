@@ -37,8 +37,8 @@ public class DummyComms extends BaseComms implements Comms {
 				while (keepGoing) {
 					Thread.sleep(pause);
 					// generate some random element to use
-					int el_id = rng.nextInt(mat.getElements().size());
-					Element el = mat.getElement(el_id);
+					int el_id = rng.nextInt(mat.getModel().getElements().size());
+					Element el = mat.getModel().getElement(el_id);
 					// get random basis state, el state, and count update
 					int bstate = rng.nextInt(4) + 1;
 					int estate = rng.nextInt(9) + 1;
@@ -94,7 +94,7 @@ public class DummyComms extends BaseComms implements Comms {
 				while (keepGoing) {
 					Thread.sleep(pause);
 					// generate some random element to use
-					int el_id = rng.nextInt(mat.getElements().size());
+					int el_id = rng.nextInt(mat.getModel().getElements().size());
 					// get random instrument and event data
 					int instr = rng.nextInt(255) + 1;
 					int data = rng.nextInt(32767);
@@ -177,7 +177,7 @@ public class DummyComms extends BaseComms implements Comms {
 
 	@Override
 	public long getHWSignature() throws Exception {
-		return mat.getSWSignature();
+		return mat.getModel().getSWSignature();
 	}
 
 }
