@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.pjf.mat.util.comms.UDPCxn;
+
+
 public class UDPTest {
 	private UDPCxn cxn;
 	

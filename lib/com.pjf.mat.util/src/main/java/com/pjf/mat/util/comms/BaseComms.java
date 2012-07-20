@@ -1,4 +1,4 @@
-package com.pjf.mat.sys;
+package com.pjf.mat.util.comms;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,37 +10,18 @@ import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.MatApi;
+import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.api.Status;
-import com.pjf.mat.impl.MatInterface;
-import com.pjf.mat.impl.element.ElementStatus;
-import com.pjf.mat.impl.util.Conversion;
-import com.pjf.udp.UDPCxn;
+import com.pjf.mat.util.Conversion;
+import com.pjf.mat.util.ElementStatus;
 
 public abstract class BaseComms implements Comms {
 	private final static Logger logger = Logger.getLogger(BaseComms.class);
 	
 	protected MatApi mat;
 	protected Collection<NotificationCallback> notificationSubscribers;
-
-	// configuration values
-//	protected final byte EL_C_RESET = 0;
-	protected final byte EL_C_SRC_ROUTE = 1;	// xxxx xxxx xxxI xxSS (for source SS on input I)
-	protected final byte EL_C_CFG_DONE = 2;	// config is done
-
-	// incoming message types
-	protected final byte ST_TX_STATUS = 1;	// status report
-//	protected final byte ST_TX_CONFIG = 2;	// config report
-	protected final byte ST_TX_EVTLOG = 3;	// request to log an event
-
-	// element type IDSs
-	protected final byte EL_TYP_EMA 			= 0x10;
-	protected final byte EL_TYP_TG1 			= 0x20;
-	protected final byte EL_TYP_LOG 			= 0x30;
-	protected final byte EL_TYP_LOGIC_4IP 		= 0x40;
-	protected final byte EL_TYP_ARITH_4IP 		= 0x41;
-	protected final byte EL_TYP_UDP_RAW_MKT 	= 0x50;
 
 	// basis states
 	protected final byte BS_INIT	= 1;
@@ -52,7 +33,7 @@ public abstract class BaseComms implements Comms {
 		notificationSubscribers = new ArrayList<NotificationCallback>();
 	}
 	
-	public void setMat(MatInterface mat) {
+	public void setMat(MatApi mat) {
 		this.mat = mat;
 	}
 	
@@ -114,8 +95,8 @@ public abstract class BaseComms implements Comms {
 	protected void processIncomingMsg(byte[] msg) {
 		byte cmd = msg[0];
 		switch (cmd) {
-		case ST_TX_STATUS: processStatusMsg(msg);	break;
-		case ST_TX_EVTLOG: processEventLogMsg(msg); break;
+		case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg);	break;
+		case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg); break;
 		default: logger.error("Unkown status message received: [" + Conversion.toHexString(msg)); break;
 		}
 	}
@@ -139,12 +120,12 @@ public abstract class BaseComms implements Comms {
 			upto += 4;
 			String typeStr = "";
 			switch(type) {
-			case EL_TYP_TG1			: typeStr = "TG1";							break;
-			case EL_TYP_EMA			: typeStr = "EMA";							break;
-			case EL_TYP_LOG			: typeStr = "LOGGER";						break;
-			case EL_TYP_LOGIC_4IP	: typeStr = "Logic_4IP";					break;
-			case EL_TYP_ARITH_4IP	: typeStr = "Arith_4IP";					break;
-			case EL_TYP_UDP_RAW_MKT	: typeStr = "UDPrawMKT";					break;
+			case MatElementDefs.EL_TYP_TG1			: typeStr = "TG1";			break;
+			case MatElementDefs.EL_TYP_EMA			: typeStr = "EMA";			break;
+			case MatElementDefs.EL_TYP_LOG			: typeStr = "LOGGER";		break;
+			case MatElementDefs.EL_TYP_LOGIC_4IP	: typeStr = "Logic_4IP";	break;
+			case MatElementDefs.EL_TYP_ARITH_4IP	: typeStr = "Arith_4IP";	break;
+			case MatElementDefs.EL_TYP_UDP_RAW_MKT	: typeStr = "UDPrawMKT";	break;
 			default					: typeStr = "unknown(" + type + ")";		break;
 			}
 			String basisStateStr = "";
@@ -192,35 +173,47 @@ public abstract class BaseComms implements Comms {
 			int src = msg[upto++];
 			int instrId = msg[upto++];
 			upto+=2;
-			OutputPort op = null;
-			if (src > 0  &&  mat != null) {
-				Element el = mat.getModel().getElement(src);
-				if (el != null) {
-					if (el.getOutputs().size() > 0) {
-						op = el.getOutputs().get(0);
-					}
-				}
-			}
 			int data = Conversion.getIntFromBytes(msg,upto,4);
 			upto +=4;
-			String value = "undefined";
-			if (op != null) {
-				value = op.dataToString(data);
-			} else {
-				float fval = Float.intBitsToFloat(data);
-				value = Float.toString(fval);
-			}
-			Element srcElement = mat.getModel().getElement(src);
-			String srcName = "unknown";
-			if (srcElement != null) {
-				srcName = srcElement.getType();
-			}
-			logger.debug("Event from element=" + src + ":" + srcName + " InstrId=" + instrId + " val=" + value);
-			for (NotificationCallback subscriber : notificationSubscribers) {
-				subscriber.notifyEventLog(srcElement, instrId, data, value);
-			}
+			notifyEvent(src, instrId, data);
 		}		
 	}
+
+	/**
+	 * Notify subscribers of new event
+	 * 
+	 * @param src
+	 * @param instrId
+	 * @param data
+	 */
+	protected void notifyEvent(int src, int instrId, int data) {
+		OutputPort op = null;
+		if (src > 0  &&  mat != null) {
+			Element el = mat.getElement(src);
+			if (el != null) {
+				if (el.getOutputs().size() > 0) {
+					op = el.getOutputs().get(0);
+				}
+			}
+		}
+		String value = "undefined";
+		if (op != null) {
+			value = op.dataToString(data);
+		} else {
+			float fval = Float.intBitsToFloat(data);
+			value = Float.toString(fval);
+		}
+		Element srcElement = mat.getElement(src);
+		String srcName = "unknown";
+		if (srcElement != null) {
+			srcName = srcElement.getType();
+		}
+		logger.debug("Event from element=" + src + ":" + srcName + " InstrId=" + instrId + " val=" + value);
+		for (NotificationCallback subscriber : notificationSubscribers) {
+			subscriber.notifyEventLog(srcElement, instrId, data, value);
+		}
+	}
+	
 
 	/**
 	 * 		Encodes the configuration for an item into a byte array comprising
@@ -242,11 +235,11 @@ public abstract class BaseComms implements Comms {
 		for (InputPort ip : el.getInputs()) {
 			if (ip.getConnectedSrc() != null) {
 				int val = ((ip.getId()-1) << 8) | ip.getConnectedSrc().getParent().getId();
-				cfg.put(el.getId(), EL_C_SRC_ROUTE, val);
+				cfg.put(el.getId(), MatElementDefs.EL_C_SRC_ROUTE, val);
 			}
 		}		
 		// put config done for this element
-		cfg.put(el.getId(), EL_C_CFG_DONE, 0);
+		cfg.put(el.getId(), MatElementDefs.EL_C_CFG_DONE, 0);
 	}
 
 

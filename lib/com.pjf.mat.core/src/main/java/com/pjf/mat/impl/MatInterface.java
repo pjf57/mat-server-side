@@ -11,6 +11,11 @@ import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatModel;
+import com.pjf.mat.util.attr.StringAttribute;
+import com.pjf.mat.util.attr.FloatAttribute;
+import com.pjf.mat.util.attr.HexAttribute;
+import com.pjf.mat.util.attr.IntegerAttribute;
+
 
 
 public class MatInterface implements MatApi {

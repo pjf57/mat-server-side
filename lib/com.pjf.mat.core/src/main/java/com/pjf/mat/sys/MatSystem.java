@@ -12,10 +12,14 @@ import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
+import com.pjf.mat.sim.MatSim;
+import com.pjf.mat.util.comms.BaseComms;
+
 
 public abstract class MatSystem {
 	protected final static Logger logger = Logger.getLogger(MatSystem.class);
 	private MatInterface mat = null;
+	private MatSim sim = null;
 	private EventFeed feed;
 
 	class NotificationHandler implements NotificationCallback {
@@ -59,10 +63,11 @@ public abstract class MatSystem {
 	/** 
 	 * Template method to send data to the HW
 	 * 
+	 * @param mat
 	 * @param feed
 	 * @throws Exception
 	 */
-	protected void sendTradeBurst(EventFeed feed) throws Exception {
+	protected void sendTradeBurst(MatApi mat, EventFeed feed) throws Exception {
 		if (feed != null) {
 			feed.sendTradeBurst("resources/GLP_27667_1.csv",20,10,1);
 		}
@@ -78,7 +83,10 @@ public abstract class MatSystem {
 	protected void init(String propsResource) throws Exception {
 		Properties props = loadProperties(propsResource);
 		BaseComms comms;
-		if (System.getProperty("dummy") != null) {
+		if (System.getProperty("sim") != null) {
+			sim = new MatSim();
+			comms = sim;
+		} else if (System.getProperty("dummy") != null) {
 			comms = new DummyComms();
 		} else {
 			comms = new UDPComms("192.168.0.9",2000);
@@ -87,8 +95,12 @@ public abstract class MatSystem {
 		MatInterfaceModel model = new MatInterfaceModel(props);
 		mat = new MatInterface(comms,model);
 		comms.setMat(mat);
+		if (sim != null) {
+			// transfer config data into simulator
+			sim.init(mat.getElements());
+		}
 		mat.checkHWSignature();
-		if (System.getProperty("dummy") == null) {
+		if (feed != null) {
 			feed = new EventFeed(comms.getCxn(),15000);
 		}
 	}
@@ -97,7 +109,7 @@ public abstract class MatSystem {
 		logger.info("-----");	reqStatus(); Thread.sleep(500);
 		configure(mat);
 		logger.info("-----");	reqStatus(); Thread.sleep(500);
-		sendTradeBurst(feed);
+		sendTradeBurst(mat,feed);
 		logger.info("-----");	reqStatus(); Thread.sleep(500);
 		Thread.sleep(1000);
 	}

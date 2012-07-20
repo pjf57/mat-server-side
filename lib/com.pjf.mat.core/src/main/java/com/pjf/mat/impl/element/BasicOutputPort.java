@@ -2,7 +2,8 @@ package com.pjf.mat.impl.element;
 
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.OutputPort;
-import com.pjf.mat.impl.util.Conversion;
+import com.pjf.mat.util.Conversion;
+
 
 public class BasicOutputPort implements OutputPort {
 	protected final int id;

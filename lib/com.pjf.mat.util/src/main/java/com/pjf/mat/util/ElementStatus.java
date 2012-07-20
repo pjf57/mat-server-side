@@ -1,10 +1,12 @@
-package com.pjf.mat.impl.element;
+package com.pjf.mat.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.util.attr.IntegerAttribute;
+import com.pjf.mat.util.attr.StringAttribute;
 
 public class ElementStatus implements Status{
 	private String basis_state;					// state of basis of element

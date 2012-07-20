@@ -22,8 +22,8 @@ Laurent Mihalkovic - Maven support & editor
     <relativePath>../</relativePath>
   </parent>
 
-  <name>MAT Core</name>
-  <artifactId>com.pjf.mat.core</artifactId>
+  <name>MAT Sim</name>
+  <artifactId>com.pjf.mat.sim</artifactId>
   <packaging>jar</packaging>
 
   <dependencies>
@@ -34,17 +34,12 @@ Laurent Mihalkovic - Maven support & editor
   	</dependency>
   	<dependency>
   		<groupId>${project.groupId}</groupId>
-  		<artifactId>com.pjf.mat.model</artifactId>
-  		<version>${project.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>${project.groupId}</groupId>
-  		<artifactId>com.pjf.mat.sim</artifactId>
-  		<version>${project.version}</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>${project.groupId}</groupId>
   		<artifactId>com.pjf.mat.util</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>${project.groupId}</groupId>
+  		<artifactId>com.pjf.mat.model</artifactId>
   		<version>${project.version}</version>
   	</dependency>
   </dependencies>
