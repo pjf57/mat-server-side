@@ -97,7 +97,7 @@ public abstract class MatSystem {
 		comms.setMat(mat);
 		if (sim != null) {
 			// transfer config data into simulator
-			sim.init(mat.getElements());
+			sim.init(mat.getModel().getElements());
 		}
 		mat.checkHWSignature();
 		if (feed != null) {

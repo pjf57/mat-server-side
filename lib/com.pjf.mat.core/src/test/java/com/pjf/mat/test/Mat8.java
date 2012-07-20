@@ -54,7 +54,7 @@ public class Mat8 extends MatSystem {
 	}
 
 	@Override
-	protected void sendTradeBurst(EventFeed feed) throws Exception {
+	protected void sendTradeBurst(MatApi mat, EventFeed feed) throws Exception {
 		feed.sendTradeBurst("resources/GLP_27667_2.csv",10,20,1);
 	}
 

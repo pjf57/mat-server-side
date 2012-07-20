@@ -24,4 +24,6 @@ public interface MatApi {
 	 * @model 
 	 */
 	public void checkHWSignature() throws Exception;
+	
+	public long getSWSignature();
 }

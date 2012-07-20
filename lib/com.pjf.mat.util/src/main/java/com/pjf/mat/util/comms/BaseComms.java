@@ -189,7 +189,7 @@ public abstract class BaseComms implements Comms {
 	protected void notifyEvent(int src, int instrId, int data) {
 		OutputPort op = null;
 		if (src > 0  &&  mat != null) {
-			Element el = mat.getElement(src);
+			Element el = mat.getModel().getElement(src);
 			if (el != null) {
 				if (el.getOutputs().size() > 0) {
 					op = el.getOutputs().get(0);
@@ -203,7 +203,7 @@ public abstract class BaseComms implements Comms {
 			float fval = Float.intBitsToFloat(data);
 			value = Float.toString(fval);
 		}
-		Element srcElement = mat.getElement(src);
+		Element srcElement = mat.getModel().getElement(src);
 		String srcName = "unknown";
 		if (srcElement != null) {
 			srcName = srcElement.getType();

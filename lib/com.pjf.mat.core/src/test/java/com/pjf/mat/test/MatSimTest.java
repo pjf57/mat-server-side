@@ -15,12 +15,12 @@ public class MatSimTest extends MatSystem {
 	
 	@Override
 	protected void configure(MatApi mat) throws Exception {
-		Element tg1 = mat.getElement(2);
-		Element lgr = mat.getElement(1);
-		Element ema1 = mat.getElement(3);
-		Element hloc = mat.getElement(4);
-		Element atr = mat.getElement(5);
-		Element adx = mat.getElement(6);
+		Element tg1 = mat.getModel().getElement(2);
+		Element lgr = mat.getModel().getElement(1);
+		Element ema1 = mat.getModel().getElement(3);
+		Element hloc = mat.getModel().getElement(4);
+		Element atr = mat.getModel().getElement(5);
+		Element adx = mat.getModel().getElement(6);
 
 		// configure element attributes
 		tg1.getAttribute("len").setValue("100");
