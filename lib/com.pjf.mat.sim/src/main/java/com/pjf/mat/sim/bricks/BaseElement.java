@@ -16,6 +16,7 @@ import com.pjf.mat.sim.types.Event;
 
 public abstract class BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(BaseElement.class);
+	protected static final int LOOKUP_TIMEOUT_DLY = 5;	// microtick delay on lookup tmo
 	protected final int elementId;
 	protected final int elementHWType;
 	protected final SimHost host;
@@ -178,6 +179,6 @@ public abstract class BaseElement implements SimElement {
 	@Override
 	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
 		// default behaviour is timeout
-		return new LookupResult(elementId,LookupValidity.TIMEOUT);
+		return new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 	}
 }

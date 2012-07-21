@@ -46,6 +46,7 @@ import com.pjf.mat.util.Conversion;
  */
 public class L4IP extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(L4IP.class);
+	private static final int LATENCY = 5;	// input to output latency (microticks)
 	private int c_cf1;			// p = fn(a,x)
 	private int c_cf2;			// q = fn(c,y)
 	private int c_xsel;			// x = b or K1
@@ -94,7 +95,7 @@ public class L4IP extends BaseElement implements SimElement {
 		BooleanValue z = lop(c_lop,p,q);
 		if (z.isValid()){ 
 			Event evtOut = new Event(elementId,instr,z.getRawData());
-			host.publishEvent(evtOut);
+			host.publishEvent(evtOut,LATENCY);
 		}
 	}
 

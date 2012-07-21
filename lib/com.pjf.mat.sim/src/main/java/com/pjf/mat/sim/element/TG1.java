@@ -20,6 +20,7 @@ import com.pjf.mat.sim.types.Event;
  */
 public class TG1 extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(TG1.class);
+	private static final int LATENCY = 0;	// input to output latency (microticks)
 	private float c_iv;			// initial value
 	private float c_p1;			// parameter #1
 	private int c_len;			// length of pattern before stop
@@ -71,7 +72,7 @@ public class TG1 extends BaseElement implements SimElement {
 			if (gapCntr == 0) {
 				// send event
 				Event evt = new Event(elementId, instrumentId, data);
-				host.publishEvent(evt);
+				host.publishEvent(evt,LATENCY);
 				gapCntr = c_gap;
 				data += c_p1;
 				lenCntr--;

@@ -2,13 +2,20 @@ package com.pjf.mat.sim.model;
 
 import com.pjf.mat.sim.types.Event;
 
+/**
+ * Interface for providing sim services to elemtns
+ * 
+ * @author pjf
+ *
+ */
 public interface SimHost {
 	/**
 	 * Inject an event into the system
 	 * 
 	 * @param evt
+	 * @param latency - # microticks model time from input to this event
 	 */
-	public void publishEvent(Event evt);
+	public void publishEvent(Event evt, int latency);
 	
 	/**
 	 * push an event log into the system for logging
@@ -30,12 +37,6 @@ public interface SimHost {
 	 */
 	public void publishElementStatusUpdate(int elementId, String type,
 			String basisState, int intState, int evtCount);
-
-	/**
-	 * Publish a clock tick
-	 * @param tick
-	 */
-	public void publishClockTick(ClockTick tick);
 
 	/**
 	 * Indicate that an error has occurred

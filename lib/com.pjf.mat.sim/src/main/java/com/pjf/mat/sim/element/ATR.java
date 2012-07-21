@@ -27,6 +27,8 @@ import com.pjf.mat.sim.types.FloatValue;
  */
 public class ATR extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(ATR.class);
+	private static final int LOOKUP_DLY = 2;	// lookup delay, microticks
+	private static final int LATENCY = 36;	// input to output latency (microticks)
 	private float c_alpha;			// exp coefficient
 	private int c_len;				// length of sequence
 	private boolean c_ipHasCloseN1;	// indicates if input has close(N-1) value
@@ -79,7 +81,7 @@ public class ATR extends BaseElement implements SimElement {
 			if (output.isValid()) {
 				atrStore.put(output.getValue(), instr);
 				Event evtOut = new Event(elementId,instr,output.getValue());
-				host.publishEvent(evtOut);
+				host.publishEvent(evtOut,LATENCY);
 			}
 		}
 	}
@@ -87,10 +89,10 @@ public class ATR extends BaseElement implements SimElement {
 
 	@Override
 	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
-		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT);
+		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		switch (lookupKey) {
 		case MatElementDefs.EL_ATR_L_ATR:
-			result = new LookupResult(elementId,atrStore.get(instrumentId)); break;
+			result = new LookupResult(elementId,atrStore.get(instrumentId),LOOKUP_DLY); break;
 		}
 		return result;
 	}

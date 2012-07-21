@@ -34,6 +34,8 @@ import com.pjf.mat.sim.types.FloatValue;
  */
 public class HLOC extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(HLOC.class);
+	private static final int LOOKUP_DLY = 2;	// lookup delay, microticks
+	private static final int LATENCY = 0;	// input to output latency (microticks)
 	private int c_period;			// num ticks in period (int)
 	private int c_opMetric;			// metric to use for data in output events (lku req)
 	private int c_throttle;			// min # (8ns) clks between outputs
@@ -111,7 +113,7 @@ public class HLOC extends BaseElement implements SimElement {
 							logger.debug(getIdStr() + "Emit instr=" + instr + "/" + val);
 							if (val.isValid()) {
 								Event evt = new Event(elementId,instr,val.getRawData());
-								host.publishEvent(evt);
+								host.publishEvent(evt,LATENCY);
 								// wait for throttle period
 								// TODO - this is not really well timed cf hardware
 								Thread.sleep(c_throttle);
@@ -238,10 +240,10 @@ public class HLOC extends BaseElement implements SimElement {
 	
 	@Override
 	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
-		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT);
+		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		FloatValue data = getHLOCData(instrumentId,lookupKey);
 		if (data != null) {
-			result = new LookupResult(elementId,data);
+			result = new LookupResult(elementId,data,LOOKUP_DLY);
 		}
 		return result;
 	}

@@ -3,36 +3,48 @@ package com.pjf.mat.sim;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.sim.model.ClockTick;
-import com.pjf.mat.sim.model.SimHost;
+import com.pjf.mat.sim.model.SimAccess;
+import com.pjf.mat.sim.model.SimTime;
 
 public class Clock extends Thread implements ClockTick{
 	private final static Logger logger = Logger.getLogger(Clock.class);
-	private SimHost host;
+	private final int TICK_RATIO = 10;	// # microticks per tick
+	private SimAccess host;
+	private SimTime simTime;
 	private int timestamp;
-	private int period;
+	private int counter;
 	private boolean shutdown;
 	
-	public Clock(SimHost host, int periodMs) {
+	public Clock(SimAccess host) {
 		this.setName("Clock");
 		this.host = host;
 		timestamp = 0;
-		this.period = periodMs;
+		counter = 0;
 		shutdown = false;
+	}
+	
+	public SimTime getSimTime() {
+		return simTime;
 	}
 	
 	@Override
 	public void run() {
 		while (!shutdown) {
-			try {
-				Thread.sleep(period);
-			} catch (InterruptedException e) {
-				// ignore
-			}
-			timestamp = (timestamp + 1) & 0xffff;
-			logger.debug("Tick - " + timestamp);
-			host.publishClockTick(this);  
+			processMicroTick();
 		}
 		logger.info("Shutdown.");
+	}
+
+	private void processMicroTick() {
+		simTime.add(1);		// count another microtick in the sim time
+		host.publishMicroTick(simTime);
+		counter++;
+		if (counter >= TICK_RATIO) {
+			counter = 0;
+			timestamp = (timestamp + 1) & 0xffff;
+			logger.debug("processMicroTick() - Tick - " + timestamp);
+			host.publishClockTick(this);  
+		}
 	}
 
 	@Override
@@ -44,4 +56,5 @@ public class Clock extends Thread implements ClockTick{
 		logger.debug("Shutting down ...");
 		shutdown = true;
 	}
+
 }
