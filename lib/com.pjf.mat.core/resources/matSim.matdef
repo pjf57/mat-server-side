@@ -1,0 +1,63 @@
+#Sat Jul 14 21:52:47 CEST 2012
+diagram.hw.id=mat.properties.sim
+diagram.hw.sig=0xEB22E8B623
+diagram.title=MAT Simulator Test
+
+diagram.element.1.name=Logger
+diagram.element.1.type=LOGGER
+diagram.element.1.loc.x=504
+diagram.element.1.loc.y=396
+diagram.element.1.in.1=6.out.0
+
+diagram.element.2.name=tg1
+diagram.element.2.type=TG1
+diagram.element.2.loc.x=36
+diagram.element.2.loc.y=144
+diagram.element.2.prop.len=100
+diagram.element.2.prop.gap=1
+diagram.element.2.prop.initial value=50
+diagram.element.2.prop.p1=0.25
+
+diagram.element.3.name=ema1
+diagram.element.3.type=EMA
+diagram.element.3.loc.x=72
+diagram.element.3.loc.y=348
+diagram.element.3.prop.len=3
+diagram.element.3.prop.alpha=0.5
+
+diagram.element.4.name=hloc
+diagram.element.4.type=HLOC
+diagram.element.4.loc.x=276
+diagram.element.4.loc.y=36
+diagram.element.4.in.0=2.out.0
+diagram.element.4.prop.period=10
+diagram.element.4.prop.metric=11
+diagram.element.4.prop.throttle=0
+
+diagram.element.5.name=atr
+diagram.element.5.type=ATR
+diagram.element.5.loc.x=528
+diagram.element.5.loc.y=36
+diagram.element.5.in.0=4.out.0
+diagram.element.5.prop.len=3
+diagram.element.5.prop.alpha=0.5
+diagram.element.5.prop.IP_Has_Close(N-1)=1
+
+diagram.element.6.name=adx
+diagram.element.6.type=ADX
+diagram.element.6.loc.x=372
+diagram.element.6.loc.y=240
+diagram.element.6.in.0=4.out.0
+diagram.element.6.prop.PDN EMA len=3
+diagram.element.6.prop.PDN EMA alpha=0.5
+diagram.element.6.prop.NDN EMA len=3
+diagram.element.6.prop.NDN EMA alpha=0.5
+diagram.element.6.prop.ADX EMA len=3
+diagram.element.6.prop.ADX EMA alpha=0.5
+
+diagram.element.20.name=note
+diagram.element.20.type=NOTE
+diagram.element.20.loc.x=696
+diagram.element.20.loc.y=12
+diagram.element.20.prop.contents=MAT Simulator Configuration
+

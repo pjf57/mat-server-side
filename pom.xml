@@ -21,7 +21,7 @@
 
 	<name>MAT Parent</name>
 	<groupId>com.pjf.mat</groupId>
-	<artifactId>mat</artifactId>
+	<artifactId>mat-parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	

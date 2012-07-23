@@ -23,8 +23,8 @@ diagram.title=MAT Adx16 Test
 
 diagram.element.1.name=Logger
 diagram.element.1.type=LOGGER
-diagram.element.1.loc.x=24.452744503838264
-diagram.element.1.loc.y=103.71146868719303
+diagram.element.1.loc.x=550
+diagram.element.1.loc.y=168
 diagram.element.1.in.0=15.out.0
 diagram.element.1.in.1=9.out.0
 diagram.element.1.in.2=10.out.0
@@ -32,48 +32,48 @@ diagram.element.1.in.3=12.out.0
 
 diagram.element.3.name=ema_p
 diagram.element.3.type=EMA
-diagram.element.3.loc.x=243.7299773013611
-diagram.element.3.loc.y=186.23286805076847
+diagram.element.3.loc.x=48
+diagram.element.3.loc.y=104
 diagram.element.3.in.0=15.out.0
 diagram.element.3.prop.len=7
 diagram.element.3.prop.alpha=0.25
 
 diagram.element.4.name=ema_q
 diagram.element.4.type=EMA
-diagram.element.4.loc.x=395.9223372204311
-diagram.element.4.loc.y=202.4689381060706
+diagram.element.4.loc.x=216
+diagram.element.4.loc.y=144
 diagram.element.4.in.0=15.out.0
 diagram.element.4.prop.len=3
 diagram.element.4.prop.alpha=0.5
 
 diagram.element.5.name=ema_s
 diagram.element.5.type=EMA
-diagram.element.5.loc.x=133.35397938571677
-diagram.element.5.loc.y=148.70236442883913
+diagram.element.5.loc.x=180
+diagram.element.5.loc.y=444
 diagram.element.5.in.0=9.out.0
 diagram.element.5.prop.len=5
 diagram.element.5.prop.alpha=0.333333
 
 diagram.element.9.name=a4i_macd
 diagram.element.9.type=L4IP
-diagram.element.9.loc.x=120
-diagram.element.9.loc.y=330
+diagram.element.9.loc.x=84
+diagram.element.9.loc.y=288
 diagram.element.9.in.0=3.out.0
 diagram.element.9.in.1=4.out.0
 diagram.element.9.prop.oper=3000		#	// Z = A - B
 
 diagram.element.10.name=a4i_hist
 diagram.element.10.type=L4IP
-diagram.element.10.loc.x=220
-diagram.element.10.loc.y=330
+diagram.element.10.loc.x=468
+diagram.element.10.loc.y=384
 diagram.element.10.in.0=9.out.0
 diagram.element.10.in.1=5.out.0
 diagram.element.10.prop.oper=3000 		#	// Z = A - B
 
 diagram.element.12.name=hloc
 diagram.element.12.type=A4IP
-diagram.element.12.loc.x=663.493928135025
-diagram.element.12.loc.y=273.93504193103684
+diagram.element.12.loc.x=516
+diagram.element.12.loc.y=21
 diagram.element.12.in.0=15.out.0
 diagram.element.12.prop.period=10000	#  100us
 diagram.element.12.prop.metric=4		# High(N)
@@ -81,8 +81,8 @@ diagram.element.12.prop.throttle=1
 
 diagram.element.15.name=mfd
 diagram.element.15.type=UDP_RAW_MFD
-diagram.element.15.loc.x=686.7901298007002
-diagram.element.15.loc.y=25.57219619585709
+diagram.element.15.loc.x=167
+diagram.element.15.loc.y=12
 diagram.element.15.prop.udp listen port=15000
 diagram.element.15.prop.price_op=0
 diagram.element.15.prop.volume_op=f
@@ -90,7 +90,7 @@ diagram.element.15.prop.mdtype=1
 
 diagram.element.20.name=note
 diagram.element.20.type=NOTE
-diagram.element.20.loc.x=143.81385729354022
-diagram.element.20.loc.y=350.937478154032
+diagram.element.20.loc.x=696
+diagram.element.20.loc.y=12
 diagram.element.20.prop.contents=This is a longish note to be displayed on the diagram somewhere
 

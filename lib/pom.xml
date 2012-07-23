@@ -52,14 +52,12 @@
 		<module>com.pjf.mat.model</module>
 		<module>com.pjf.mat.sim</module>
 		<module>com.pjf.mat.util</module>
-		<module>bundle</module>
-<!--
--->
+		<module>com.pjf.mat.bundle</module>
 	</modules>
 
 	<parent>
 		<groupId>com.pjf.mat</groupId>
-		<artifactId>mat</artifactId>
+		<artifactId>mat-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>

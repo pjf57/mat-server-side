@@ -22,8 +22,8 @@ Contributors:
     <relativePath>../</relativePath>
   </parent>
 
-  <name>MAT Library Bundle</name>
-  <artifactId>lib</artifactId>
+  <name>MAT Library OSGI Bundle</name>
+  <artifactId>com.pjf.mat.bundle</artifactId>
   <packaging>bundle</packaging>
 
   <dependencies>
@@ -43,6 +43,16 @@ Contributors:
   		<artifactId>com.pjf.mat.core</artifactId>
   		<version>${project.version}</version>
   	</dependency>  	
+  	<dependency>
+  		<groupId>com.pjf.mat</groupId>
+  		<artifactId>com.pjf.mat.sim</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>  	
+  	<dependency>
+  		<groupId>com.pjf.mat</groupId>
+  		<artifactId>com.pjf.mat.util</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>  	
   </dependencies>
 
   <build>
@@ -54,7 +64,7 @@ Contributors:
         <configuration>
           <instructions>
             <Embed-Dependency>
-				com.pjf.mat.model,com.pjf.mat.core
+				com.pjf.mat.model,com.pjf.mat.core,com.pjf.mat.sim,com.pjf.mat.util
             </Embed-Dependency>
             <_exportcontents>
               *

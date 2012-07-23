@@ -4,5 +4,4 @@ package com.pjf.mat.api;
 public interface Item {
 	/** @model */
 	public int getId();
-
 }

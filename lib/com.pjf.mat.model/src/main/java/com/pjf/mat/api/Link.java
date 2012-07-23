@@ -49,6 +49,11 @@ public class Link {
 		return this.from;
 	}
 	
+	public Element targetElement() {
+		return owner;
+	}
+	
+	
 	public boolean isTo(Element element) {
 		return owner.equals(element);
 	}
