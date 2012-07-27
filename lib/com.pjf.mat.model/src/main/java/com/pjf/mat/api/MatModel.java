@@ -2,6 +2,7 @@ package com.pjf.mat.api;
 
 import java.util.Collection;
 import java.util.Properties;
+import java.util.Set;
 
 /** @model */
 public interface MatModel {
@@ -32,4 +33,6 @@ public interface MatModel {
 	
 	
 	public Properties getProperties();
+
+	public Set<String> getTypes();
 }
