@@ -117,6 +117,9 @@ public abstract class MatSystem {
 	protected void boot() {
 		try {
 			start();
+			if (sim != null) {
+				sim.start();
+			}
 			run();
 			shutdown();
 		} catch (Exception e) {

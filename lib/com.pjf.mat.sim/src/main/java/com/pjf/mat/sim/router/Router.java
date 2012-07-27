@@ -73,6 +73,7 @@ public class Router extends Thread {
 					}
 				}
 			} catch (InterruptedException e) {
+				logger.warn("interrupt: " + e.getMessage());
 				// ignore interrupts
 			}
 		}

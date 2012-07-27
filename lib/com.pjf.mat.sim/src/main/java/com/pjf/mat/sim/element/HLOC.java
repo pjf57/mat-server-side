@@ -172,8 +172,8 @@ public class HLOC extends BaseElement implements SimElement {
 	protected void processEvent(int input, Event evt) throws Exception {
 		int instr = evt.getInstrument_id();
 		float val = evt.getFloatData();
-		iset.add(new Integer(instr));
 		synchronized(this){
+			iset.add(new Integer(instr));
 			MetricStore st = store.get(Period.CURRENT);
 			// high
 			FloatValue currentHigh = st.getStore(Metric.HIGH).get(instr);
@@ -221,17 +221,19 @@ public class HLOC extends BaseElement implements SimElement {
 			if (periodCnt >= c_period) {
 				periodCnt = 0;
 				// end of period -- switch stores and then emit events
-				logger.info(getIdStr() + "End of period.");
-				Set<Integer> instrSet;
+				logger.debug(getIdStr() + "End of period.");
+				Set<Integer> lastPeriodSet;	// for instruments from last period
 				synchronized(this) {
-					instrSet = new HashSet<Integer>(iset);
-					iset.clear();
+					lastPeriodSet = iset;
+					// Start with a new set
+					iset = new HashSet<Integer>();
+					// shuffle round the stores
 					store.put(Period.PRVM1, store.get(Period.PREV));
 					store.put(Period.PREV, store.get(Period.CURRENT));
 					store.put(Period.CURRENT,new MetricStore(" "));
 				}
 				logState();
-				opDrv.emitEvents(instrSet);
+				opDrv.emitEvents(lastPeriodSet);
 			} else {
 				periodCnt++;
 			}

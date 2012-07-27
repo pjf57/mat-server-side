@@ -23,8 +23,8 @@ public class MatSimTest extends MatSystem {
 		Element adx = mat.getModel().getElement(6);
 
 		// configure element attributes
-		tg1.getAttribute("len").setValue("100");
-		tg1.getAttribute("gap").setValue("1");
+		tg1.getAttribute("len").setValue("100000");
+		tg1.getAttribute("gap").setValue("5");
 		tg1.getAttribute("initial value").setValue("50");
 		tg1.getAttribute("p1").setValue("0.25");
 		ema1.getAttribute("len").setValue("3");
@@ -44,10 +44,13 @@ public class MatSimTest extends MatSystem {
 		
 		// configure element connections
 		hloc.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
+//		ema1.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 		atr.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 //		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 		lgr.getInputs().get(1).connectTo(adx.getOutputs().get(0));
+//		lgr.getInputs().get(2).connectTo(hloc.getOutputs().get(0));
+//		lgr.getInputs().get(3).connectTo(atr.getOutputs().get(0));
 		logger.info("mat is: " + mat);
 
 		mat.configureHW();
@@ -56,7 +59,7 @@ public class MatSimTest extends MatSystem {
 	@Override
 	protected void sendTradeBurst(MatApi mat, EventFeed feed) throws Exception {
 		sendCmd(2,"start");
-		Thread.sleep(5000);
+		Thread.sleep(500000);
 	}
 
 	public static void main(String[] args) {

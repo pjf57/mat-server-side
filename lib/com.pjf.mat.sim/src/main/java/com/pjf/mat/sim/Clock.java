@@ -18,6 +18,7 @@ public class Clock extends Thread implements ClockTick{
 	public Clock(SimAccess host) {
 		this.setName("Clock");
 		this.host = host;
+		simTime = new SimTime();
 		timestamp = 0;
 		counter = 0;
 		shutdown = false;
@@ -37,12 +38,13 @@ public class Clock extends Thread implements ClockTick{
 
 	private void processMicroTick() {
 		simTime.add(1);		// count another microtick in the sim time
+		logger.trace("processMicroTick(): " + simTime);
 		host.publishMicroTick(simTime);
 		counter++;
 		if (counter >= TICK_RATIO) {
 			counter = 0;
 			timestamp = (timestamp + 1) & 0xffff;
-			logger.debug("processMicroTick() - Tick - " + timestamp);
+			logger.debug("Tick - " + this);
 			host.publishClockTick(this);  
 		}
 	}
@@ -55,6 +57,11 @@ public class Clock extends Thread implements ClockTick{
 	public void shutdown() {
 		logger.debug("Shutting down ...");
 		shutdown = true;
+	}
+	
+	@Override
+	public String toString() {
+		return "simtime=" + simTime + ", timestamp=" + timestamp;
 	}
 
 }

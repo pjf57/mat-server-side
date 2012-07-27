@@ -31,7 +31,6 @@ public class LookupPump extends Thread {
 		shutdown = false;
 		waiting = false;
 		setName("lookup pump");
-		start();
 	}
 
 	/**
@@ -43,7 +42,7 @@ public class LookupPump extends Thread {
 		while (!shutdown) {
 			try {
 				LookupRequest req = queue.take();
-				if (req != null) {
+				if (req.isValid()) {
 					LookupResult result;
 					try {
 						result = sim.handleLookup(req);
@@ -51,11 +50,9 @@ public class LookupPump extends Thread {
 							// wait until delay has passed
 							logger.debug("run() - req " + req + " delaying for " +
 									result.getMicrotickDelay() + " microticks.");
-							synchronized(this) {
 								waiting = true;
 								sem.acquire(result.getMicrotickDelay());
 								waiting = false;
-							}
 						}
 						logger.debug("run() - req " + req + " providing result: " +
 								result + " at simtime " + simTime);
@@ -84,7 +81,7 @@ public class LookupPump extends Thread {
 	 * 
 	 * @param simTime current simulator time
 	 */
-	public synchronized void simMicroTick(SimTime simTime) {
+	public void simMicroTick(SimTime simTime) {
 		this.simTime = simTime;
 		if (waiting) {
 			sem.release();
@@ -94,7 +91,7 @@ public class LookupPump extends Thread {
 	public void shutdown() {
 		logger.debug("Shutting down ...");
 		shutdown = true;
-		queue.add(null);		
+		queue.add(LookupRequest.createNullRequest());
 	}
 
 }

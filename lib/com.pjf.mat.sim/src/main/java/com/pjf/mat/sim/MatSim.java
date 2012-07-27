@@ -35,61 +35,8 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	private final Clock clk;
 	private final Router router;
 	private final LookupHandler lkuHandler;
-//	private EventDistributor evtDistr;
 	private boolean stopOnError;
 	
-//	class EventDistributor extends Thread {
-//		private PriorityBlockingQueue<Event> eventQueue;
-//		private boolean shutdown;
-//		
-//		public EventDistributor() {
-//			setName("Event");
-//			eventQueue = new PriorityBlockingQueue<Event>();
-//			shutdown = false;
-//		}
-//		
-//		public void start() {
-//			logger.debug("Starting event distributor");
-//			super.start();
-//		}
-//		
-//		public void post(Event evt) {
-//			logger.debug("publishEvent(" + evt + ")");
-//			eventQueue.add(evt);
-//		}
-//		
-//		@Override
-//		public void run() {
-//			while (!shutdown) {
-//				try {
-//					Event evt = eventQueue.take();
-//					if (evt.getSrc() != 0) {
-//						for (SimElement se : simElements) {
-//							try {
-//								se.putEvent(evt);
-//							} catch (Exception e) {
-//								String msg = "Simulation error processing event into:" +
-//									se + " Event=" + evt + " - " + e.getMessage();
-//								logger.error(msg);
-//								notifyError(msg);
-//							}
-//						}
-//					}
-//				} catch (InterruptedException e) {
-//					// ignore interrupts
-//				}
-//			}
-//			logger.info("Shutdown.");
-//		}
-//
-//		public void shutdown() {
-//			logger.debug("Shutting down ...");
-//			shutdown = true;
-//			// kick the queue
-//			Event evt = new Event(0,0,0);
-//			post(evt);
-//			}
-//		}
 	
 	public MatSim() {
 		stopOnError = true;
@@ -97,10 +44,6 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		clk = new Clock(this);
 		router = new Router(this);
 		lkuHandler = new LookupHandler(this);
-//		evtDistr = new EventDistributor();
-//		evtDistr.start();
-		router.start();
-		clk.start();
 	}
 
 	/**
@@ -213,8 +156,8 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 
 	@Override
 	public void publishEvent(Event evt, int latency) {
+		logger.debug("PublishEvent(" + evt + "," + latency + ")");
 		router.post(evt, latency);
-//		evtDistr.post(evt);
 	}
 
 	@Override
@@ -314,7 +257,8 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 
 	@Override
 	public void publishMicroTick(SimTime simTime) {
-		router.simMicroTick(simTime);	
+		router.simMicroTick(simTime);
+		lkuHandler.simMicroTick(simTime);
 	}
 
 	@Override
@@ -322,6 +266,15 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		for (SimElement se : simElements) {
 			se.processTick(tick);
 		}
+	}
+
+	/**
+	 * Start the simulator
+	 */
+	public void start() {
+		logger.info("-------------- sim start -------------");
+		router.start();
+		clk.start();
 	}
 
 }
