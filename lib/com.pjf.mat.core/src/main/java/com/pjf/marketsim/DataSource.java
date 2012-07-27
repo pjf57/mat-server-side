@@ -3,26 +3,29 @@ package com.pjf.marketsim;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.apache.log4j.Logger;
-
 public class DataSource {
-	private final static Logger logger = Logger.getLogger(DataSource.class);
-	private FileInputStream fstream = null;
+//	private final static Logger logger = Logger.getLogger(DataSource.class);
+	private InputStream stream = null;
 	DataInputStream in = null;
 	BufferedReader br = null;
 	
-	public DataSource(String source) throws Exception {
+	public DataSource(InputStream source) throws Exception {		
 		try{
-			fstream = new FileInputStream(source);
-			in = new DataInputStream(fstream);
+			stream = source;
+			in = new DataInputStream(stream);
 			br = new BufferedReader(new InputStreamReader(in));
 			br.readLine(); // read and discard headers
 		} catch (Exception e) {
-			logger.error("unable to initialise DataSource:" + source);
+//			logger.error("unable to initialise DataSource:" + source);
 			throw new Exception("unable to initialise DataSource:" + source,e);
 		}
+	}
+	
+	public DataSource(String source) throws Exception {
+		this(new FileInputStream(source));
 	}
 	
 	public TickData getNext() throws Exception {

@@ -15,7 +15,7 @@ diagram.element.2.loc.x=36
 diagram.element.2.loc.y=144
 diagram.element.2.prop.len=100
 diagram.element.2.prop.gap=1
-diagram.element.2.prop.initial value=50
+diagram.element.2.prop.initial_value=50
 diagram.element.2.prop.p1=0.25
 
 diagram.element.3.name=ema1
@@ -48,12 +48,12 @@ diagram.element.6.type=ADX
 diagram.element.6.loc.x=372
 diagram.element.6.loc.y=240
 diagram.element.6.in.0=4.out.0
-diagram.element.6.prop.PDN EMA len=3
-diagram.element.6.prop.PDN EMA alpha=0.5
-diagram.element.6.prop.NDN EMA len=3
-diagram.element.6.prop.NDN EMA alpha=0.5
-diagram.element.6.prop.ADX EMA len=3
-diagram.element.6.prop.ADX EMA alpha=0.5
+diagram.element.6.prop.PDN_EMA_len=3
+diagram.element.6.prop.PDN_EMA_alpha=0.5
+diagram.element.6.prop.NDN_EMA_len=3
+diagram.element.6.prop.NDN_EMA_alpha=0.5
+diagram.element.6.prop.ADX_EMA_len=3
+diagram.element.6.prop.ADX_EMA_alpha=0.5
 
 diagram.element.20.name=note
 diagram.element.20.type=NOTE

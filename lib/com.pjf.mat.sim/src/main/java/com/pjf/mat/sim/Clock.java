@@ -1,23 +1,27 @@
 package com.pjf.mat.sim;
 
-import org.apache.log4j.Logger;
-
+import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.SimHost;
 
 public class Clock extends Thread implements ClockTick{
-	private final static Logger logger = Logger.getLogger(Clock.class);
+	private MatLogger logger;
 	private SimHost host;
 	private int timestamp;
 	private int period;
 	private boolean shutdown;
 	
-	public Clock(SimHost host, int periodMs) {
+	public Clock(SimHost host, int periodMs, MatLogger logger) {
+		this.logger = logger;
 		this.setName("Clock");
 		this.host = host;
 		timestamp = 0;
 		this.period = periodMs;
 		shutdown = false;
+	}
+	
+	public void reset() {
+		this.timestamp = 0;
 	}
 	
 	@Override

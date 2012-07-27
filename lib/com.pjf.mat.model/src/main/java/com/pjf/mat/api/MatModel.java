@@ -7,7 +7,7 @@ import java.util.Properties;
 public interface MatModel {
 
 	public MatModel copy() throws Exception;
-	
+
 	/**
 	 * return collection of mutable elements
 	 * @model type="Element" containment="true"

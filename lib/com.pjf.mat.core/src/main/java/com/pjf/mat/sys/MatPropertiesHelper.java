@@ -21,6 +21,7 @@ public class MatPropertiesHelper {
 	
 	private static final Pattern regexInput = Pattern.compile("(\\d*)\\.in\\.(\\d*)");
 	private static final Pattern regexOutput = Pattern.compile("(\\d*)\\.out\\.(\\d*)");
+	private static final Pattern regexParam = Pattern.compile("(\\d*)\\.prop\\.(.*)");
 
 	protected final Properties properties;
 	
@@ -57,9 +58,29 @@ public class MatPropertiesHelper {
 	}
 	
 	public int getOutPortIdFromProperty(String name) {
-		return getPortIdFromProperty(regexOutput, name);
+		return getPortIdFromProperty(regexOutput, name, 2);
 	}
 	
+	public boolean isParamDefinition(String name) {
+		name = filterName(name);
+		Matcher m = regexParam.matcher(name);
+		return m.find();
+	}
+	
+	public int getParamIdFromProperty(String name) {
+		return getPortIdFromProperty(regexParam, name, 1);
+	}
+	
+	public String getParamNameFromProperty(String name) {
+		name = filterName(name);
+		Matcher matcher = regexParam.matcher(name);
+		if (matcher.find()) {
+			String param = matcher.group(2);
+			return param;
+		}
+		return null;
+	}
+
 	public boolean isInPortDefinition(String name) {
 		name = filterName(name);
 		Matcher m = regexInput.matcher(name);
@@ -67,7 +88,7 @@ public class MatPropertiesHelper {
 	}
 	
 	public int getInPortIdFromProperty(String name) {
-		return getPortIdFromProperty(regexInput, name);
+		return getPortIdFromProperty(regexInput, name, 2);
 	}
 	
 	public String getElementType(int elementId) {
@@ -122,11 +143,11 @@ public class MatPropertiesHelper {
 
 	// -------------------
 	
-	protected int getPortIdFromProperty(Pattern pattern, String name) {
+	protected int getPortIdFromProperty(Pattern pattern, String name, int position) {
 		name = filterName(name);
 		Matcher matcher = pattern.matcher(name);
 		if (matcher.find()) {
-			String port = matcher.group(2);
+			String port = matcher.group(position);
 			return Integer.valueOf(port);
 		}
 		return -1;

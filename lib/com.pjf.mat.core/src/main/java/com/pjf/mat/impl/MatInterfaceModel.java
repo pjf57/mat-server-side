@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -41,6 +42,11 @@ public class MatInterfaceModel implements MatModel {
 	@Override
 	public Collection<Element> getElements() {
 		return elements.values();
+	}
+
+	@Override
+	public Set<String> getTypes() {
+		return types.keySet();
 	}
 
 	@Override
@@ -220,7 +226,11 @@ public class MatInterfaceModel implements MatModel {
 		for (Element el : elements.values()) {
 			logger.info(el);
 		}
-		return "[mat: " + elements.size() + " elements]";
+		StringBuilder sb = new StringBuilder();
+		sb.append("[mat: ").append(elements.size());
+		sb.append(" elements / 0x").append(Long.toHexString(getSWSignature()).toUpperCase());
+		sb.append(" ]");
+		return sb.toString();
 	}
 
 	/**

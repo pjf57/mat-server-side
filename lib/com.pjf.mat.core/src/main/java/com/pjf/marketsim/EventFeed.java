@@ -1,6 +1,8 @@
 package com.pjf.marketsim;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
@@ -80,8 +82,8 @@ public class EventFeed {
 	 * @param i 
 	 * @throws Exception 
 	 */
-	public void sendTradeBurst(String resource, int bursts, int ticksPerPkt, int gapMs) throws Exception {
-		DataSource ds = new DataSource(resource);
+	public void sendTradeBurst(InputStream is, int bursts, int ticksPerPkt, int gapMs) throws Exception {
+		DataSource ds = new DataSource(is);
 		for (int pkt=0; pkt<bursts; pkt++) {
 			EncodedFeedItemList list = new EncodedFeedItemList();
 			for (int tick=0; tick<ticksPerPkt; tick++) {
@@ -94,6 +96,10 @@ public class EventFeed {
 				Thread.sleep(gapMs);
 			}
 		}
+	}
+	
+	public void sendTradeBurst(String resource, int bursts, int ticksPerPkt, int gapMs) throws Exception {
+		sendTradeBurst(new FileInputStream(resource), bursts, ticksPerPkt, gapMs);
 	}
 	
 	

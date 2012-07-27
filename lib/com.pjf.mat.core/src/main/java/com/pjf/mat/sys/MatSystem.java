@@ -9,6 +9,7 @@ import com.pjf.marketsim.EventFeed;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
+import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
@@ -84,7 +85,20 @@ public abstract class MatSystem {
 		Properties props = loadProperties(propsResource);
 		BaseComms comms;
 		if (System.getProperty("sim") != null) {
-			sim = new MatSim();
+			sim = new MatSim(new MatLogger() {
+				@Override
+				public void info(String message) {
+					logger.info(message);
+				}
+				@Override
+				public void error(Exception ex) {
+					logger.error(ex);
+				}
+				@Override
+				public void debug(String message) {
+					logger.debug(message);
+				}
+			});
 			comms = sim;
 		} else if (System.getProperty("dummy") != null) {
 			comms = new DummyComms();

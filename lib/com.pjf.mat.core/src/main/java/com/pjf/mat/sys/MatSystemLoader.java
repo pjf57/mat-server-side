@@ -2,6 +2,7 @@ package com.pjf.mat.sys;
 
 import java.util.Properties;
 
+import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatModel;
 import com.pjf.mat.sys.MatPropertiesHelper.MatPropertyProcessor;
@@ -29,13 +30,25 @@ public class MatSystemLoader {
 					srcElement = mat.getElement(id);
 					currentId = id;
 				}
+				
+				// connection
 				if (helper.isInPortDefinition(key)) {
 					int in = helper.getInPortIdFromProperty(key);
 					int out = helper.getOutPortIdFromProperty(value);
 					int target = helper.getElementIdFromProperty(value);
 					Element tgtElement = mat.getElement(target);
-					srcElement.getInputs().get(in)
-							.connectTo(tgtElement.getOutputs().get(out));
+					srcElement.getInputs().get(in).connectTo(tgtElement.getOutputs().get(out));
+				}
+				
+				// parameter
+				if (helper.isParamDefinition(key)) {
+					int eltId = helper.getParamIdFromProperty(key);
+					String name = helper.getParamNameFromProperty(key);
+					Element tgtElement = mat.getElement(eltId);
+					if (tgtElement != null) {
+						Attribute attr = tgtElement.getAttribute(name);
+						attr.setValue(value);
+					}
 				}
 			}
 		});

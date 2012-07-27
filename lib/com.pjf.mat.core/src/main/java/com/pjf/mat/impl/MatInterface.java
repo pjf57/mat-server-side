@@ -29,21 +29,10 @@ public class MatInterface implements MatApi {
 	}
 	
 	
-//	@Override
-//	public Collection<Element> getElements() {
-//		return model.elements.values();
-//	}
-
-
 	public MatModel copyModel() throws Exception {
 		return this.model.copy();
 	}
 	
-	
-//	@Override
-//	public Element getElement(int id) {
-//		return model.elements.get(new Integer(id));
-//	}
 	
 	@Override
 	public Status getHWStatus() {

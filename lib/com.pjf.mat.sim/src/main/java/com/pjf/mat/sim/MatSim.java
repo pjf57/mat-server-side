@@ -13,6 +13,7 @@ import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.sim.element.ElementFactory;
 import com.pjf.mat.sim.model.ClockTick;
@@ -28,7 +29,7 @@ import com.pjf.mat.util.comms.BaseComms;
 public class MatSim extends BaseComms implements Comms, SimHost {
 	private final static Logger logger = Logger.getLogger(MatSim.class);
 	private final List<SimElement> simElements;
-	private final Clock clk;
+	private Clock clk;
 	private EventDistributor evtDistr;
 	private boolean stopOnError;
 	
@@ -90,10 +91,23 @@ public class MatSim extends BaseComms implements Comms, SimHost {
 		simElements = new ArrayList<SimElement>();
 		evtDistr = new EventDistributor();
 		evtDistr.start();
-		clk = new Clock(this,10);
+//		clk = clock;
+//		clk.start();
+	}
+
+	public MatSim(MatLogger logger) {
+		stopOnError = true;
+		simElements = new ArrayList<SimElement>();
+		evtDistr = new EventDistributor();
+		evtDistr.start();
+		clk = new Clock(this,10,logger);
 		clk.start();
 	}
 
+	public void setClock(Clock clock) {
+		this.clk = clock;
+	}
+	
 	/**
 	 * instantiate all the simulation elements
 	 * 
