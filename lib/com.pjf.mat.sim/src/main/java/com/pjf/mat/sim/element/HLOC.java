@@ -34,6 +34,8 @@ import com.pjf.mat.sim.types.FloatValue;
  */
 public class HLOC extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(HLOC.class);
+	private static final int LOOKUP_DLY = 2;	// lookup delay, microticks
+	private static final int LATENCY = 0;	// input to output latency (microticks)
 	private int c_period;			// num ticks in period (int)
 	private int c_opMetric;			// metric to use for data in output events (lku req)
 	private int c_throttle;			// min # (8ns) clks between outputs
@@ -110,8 +112,8 @@ public class HLOC extends BaseElement implements SimElement {
 							val = getHLOCData(instr, c_opMetric);
 							logger.debug(getIdStr() + "Emit instr=" + instr + "/" + val);
 							if (val.isValid()) {
-								Event evt = new Event(elementId,instr,val.getRawData());
-								host.publishEvent(evt);
+								Event evt = new Event(elementId,instr,val.getValue());
+								host.publishEvent(evt,LATENCY);
 								// wait for throttle period
 								// TODO - this is not really well timed cf hardware
 								Thread.sleep(c_throttle);
@@ -170,8 +172,8 @@ public class HLOC extends BaseElement implements SimElement {
 	protected void processEvent(int input, Event evt) throws Exception {
 		int instr = evt.getInstrument_id();
 		float val = evt.getFloatData();
-		iset.add(new Integer(instr));
 		synchronized(this){
+			iset.add(new Integer(instr));
 			MetricStore st = store.get(Period.CURRENT);
 			// high
 			FloatValue currentHigh = st.getStore(Metric.HIGH).get(instr);
@@ -219,17 +221,19 @@ public class HLOC extends BaseElement implements SimElement {
 			if (periodCnt >= c_period) {
 				periodCnt = 0;
 				// end of period -- switch stores and then emit events
-				logger.info(getIdStr() + "End of period.");
-				Set<Integer> instrSet;
+				logger.debug(getIdStr() + "End of period.");
+				Set<Integer> lastPeriodSet;	// for instruments from last period
 				synchronized(this) {
-					instrSet = new HashSet<Integer>(iset);
-					iset.clear();
+					lastPeriodSet = iset;
+					// Start with a new set
+					iset = new HashSet<Integer>();
+					// shuffle round the stores
 					store.put(Period.PRVM1, store.get(Period.PREV));
 					store.put(Period.PREV, store.get(Period.CURRENT));
 					store.put(Period.CURRENT,new MetricStore(" "));
 				}
 				logState();
-				opDrv.emitEvents(instrSet);
+				opDrv.emitEvents(lastPeriodSet);
 			} else {
 				periodCnt++;
 			}
@@ -238,10 +242,10 @@ public class HLOC extends BaseElement implements SimElement {
 	
 	@Override
 	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
-		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT);
+		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		FloatValue data = getHLOCData(instrumentId,lookupKey);
 		if (data != null) {
-			result = new LookupResult(elementId,data);
+			result = new LookupResult(elementId,data,LOOKUP_DLY);
 		}
 		return result;
 	}
@@ -284,6 +288,7 @@ public class HLOC extends BaseElement implements SimElement {
 
 	@Override
 	public void shutdown() {
+		super.shutdown();
 		logger.debug("Shutting down ...");
 		opDrv.shutdown();
 	}

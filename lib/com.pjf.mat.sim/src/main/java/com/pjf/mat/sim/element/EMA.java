@@ -19,6 +19,7 @@ import com.pjf.mat.sim.types.FloatValue;
  */
 public class EMA extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(EMA.class);
+	private static final int LATENCY = 14;	// input to output latency (microticks)
 	private EmaLogic ema;
 	private float c_alpha;		// exp coefficient
 	private int c_len;			// length of sequence
@@ -48,7 +49,7 @@ public class EMA extends BaseElement implements SimElement {
 		FloatValue output = ema.processEvent(evt.getInstrument_id(),evt.getFloatData());
 		if (output.isValid()) {
 			Event evtOut = new Event(elementId,evt.getInstrument_id(),output.getValue());
-			host.publishEvent(evtOut);
+			host.publishEvent(evtOut,LATENCY);
 		}
 	}
 

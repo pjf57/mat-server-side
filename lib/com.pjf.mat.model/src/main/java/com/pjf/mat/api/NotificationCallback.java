@@ -17,4 +17,5 @@ public interface NotificationCallback {
 	 * @param element
 	 */
 	public void notifyElementStatusUpdate(Element element);
+
 }

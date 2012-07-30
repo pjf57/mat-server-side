@@ -95,12 +95,31 @@ public abstract class BaseComms implements Comms {
 	protected void processIncomingMsg(byte[] msg) {
 		byte cmd = msg[0];
 		switch (cmd) {
+		case MatElementDefs.ST_TX_HWSIG: processHWSigMsg(msg); break;
 		case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg);	break;
 		case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg); break;
 		default: logger.error("Unkown status message received: [" + Conversion.toHexString(msg)); break;
 		}
 	}
 
+
+	/**
+	 * Process HW signature received - store it and release sem
+	 * @param msg
+	 */
+	private void processHWSigMsg(byte[] msg) {
+		long hwSig = Conversion.getLongFromBytes(msg,1,8);
+		processRxHwSig(hwSig);
+	}
+
+	/**
+	 * Template method for handling receipt of HW signature
+	 * 
+	 * @param sig
+	 */
+	protected void processRxHwSig(long hwSig) {
+		logger.warn("processRxHwSig() - signature received - default action is do nothing");
+	}
 
 	/**
 	 * Process a status message. May contain one or more status elements

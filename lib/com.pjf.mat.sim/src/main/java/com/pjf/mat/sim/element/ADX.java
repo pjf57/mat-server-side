@@ -27,6 +27,8 @@ import com.pjf.mat.sim.types.FloatValue;
  */
 public class ADX extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(ADX.class);
+	private static final int LOOKUP_DLY = 2;	// lookup delay, microticks
+	private static final int LATENCY = 87;	// input to output latency (microticks)
 	private float c_pdn_alpha;			// PDN EMA exp coefficient
 	private int c_pdn_len;				// PDN EMA length of sequence
 	private float c_ndn_alpha;			// NDN EMA exp coefficient
@@ -100,7 +102,7 @@ public class ADX extends BaseElement implements SimElement {
 					float adx = 100 * aEma.getValue();
 					adxStore.put(adx, instr);
 					Event evtOut = new Event(elementId,instr,adx);
-					host.publishEvent(evtOut);
+					host.publishEvent(evtOut,LATENCY);
 				}
 			}
 		}
@@ -108,10 +110,10 @@ public class ADX extends BaseElement implements SimElement {
 	
 	@Override
 	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
-		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT);
+		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		switch (lookupKey) {
 		case MatElementDefs.EL_ADX_L_ADX:
-			result = new LookupResult(elementId,adxStore.get(instrumentId)); break;
+			result = new LookupResult(elementId,adxStore.get(instrumentId),LOOKUP_DLY); break;
 		}
 		return result;
 	}

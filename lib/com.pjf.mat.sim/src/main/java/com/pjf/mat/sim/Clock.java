@@ -2,21 +2,25 @@ package com.pjf.mat.sim;
 
 import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.sim.model.ClockTick;
-import com.pjf.mat.sim.model.SimHost;
+import com.pjf.mat.sim.model.SimAccess;
+import com.pjf.mat.sim.model.SimTime;
 
 public class Clock extends Thread implements ClockTick{
 	private MatLogger logger;
-	private SimHost host;
+	private final int TICK_RATIO = 10;	// # microticks per tick
+	private SimAccess host;
+	private SimTime simTime;
 	private int timestamp;
-	private int period;
+	private int counter;
 	private boolean shutdown;
 	
-	public Clock(SimHost host, int periodMs, MatLogger logger) {
+	public Clock(SimAccess host, int periodMs, MatLogger logger) {
 		this.logger = logger;
 		this.setName("Clock");
 		this.host = host;
+		simTime = new SimTime();
 		timestamp = 0;
-		this.period = periodMs;
+		counter = 0;
 		shutdown = false;
 	}
 	
@@ -24,19 +28,30 @@ public class Clock extends Thread implements ClockTick{
 		this.timestamp = 0;
 	}
 	
+	public SimTime getSimTime() {
+		return new SimTime(simTime);
+	}
+	
 	@Override
 	public void run() {
 		while (!shutdown) {
-			try {
-				Thread.sleep(period);
-			} catch (InterruptedException e) {
-				// ignore
-			}
-			timestamp = (timestamp + 1) & 0xffff;
-			logger.debug("Tick - " + timestamp);
-			host.publishClockTick(this);  
+			processMicroTick();
 		}
 		logger.info("Shutdown.");
+	}
+
+	private void processMicroTick() {
+		simTime.add(1);		// count another microtick in the sim time
+		// FIXME should be trace
+//		logger.debug("processMicroTick(): " + simTime);
+		host.publishMicroTick(getSimTime());
+		counter++;
+		if (counter >= TICK_RATIO) {
+			counter = 0;
+			timestamp = (timestamp + 1) & 0xffff;
+			logger.debug("Tick - " + this);
+			host.publishClockTick(this);  
+		}
 	}
 
 	@Override
@@ -48,4 +63,10 @@ public class Clock extends Thread implements ClockTick{
 		logger.debug("Shutting down ...");
 		shutdown = true;
 	}
+	
+	@Override
+	public String toString() {
+		return "simtime=" + simTime + ", timestamp=" + timestamp;
+	}
+
 }

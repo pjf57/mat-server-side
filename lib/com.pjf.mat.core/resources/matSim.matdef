@@ -8,13 +8,14 @@ diagram.element.1.type=LOGGER
 diagram.element.1.loc.x=504
 diagram.element.1.loc.y=396
 diagram.element.1.in.1=6.out.0
+diagram.element.1.in.2=2.out.0
 
 diagram.element.2.name=tg1
 diagram.element.2.type=TG1
 diagram.element.2.loc.x=36
 diagram.element.2.loc.y=144
 diagram.element.2.prop.len=100
-diagram.element.2.prop.gap=1
+diagram.element.2.prop.gap=2
 diagram.element.2.prop.initial_value=50
 diagram.element.2.prop.p1=0.25
 

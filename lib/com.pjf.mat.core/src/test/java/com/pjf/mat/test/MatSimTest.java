@@ -16,6 +16,7 @@ public class MatSimTest extends MatSystem {
 	
 	@Override
 	protected void configure(MatApi mat) throws Exception {
+
 		Properties p = loadProperties("resources/matSim.matdef");
 		MatSystemLoader loader = new MatSystemLoader(p);
 		loader.initialize(mat.getModel());
@@ -53,6 +54,7 @@ public class MatSimTest extends MatSystem {
 //		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 ////		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 //		lgr.getInputs().get(1).connectTo(adx.getOutputs().get(0));
+
 		logger.info("mat is: " + mat);
 
 		mat.configureHW();

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collection;
+import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.Logger;
 
@@ -21,6 +22,8 @@ public class UDPComms extends BaseComms implements Comms {
 	private final String ip;
 	private int port;
 	private final Reader reader;
+	private long hwSig;
+	private Semaphore hwSigSem;
 	
 	
 	
@@ -64,6 +67,8 @@ public class UDPComms extends BaseComms implements Comms {
 		this.ip = ip;
 		this.port = port;
 		this.mat = null;
+		hwSigSem = new Semaphore(0);
+		hwSig = 0;
 		this.reader = new Reader();
 		reader.start();
 	}
@@ -113,13 +118,17 @@ public class UDPComms extends BaseComms implements Comms {
 		byte[] req = new byte[7];
 		req[0] = 1;
 		req[1] = 0;
-		req[2] = (byte) 0x84;
+		req[2] = (byte) 0x85;
 		req[3] = 0;
 		req[4] = 0;
 		req[5] = 0;
 		req[6] = 0;
 		cxn.send(req,port);
-		return 0;
+		// now wait till we have response back
+		// TODO add timeout
+		logger.info("getHWSignature() - waiting for signatue from HW ...");
+		hwSigSem.acquire();
+		return hwSig;
 	}
 
 	@Override
@@ -145,6 +154,12 @@ public class UDPComms extends BaseComms implements Comms {
 		return cxn;
 	}
 
+	@Override
+	protected void processRxHwSig(long sig) {
+		logger.info("processRxHwSig() - signature received: ");
+		hwSig = sig;
+		hwSigSem.release();
+	}
 
 
 

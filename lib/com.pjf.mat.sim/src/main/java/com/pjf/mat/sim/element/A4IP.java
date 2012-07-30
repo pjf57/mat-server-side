@@ -40,6 +40,7 @@ import com.pjf.mat.util.Conversion;
  */
 public class A4IP extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(A4IP.class);
+	private static final int LATENCY = 4;	// input to output latency (microticks)
 	private int c_cf1;			// p = fn(a,x)
 	private int c_cf2;			// q = fn(c,y)
 	private int c_xsel;			// x = b or K1
@@ -88,7 +89,8 @@ public class A4IP extends BaseElement implements SimElement {
 		FloatValue z = lop(c_lop,p,q);
 		if (z.isValid()){ 
 			Event evtOut = new Event(elementId,instr,z.getRawData());
-			host.publishEvent(evtOut);
+			// TODO change to take into account cascaded ops, and make longer latency for divide
+			host.publishEvent(evtOut,LATENCY);
 		}
 	}
 
