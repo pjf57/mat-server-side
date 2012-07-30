@@ -1,10 +1,10 @@
 package com.pjf.mat.sim.lookup;
 
 
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.lookup.LookupRequest;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.SimAccess;
-import com.pjf.mat.sim.model.SimTime;
 
 /**
  * This class manages the dispatch of lookup requests to lookup service
@@ -44,7 +44,7 @@ public class LookupHandler {
 	 * 
 	 * @param simTime current simulator time
 	 */
-	public void simMicroTick(SimTime simTime) {
+	public void simMicroTick(Timestamp simTime) {
 		pump.simMicroTick(simTime);
 	}
 

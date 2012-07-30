@@ -5,9 +5,9 @@ import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.Logger;
 
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.SimAccess;
-import com.pjf.mat.sim.model.SimTime;
 
 /**
  * Maintains a queue of lookup requests and has a thread to
@@ -20,7 +20,7 @@ public class LookupPump extends Thread {
 	private final SimAccess sim;
 	private final PriorityBlockingQueue<LookupRequest> queue;
 	private final Semaphore sem;
-	private SimTime simTime;
+	private Timestamp simTime;
 	private boolean shutdown;
 	private boolean waiting;
 	
@@ -81,7 +81,7 @@ public class LookupPump extends Thread {
 	 * 
 	 * @param simTime current simulator time
 	 */
-	public void simMicroTick(SimTime simTime) {
+	public void simMicroTick(Timestamp simTime) {
 		this.simTime = simTime;
 		if (waiting) {
 			sem.release();

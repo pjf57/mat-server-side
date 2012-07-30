@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
-import com.pjf.mat.sim.model.SimTime;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.types.Event;
 
 /**
@@ -24,17 +24,17 @@ import com.pjf.mat.sim.types.Event;
  */
 public class SortedEventQueue {
 	private final static Logger logger = Logger.getLogger(SortedEventQueue.class);
-	private final SortedMap<SimTime,Bucket> list;
+	private final SortedMap<Timestamp,Bucket> list;
 
 	/**
 	 * Bucket of events all with the same timestamp
 	 * @author pjf
 	 */
 	class Bucket implements Comparable<Bucket> {
-		private final SimTime timestamp;		// time at which events should be delivered
+		private final Timestamp timestamp;		// time at which events should be delivered
 		private final List<Event> events;		// events to be delivered
 		
-		public Bucket(SimTime timestamp) {
+		public Bucket(Timestamp timestamp) {
 			this.timestamp = timestamp;
 			this.events = new ArrayList<Event>();
 		}
@@ -43,7 +43,7 @@ public class SortedEventQueue {
 			events.add(evt);
 		}
 		
-		public SimTime getTimestamp() {
+		public Timestamp getTimestamp() {
 			return timestamp;
 		}
 		
@@ -81,7 +81,7 @@ public class SortedEventQueue {
 	}
 	
 	public SortedEventQueue() {
-		this.list = new TreeMap<SimTime,Bucket>();
+		this.list = new TreeMap<Timestamp,Bucket>();
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public class SortedEventQueue {
 	 * @param evt
 	 * @param evtTime
 	 */
-	public void add(Event evt, SimTime evtTime) {
+	public synchronized void add(Event evt, Timestamp evtTime) {
 		Bucket b = list.get(evtTime);
 		if (b == null) {
 			// This timestamp doesnt already exist in the list, so add it
@@ -108,11 +108,11 @@ public class SortedEventQueue {
 	 * @param simTime
 	 * @return collection of events
 	 */
-	public Collection<Event> takeEvents(SimTime time) {
+	public synchronized Collection<Event> takeEvents(Timestamp time) {
 		List<Event> events = new ArrayList<Event>();
-		List<SimTime> removeList = new ArrayList<SimTime>();
+		List<Timestamp> removeList = new ArrayList<Timestamp>();
 		// see if there are any that are earlier than the required time
-		SortedMap<SimTime,Bucket> earlier = list.headMap(time);
+		SortedMap<Timestamp,Bucket> earlier = list.headMap(time);
 		for (Bucket b : earlier.values()) {
 			logger.debug("takeEvents() event is before current time: " + time +
 					" " + b);
@@ -121,7 +121,7 @@ public class SortedEventQueue {
 		}
 		
 		// remove the buckets that we already processed
-		for (SimTime t : removeList) {
+		for (Timestamp t : removeList) {
 			list.remove(t);
 		}
 

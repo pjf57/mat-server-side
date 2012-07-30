@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.model;
 
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.types.Event;
 
 /**
@@ -20,11 +21,12 @@ public interface SimHost {
 	/**
 	 * push an event log into the system for logging
 	 * 
+	 * @param ts			the timestamp of the event
 	 * @param srcId			The id of the element sending the event
 	 * @param intrumentId	The ID of the instrument
 	 * @param rawValue		The raw value of the event data
 	 */
-	public void publishEventLog(int srcId, int intrumentId, int rawValue);
+	public void publishEventLog(Timestamp ts, int srcId, int intrumentId, int rawValue);
 
 	/**
 	 * publish a change in an element's status
@@ -56,5 +58,10 @@ public interface SimHost {
 	 * @throws Exception	- if an element had a problem replying
 	 */
 	public LookupResult lookup(int id, int instrumentId, int lookupKey) throws Exception;
+
+	/**
+	 * @return current simulation time in clks
+	 */
+	Timestamp getCurrentSimTime();
 
 }

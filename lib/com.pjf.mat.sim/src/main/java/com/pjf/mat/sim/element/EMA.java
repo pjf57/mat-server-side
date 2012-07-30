@@ -3,6 +3,7 @@ package com.pjf.mat.sim.element;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.bricks.EmaLogic;
 import com.pjf.mat.sim.model.SimElement;
@@ -45,7 +46,7 @@ public class EMA extends BaseElement implements SimElement {
 	}
 
 	@Override
-	protected void processEvent(int input, Event evt) {
+	protected void processEvent(Timestamp ts, int input, Event evt) {
 		FloatValue output = ema.processEvent(evt.getInstrument_id(),evt.getFloatData());
 		if (output.isValid()) {
 			Event evtOut = new Event(elementId,evt.getInstrument_id(),output.getValue());

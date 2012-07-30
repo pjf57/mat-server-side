@@ -1,15 +1,15 @@
 package com.pjf.mat.sim;
 
 import com.pjf.mat.api.MatLogger;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.SimAccess;
-import com.pjf.mat.sim.model.SimTime;
 
 public class Clock extends Thread implements ClockTick{
 	private MatLogger logger;
 	private final int TICK_RATIO = 10;	// # microticks per tick
 	private SimAccess host;
-	private SimTime simTime;
+	private Timestamp simTime;
 	private int timestamp;
 	private int counter;
 	private boolean shutdown;
@@ -18,7 +18,7 @@ public class Clock extends Thread implements ClockTick{
 		this.logger = logger;
 		this.setName("Clock");
 		this.host = host;
-		simTime = new SimTime();
+		simTime = new Timestamp();
 		timestamp = 0;
 		counter = 0;
 		shutdown = false;
@@ -28,8 +28,8 @@ public class Clock extends Thread implements ClockTick{
 		this.timestamp = 0;
 	}
 	
-	public SimTime getSimTime() {
-		return new SimTime(simTime);
+	public Timestamp getSimTime() {
+		return new Timestamp(simTime);
 	}
 	
 	@Override

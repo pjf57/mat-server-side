@@ -1,6 +1,7 @@
 package com.pjf.mat.sim.element;
 
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
@@ -27,8 +28,8 @@ public class Logger extends BaseElement implements SimElement {
 	}
 
 	@Override
-	protected void processEvent(int input, Event evt) {
-		host.publishEventLog(evt.getSrc(), evt.getInstrument_id(), evt.getRawData());
+	protected void processEvent(Timestamp ts, int input, Event evt) {
+		host.publishEventLog(ts, evt.getSrc(), evt.getInstrument_id(), evt.getRawData());
 	}
 
 	@Override

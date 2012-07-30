@@ -4,10 +4,10 @@ import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.Logger;
 
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.ElementException;
 import com.pjf.mat.sim.model.SimAccess;
 import com.pjf.mat.sim.model.SimElement;
-import com.pjf.mat.sim.model.SimTime;
 import com.pjf.mat.sim.router.SortedEventQueue;
 import com.pjf.mat.sim.types.Event;
 
@@ -22,7 +22,6 @@ public class Router extends Thread {
 	private final SimAccess sim;
 	private SortedEventQueue queue;
 	private boolean shutdown;
-	private SimTime simTime;
 	private Semaphore sem;
 	
 	public Router(SimAccess sim) {
@@ -30,7 +29,6 @@ public class Router extends Thread {
 		setName("Router");
 		shutdown = false;
 		queue = new SortedEventQueue();
-		simTime = sim.getCurrentSimTime();
 		sem = new Semaphore(0);
 	}
 
@@ -45,7 +43,7 @@ public class Router extends Thread {
 			// force latency of at least one, otherwise this will not get picked up
 			latency = 1;
 		}
-		SimTime evtTime = simTime;
+		Timestamp evtTime = sim.getCurrentSimTime();
 		evtTime.add(latency);
 		if (logger.isDebugEnabled()) {
 			logger.debug("post(" + evt + "," + latency + "): evtTime=" + evtTime +
@@ -61,9 +59,10 @@ public class Router extends Thread {
 				// wait for sim clock tick
 				sem.acquire();
 				synchronized(this) {
-					logger.debug("run() - take events from queue, time=" + simTime);
+					Timestamp now = sim.getCurrentSimTime();
+					logger.debug("run() - take events from queue, time=" + now);
 					// execute all events (if any) that should be executed at this time
-					for (Event evt : queue.takeEvents(simTime)) {
+					for (Event evt : queue.takeEvents(now)) {
 						logger.debug("run() - got event: " + evt);
 						if (evt.getSrc() != 0) {
 							try {
@@ -95,10 +94,9 @@ public class Router extends Thread {
 	 * 
 	 * @param simTime current simulator time
 	 */
-	public void simMicroTick(SimTime simTime) {
-		this.simTime = simTime;
+	public void simMicroTick(Timestamp simTime) {
 		if (logger.isDebugEnabled()) {
-			logger.debug("simMicroTick(" + simTime + "): queue is " + queue);
+			logger.debug("simMicroTick(" + sim.getCurrentSimTime() + "): queue is " + queue);
 		}
 		sem.release();
 	}

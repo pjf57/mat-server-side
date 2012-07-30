@@ -1,4 +1,4 @@
-package com.pjf.mat.sim.model;
+package com.pjf.mat.api;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -6,15 +6,15 @@ import java.math.RoundingMode;
 /**
  * Model of simulation time
  */
-public class SimTime implements Comparable<SimTime>{
+public class Timestamp implements Comparable<Timestamp>{
 	private final static long nsBase = 8;			// timebase in ns
 	private long microticks;						// clks since origin
 	
-	public SimTime() {
+	public Timestamp() {
 		microticks = 0;
 	}
 	
-	public SimTime(SimTime time) {
+	public Timestamp(Timestamp time) {
 		this.microticks = time.microticks;
 	}
 
@@ -23,7 +23,7 @@ public class SimTime implements Comparable<SimTime>{
 	}
 	
 	@Override
-	public int compareTo(SimTime o) {
+	public int compareTo(Timestamp o) {
 		if (microticks > o.microticks) {
 			return 1;
 		}
@@ -49,10 +49,10 @@ public class SimTime implements Comparable<SimTime>{
 	
 	@Override
 	public boolean equals(Object o) {
-		if (! (o instanceof SimTime)) {
+		if (! (o instanceof Timestamp)) {
 			return false;
 		}
-		SimTime os = (SimTime) o;
+		Timestamp os = (Timestamp) o;
 		return this.microticks == os.microticks;
 	}
 
@@ -67,7 +67,7 @@ public class SimTime implements Comparable<SimTime>{
 			str = us.toPlainString() + "us";
 		} else if (ns < 1000000000) {		// less than 1s - scale output in ms
 			BigDecimal ms = secs.divide(new BigDecimal(1000000L),6,RoundingMode.HALF_EVEN);
-			str = ms.toPlainString() + "s";
+			str = ms.toPlainString() + "ms";
 		} else {
 			secs = secs.divide(new BigDecimal(1000000000L),9,RoundingMode.HALF_EVEN);
 			return secs.toPlainString() + "s";

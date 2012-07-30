@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.concurrent.Semaphore;
 import org.apache.log4j.Logger;
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.bricks.InstrumentStore;
 import com.pjf.mat.sim.model.BaseState;
@@ -169,7 +170,7 @@ public class HLOC extends BaseElement implements SimElement {
 	}
 
 	@Override
-	protected void processEvent(int input, Event evt) throws Exception {
+	protected void processEvent(Timestamp ts, int input, Event evt) throws Exception {
 		int instr = evt.getInstrument_id();
 		float val = evt.getFloatData();
 		synchronized(this){

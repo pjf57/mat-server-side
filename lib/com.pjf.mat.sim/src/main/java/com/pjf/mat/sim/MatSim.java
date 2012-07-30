@@ -14,6 +14,7 @@ import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.element.ElementFactory;
 import com.pjf.mat.sim.lookup.LookupHandler;
 import com.pjf.mat.sim.lookup.LookupRequest;
@@ -23,7 +24,6 @@ import com.pjf.mat.sim.model.LookupValidity;
 import com.pjf.mat.sim.model.SimAccess;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
-import com.pjf.mat.sim.model.SimTime;
 import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.comms.BaseComms;
@@ -165,9 +165,9 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public void publishEventLog(int srcId, int intrumentId, int rawValue) {
+	public void publishEventLog(Timestamp ts, int srcId, int intrumentId, int rawValue) {
 		logger.debug("publishEventLog()");
-		notifyEvent(srcId,intrumentId,rawValue);
+		notifyEvent(ts,srcId,intrumentId,rawValue);
 	}
 
 	@Override
@@ -221,7 +221,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public SimTime getCurrentSimTime() {
+	public Timestamp getCurrentSimTime() {
 		return clk.getSimTime();
 	}
 
@@ -245,7 +245,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public void publishMicroTick(SimTime simTime) {
+	public void publishMicroTick(Timestamp simTime) {
 		router.simMicroTick(simTime);
 		lkuHandler.simMicroTick(simTime);
 	}

@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.model.BaseState;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.LookupResult;
@@ -42,17 +43,20 @@ public abstract class BaseElement implements SimElement {
 		private final boolean valid;
 		private final Event evt;
 		private final int ip;	// which input (1..4)
+		private final Timestamp ts;
 		
-		public IPEvent(int ip, Event evt) {
+		public IPEvent(Timestamp ts, int ip, Event evt) {
 			this.valid = true;
 			this.evt = evt;
 			this.ip = ip;
+			this.ts = ts;
 		}
 				
 		public IPEvent() {
 			this.valid = false;
 			this.evt = null;
 			this.ip = 0;
+			this.ts = new Timestamp();
 		}
 
 		public Event getEvt() {
@@ -72,6 +76,10 @@ public abstract class BaseElement implements SimElement {
 			return ip - o.ip;
 		}
 
+		public Timestamp getTs() {
+			return ts;
+		}
+
 	}
 	
 	class EventPump extends Thread {
@@ -85,7 +93,7 @@ public abstract class BaseElement implements SimElement {
 		}
 	
 		public void post(int ip, Event evt) {
-			IPEvent ipevt = new IPEvent(ip, evt);
+			IPEvent ipevt = new IPEvent(host.getCurrentSimTime(), ip, evt);
 			queue.add(ipevt);		
 		}
 	
@@ -96,7 +104,7 @@ public abstract class BaseElement implements SimElement {
 				try {
 					ipevt = queue.take();
 					if (ipevt.isValid()) {
-						processEvent(ipevt.getIp(),ipevt.getEvt());
+						processEvent(ipevt.getTs(),ipevt.getIp(),ipevt.getEvt());
 					}
 				} catch (Exception e) {
 					String msg = getIdStr() + "Error processing evt - " + e.getMessage();
@@ -245,11 +253,12 @@ public abstract class BaseElement implements SimElement {
 	/**
 	 * Template method to process an event
 	 * 
+	 * @param ts - timestamp of event
 	 * @param input - which input the event arrived on
 	 * @param evt
 	 * @throws Exception
 	 */
-	protected void processEvent(int input, Event evt) throws Exception {
+	protected void processEvent(Timestamp ts, int input, Event evt) throws Exception {
 		// default behaviour is to log a warning
 		logger.warn(getIdStr() + "unexpected event:" + evt);		
 	}

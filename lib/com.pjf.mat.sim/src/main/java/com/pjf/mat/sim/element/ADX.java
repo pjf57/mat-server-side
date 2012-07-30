@@ -3,6 +3,7 @@ package com.pjf.mat.sim.element;
 
 import org.apache.log4j.Logger;
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.bricks.EmaLogic;
 import com.pjf.mat.sim.bricks.InstrumentStore;
@@ -69,7 +70,7 @@ public class ADX extends BaseElement implements SimElement {
 	}
 
 	@Override
-	protected void processEvent(int input, Event evt) throws Exception {
+	protected void processEvent(Timestamp ts, int input, Event evt) throws Exception {
 		int instr = evt.getInstrument_id();
 		// get high(n), high(n-1), low(n), low(n-1)
 		FloatValue highN  = lookup(instr, MatElementDefs.EL_HLOC_L_PREV_H).getFloatValue();

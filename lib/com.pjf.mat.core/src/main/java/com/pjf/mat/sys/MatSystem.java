@@ -11,6 +11,7 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.NotificationCallback;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
 import com.pjf.mat.sim.MatSim;
@@ -26,9 +27,9 @@ public abstract class MatSystem {
 	class NotificationHandler implements NotificationCallback {
 
 		@Override
-		public void notifyEventLog(Element src, int intrument_id, int rawValue,
+		public void notifyEventLog(Timestamp timestamp, Element src, int intrument_id, int rawValue,
 				String dispValue) {
-			logger.info("Event: src=" + src.getId() +
+			logger.info("Event: ts=" + timestamp + " src=" + src.getId() +
 						" type=" + src.getType() +
 						" instrument=" + intrument_id +
 						" value=" + dispValue);			

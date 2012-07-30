@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import org.apache.log4j.BasicConfigurator;
 
-import com.pjf.mat.sim.model.SimTime;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.router.SortedEventQueue;
 import com.pjf.mat.sim.types.Event;
 
@@ -21,7 +21,7 @@ public class SortedEventQueueTest extends TestCase {
 	public void testInitialisation() {
 		SortedEventQueue q = new SortedEventQueue();
 		Collection<Event> events;
-		SimTime t = new SimTime();
+		Timestamp t = new Timestamp();
 		assertEquals(t.getMicroticks(),0L);
 		events = q.takeEvents(t);
 		assertEquals(events.size(),0);
@@ -30,7 +30,7 @@ public class SortedEventQueueTest extends TestCase {
 	public void testOneCurrent() {
 		SortedEventQueue q = new SortedEventQueue();
 		Collection<Event> events;
-		SimTime t = new SimTime();
+		Timestamp t = new Timestamp();
 		t.add(100);
 		q.add(new Event(2,3,50.0f), t);
 		events = q.takeEvents(t);
@@ -44,9 +44,9 @@ public class SortedEventQueueTest extends TestCase {
 	public void testOneAhead() {
 		SortedEventQueue q = new SortedEventQueue();
 		Collection<Event> events;
-		SimTime t1 = new SimTime();
+		Timestamp t1 = new Timestamp();
 		t1.add(100);
-		SimTime t2 = new SimTime(t1);
+		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
 		q.add(new Event(2,3,50.0f), t2);
 		events = q.takeEvents(t1);
@@ -64,9 +64,9 @@ public class SortedEventQueueTest extends TestCase {
 	public void testOneBehind() {
 		SortedEventQueue q = new SortedEventQueue();
 		Collection<Event> events;
-		SimTime t1 = new SimTime();
+		Timestamp t1 = new Timestamp();
 		t1.add(100);
-		SimTime t2 = new SimTime(t1);
+		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
 		q.add(new Event(2,3,50.0f), t1);
 		events = q.takeEvents(t2);
@@ -82,7 +82,7 @@ public class SortedEventQueueTest extends TestCase {
 	public void testTwoCurrentSameT() {
 		SortedEventQueue q = new SortedEventQueue();
 		Collection<Event> events;
-		SimTime t = new SimTime();
+		Timestamp t = new Timestamp();
 		t.add(100);
 		q.add(new Event(2,3,50.0f), t);
 		q.add(new Event(2,3,51.0f), t);
@@ -100,9 +100,9 @@ public class SortedEventQueueTest extends TestCase {
 	public void testTwoCurrentDiffTimeSameOrderCollectSeq() {
 		SortedEventQueue q = new SortedEventQueue();
 		Collection<Event> events;
-		SimTime t1 = new SimTime();
+		Timestamp t1 = new Timestamp();
 		t1.add(100);
-		SimTime t2 = new SimTime(t1);
+		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
 		q.add(new Event(2,3,50.0f), t1);
 		q.add(new Event(2,3,51.0f), t2);
@@ -123,9 +123,9 @@ public class SortedEventQueueTest extends TestCase {
 	public void testTwoCurrentDiffTimeDiffOrderCollectSeq() {
 		SortedEventQueue q = new SortedEventQueue();
 		Collection<Event> events;
-		SimTime t1 = new SimTime();
+		Timestamp t1 = new Timestamp();
 		t1.add(100);
-		SimTime t2 = new SimTime(t1);
+		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
 		q.add(new Event(2,3,51.0f), t2);
 		q.add(new Event(2,3,50.0f), t1);
@@ -145,9 +145,9 @@ public class SortedEventQueueTest extends TestCase {
 	public void testTwoCurrentDiffTimeSameOrderCollectTogether() {
 		SortedEventQueue q = new SortedEventQueue();
 		Collection<Event> events;
-		SimTime t1 = new SimTime();
+		Timestamp t1 = new Timestamp();
 		t1.add(100);
-		SimTime t2 = new SimTime(t1);
+		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
 		q.add(new Event(2,3,50.0f), t1);
 		q.add(new Event(2,3,51.0f), t2);
@@ -166,11 +166,11 @@ public class SortedEventQueueTest extends TestCase {
 	public void testTwoCurrentDiffTimeSameOrderCollectTogetherBehind() {
 		SortedEventQueue q = new SortedEventQueue();
 		Collection<Event> events;
-		SimTime t1 = new SimTime();
+		Timestamp t1 = new Timestamp();
 		t1.add(100);
-		SimTime t2 = new SimTime(t1);
+		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
-		SimTime t3 = new SimTime(t2);
+		Timestamp t3 = new Timestamp(t2);
 		t3.add(20);
 		q.add(new Event(2,3,50.0f), t1);
 		q.add(new Event(2,3,51.0f), t2);

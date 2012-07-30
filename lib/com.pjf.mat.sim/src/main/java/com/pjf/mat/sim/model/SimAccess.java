@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.model;
 
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.ElementException;
 import com.pjf.mat.sim.lookup.LookupRequest;
 import com.pjf.mat.sim.types.Event;
@@ -23,9 +24,9 @@ public interface SimAccess {
 	void notifyError(String msg);
 
 	/**
-	 * @return current simulation timestamps in clks
+	 * @return current simulation time in clks
 	 */
-	SimTime getCurrentSimTime();
+	Timestamp getCurrentSimTime();
 
 	/**
 	 * Send lookup request to all elements and get response from one of them
@@ -42,7 +43,7 @@ public interface SimAccess {
 	 * @param simTime
 	 */
 
-	void publishMicroTick(SimTime simTime);
+	void publishMicroTick(Timestamp simTime);
 	/**
 	 * publish a tick (ie: 10 microticks)
 	 * 

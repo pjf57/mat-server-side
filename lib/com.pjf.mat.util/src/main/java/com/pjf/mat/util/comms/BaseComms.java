@@ -14,6 +14,7 @@ import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.util.Conversion;
 import com.pjf.mat.util.ElementStatus;
 
@@ -194,18 +195,20 @@ public abstract class BaseComms implements Comms {
 			upto+=2;
 			int data = Conversion.getIntFromBytes(msg,upto,4);
 			upto +=4;
-			notifyEvent(src, instrId, data);
+			// FIXME - get timestamp from msg
+			notifyEvent(new Timestamp(),src, instrId, data);
 		}		
 	}
 
 	/**
 	 * Notify subscribers of new event
 	 * 
+	 * @param ts 
 	 * @param src
 	 * @param instrId
 	 * @param data
 	 */
-	protected void notifyEvent(int src, int instrId, int data) {
+	protected void notifyEvent(Timestamp ts, int src, int instrId, int data) {
 		OutputPort op = null;
 		if (src > 0  &&  mat != null) {
 			Element el = mat.getModel().getElement(src);
@@ -229,7 +232,7 @@ public abstract class BaseComms implements Comms {
 		}
 		logger.debug("Event from element=" + src + ":" + srcName + " InstrId=" + instrId + " val=" + value);
 		for (NotificationCallback subscriber : notificationSubscribers) {
-			subscriber.notifyEventLog(srcElement, instrId, data, value);
+			subscriber.notifyEventLog(ts,srcElement, instrId, data, value);
 		}
 	}
 	
