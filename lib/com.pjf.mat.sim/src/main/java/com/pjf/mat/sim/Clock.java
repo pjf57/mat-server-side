@@ -28,6 +28,10 @@ public class Clock extends Thread implements ClockTick{
 		this.timestamp = 0;
 	}
 	
+	/**
+	 * returns a copy of the current time
+	 * @return
+	 */
 	public Timestamp getSimTime() {
 		return new Timestamp(simTime);
 	}
