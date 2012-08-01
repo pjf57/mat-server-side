@@ -14,7 +14,7 @@ public class Event implements Comparable<Event> {
 	private final int src;
 	private final int instrument_id;
 	private final boolean isFloat;
-	private final Timestamp timestamp;
+	private Timestamp timestamp;
 	private int tag;
 	
 	public Event(Timestamp timestamp, int src, int instrument_id, int rawData) {
@@ -71,6 +71,10 @@ public class Event implements Comparable<Event> {
 	@Override
 	public int compareTo(Event o) {
 		return timestamp.compareTo(o.timestamp);
+	}
+
+	public void setTimestamp(Timestamp newTime) {
+		this.timestamp = newTime;		
 	}
 	
 	

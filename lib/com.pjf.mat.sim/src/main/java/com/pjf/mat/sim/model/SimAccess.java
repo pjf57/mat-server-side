@@ -2,7 +2,6 @@ package com.pjf.mat.sim.model;
 
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.ElementException;
-import com.pjf.mat.sim.lookup.LookupRequest;
 import com.pjf.mat.sim.types.Event;
 
 /**
@@ -27,15 +26,6 @@ public interface SimAccess {
 	 * @return current simulation time in clks
 	 */
 	Timestamp getCurrentSimTime();
-
-	/**
-	 * Send lookup request to all elements and get response from one of them
-	 * 
-	 * @param req
-	 * @return lookup result
-	 * @throws Exception 
-	 */
-	LookupResult handleLookup(LookupRequest req) throws Exception;
 
 	/**
 	 * Publish a microtick (ie: one HW clock cycle)

@@ -1,12 +1,10 @@
 package com.pjf.mat.sim.bricks;
 
-import java.util.concurrent.PriorityBlockingQueue;
 
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.model.BaseState;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.LookupResult;
@@ -36,92 +34,7 @@ public abstract class BaseElement implements SimElement {
 	private int[] srcRouting;
 	private final int MAX_INPUTS = 4;
 	protected BaseState baseState;
-	protected int evtCount;
-	private final EventPump eventPump;
-	
-	class IPEvent implements Comparable<IPEvent> {
-		private final boolean valid;
-		private final Event evt;
-		private final int ip;	// which input (1..4)
-		private final Timestamp ts;
-		
-		public IPEvent(Timestamp ts, int ip, Event evt) {
-			this.valid = true;
-			this.evt = evt;
-			this.ip = ip;
-			this.ts = ts;
-		}
-				
-		public IPEvent() {
-			this.valid = false;
-			this.evt = null;
-			this.ip = 0;
-			this.ts = new Timestamp();
-		}
-
-		public Event getEvt() {
-			return evt;
-		}
-
-		public int getIp() {
-			return ip;
-		}
-		
-		public boolean isValid() {
-			return valid;
-		}
-
-		@Override
-		public int compareTo(IPEvent o) {
-			return ip - o.ip;
-		}
-
-		public Timestamp getTs() {
-			return ts;
-		}
-
-	}
-	
-	class EventPump extends Thread {
-		private final PriorityBlockingQueue<IPEvent> queue;
-		private boolean shutdown;
-	
-		public EventPump(String elementName) {
-			queue = new PriorityBlockingQueue<BaseElement.IPEvent>();
-			setName(elementName);
-			shutdown = false;
-		}
-	
-		public void post(int ip, Event evt) {
-			IPEvent ipevt = new IPEvent(host.getCurrentSimTime(), ip, evt);
-			queue.add(ipevt);		
-		}
-	
-		@Override
-		public void run() {
-			while (!shutdown) {
-				IPEvent ipevt;
-				try {
-					ipevt = queue.take();
-					if (ipevt.isValid()) {
-						processEvent(ipevt.getTs(),ipevt.getIp(),ipevt.getEvt());
-					}
-				} catch (Exception e) {
-					String msg = getIdStr() + "Error processing evt - " + e.getMessage();
-					host.notifyError(msg);
-				}
-			}
-			logger.info("EventPump: shutdown.");
-		}
-		
-		public void shutdown() {
-			logger.debug("EventPump: shutting down ...");
-			shutdown = true;
-			queue.add(new IPEvent());
-		}
-
-	}
-	
+	protected int evtCount;	
 	
 	public BaseElement(int id, int hwType, SimHost host) {
 		this.elementId = id;
@@ -133,8 +46,6 @@ public abstract class BaseElement implements SimElement {
 		for (int i=0; i<MAX_INPUTS; i++) {
 			srcRouting[i] = 0;	// no connection
 		}
-		eventPump = new EventPump("" + id + ":" + getTypeName() + ":evtPump");
-		eventPump.start();
 	}
 
 	/**
@@ -151,7 +62,7 @@ public abstract class BaseElement implements SimElement {
 				logger.debug(getIdStr() + "Received Event on input " + (ip+1) +
 						": " + evt);
 				evtCount++;
-				eventPump.post(ip+1,evt);
+				processEvent(ip+1,evt);
 			}				
 		}
 	}
@@ -253,12 +164,11 @@ public abstract class BaseElement implements SimElement {
 	/**
 	 * Template method to process an event
 	 * 
-	 * @param ts - timestamp of event
 	 * @param input - which input the event arrived on
 	 * @param evt
 	 * @throws Exception
 	 */
-	protected void processEvent(Timestamp ts, int input, Event evt) throws Exception {
+	protected void processEvent(int input, Event evt) throws Exception {
 		// default behaviour is to log a warning
 		logger.warn(getIdStr() + "unexpected event:" + evt);		
 	}
@@ -278,7 +188,6 @@ public abstract class BaseElement implements SimElement {
 	@Override
 	public void shutdown() {
 		logger.debug("Element shutdown (default behaviour)");
-		eventPump.shutdown();
 	}
 	
 	@Override

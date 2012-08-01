@@ -10,6 +10,7 @@ diagram.element.1.loc.y=396
 diagram.element.1.in.1=6.out.0
 diagram.element.1.in.2=2.out.0
 diagram.element.1.in.3=5.out.0
+diagram.element.1.in.0=4.out.0
 
 diagram.element.2.name=tg1
 diagram.element.2.type=TG1
@@ -26,6 +27,7 @@ diagram.element.3.loc.x=72
 diagram.element.3.loc.y=348
 diagram.element.3.prop.len=3
 diagram.element.3.prop.alpha=0.5
+diagram.element.3.in.0=2.out.0
 
 diagram.element.4.name=hloc
 diagram.element.4.type=HLOC

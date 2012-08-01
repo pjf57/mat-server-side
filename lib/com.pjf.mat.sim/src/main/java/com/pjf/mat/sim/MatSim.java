@@ -16,8 +16,6 @@ import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.element.ElementFactory;
-import com.pjf.mat.sim.lookup.LookupHandler;
-import com.pjf.mat.sim.lookup.LookupRequest;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.LookupValidity;
@@ -28,15 +26,13 @@ import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.comms.BaseComms;
 import com.pjf.mat.sim.router.Router;
-import com.pjf.mat.sim.router.Router1;
 
 
 public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	private final static Logger logger = Logger.getLogger(MatSim.class);
 	private final List<SimElement> simElements;
 	private Clock clk;
-	private final Router1 router;
-	private final LookupHandler lkuHandler;
+	private final Router router;
 	private boolean stopOnError;
 	
 	
@@ -44,8 +40,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		stopOnError = true;
 		simElements = new ArrayList<SimElement>();
 		clk = new Clock(this,10,logger);
-		router = new Router1(this);
-		lkuHandler = new LookupHandler(this);
+		router = new Router(this);
 	}
 
 	public void setClock(Clock clock) {
@@ -150,7 +145,6 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 			se.shutdown();
 		}
 		router.shutdown();
-		lkuHandler.shutdown();
 		clk.shutdown();
 	}
 
@@ -202,7 +196,21 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	public LookupResult lookup(int source, int instrumentId, int lookupKey)
 			throws Exception {
 		LookupResult result = null;
-		result = lkuHandler.lookup(source, instrumentId, lookupKey);
+		String logstr = "lookup(src=" + source + ",instr=" + instrumentId +
+				",key=" + lookupKey + "): ";
+		for (SimElement se : simElements) {
+			result = se.handleLookup(instrumentId, lookupKey);
+			if (!result.getValidity().equals(LookupValidity.TIMEOUT)) {
+				// this element handled the request - so break out of the loop
+				break;
+			}
+		}
+		if (result == null) {
+			String msg = logstr + "Unexpected null value";
+			notifyError(msg);
+		} else {
+			logger.debug(logstr + " returned " + result);
+		}
 		return result;
 	}
 
@@ -227,28 +235,8 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public LookupResult handleLookup(LookupRequest req) throws Exception {
-		String logstr = "lookup(" + req + "): ";
-	LookupResult result = null;
-	for (SimElement se : simElements) {
-		result = se.handleLookup(req.getInstrumentId(), req.getInstrumentId());
-		if (!result.getValidity().equals(LookupValidity.TIMEOUT)) {
-			break;
-		}
-	}
-	if (result == null) {
-		String msg = logstr + "Unexpected null value";
-		notifyError(msg);
-	} else {
-		logger.debug(logstr + " returned " + result);
-	}
-	return result;
-	}
-
-	@Override
 	public void publishMicroTick(Timestamp simTime) {
 		router.simMicroTick(simTime);
-		lkuHandler.simMicroTick(simTime);
 	}
 
 	@Override

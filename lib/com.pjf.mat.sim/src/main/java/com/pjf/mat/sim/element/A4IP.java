@@ -2,7 +2,6 @@ package com.pjf.mat.sim.element;
 
 import org.apache.log4j.Logger;
 import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
@@ -80,7 +79,7 @@ public class A4IP extends BaseElement implements SimElement {
 	}
 
 	@Override
-	protected void processEvent(Timestamp ts, int input, Event evt) {
+	protected void processEvent(int input, Event evt) {
 		int instr = evt.getInstrument_id();
 		lastValue[instr][input].set(evt.getFloatData());
 		FloatValue x = (c_xsel == 0) ? lastValue[instr][1] : c_k1;
