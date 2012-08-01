@@ -81,7 +81,7 @@ public class ATR extends BaseElement implements SimElement {
 			FloatValue output = ema.processEvent(instr, val);
 			if (output.isValid()) {
 				atrStore.put(output.getValue(), instr);
-				Event evtOut = new Event(elementId,instr,output.getValue());
+				Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,output.getValue());
 				host.publishEvent(evtOut,LATENCY);
 			}
 		}

@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.types;
 
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.util.Conversion;
 
 /**
@@ -13,21 +14,35 @@ public class Event implements Comparable<Event> {
 	private final int src;
 	private final int instrument_id;
 	private final boolean isFloat;
+	private final Timestamp timestamp;
+	private int tag;
 	
-	public Event(int src, int instrument_id, int rawData) {
+	public Event(Timestamp timestamp, int src, int instrument_id, int rawData) {
 		this.rawData = rawData;
 		this.src = src;
 		this.instrument_id = instrument_id;
 		this.isFloat = false;
+		this.timestamp = timestamp;
+		tag = -1;
 	}
 
-	public Event(int src, int instrument_id, float data) {
+	public Event(Timestamp timestamp, int src, int instrument_id, float data) {
 		this.rawData = Float.floatToIntBits(data);
 		this.src = src;
 		this.instrument_id = instrument_id;
 		this.isFloat = true;
+		this.timestamp = timestamp;
+		tag = -1;
 	}
 
+	public void setTag(int tag) {
+		this.tag = tag;
+	}
+	
+	public Timestamp getTimestamp() {
+		return timestamp;
+	}
+	
 	public int getRawData() {
 		return rawData;
 	}
@@ -46,14 +61,16 @@ public class Event implements Comparable<Event> {
 	
 	@Override
 	public String toString() {
-		return "[src" + src + 
+		return "[tag=" + tag +
+		" ts=" + timestamp + 
+		" src" + src + 
 		",InstrId=" + instrument_id + 
 		",data=" + ((isFloat) ? getFloatData() : Conversion.toHexIntString(rawData)) + "]";
 	}
 
 	@Override
 	public int compareTo(Event o) {
-		return src - o.src;
+		return timestamp.compareTo(o.timestamp);
 	}
 	
 	

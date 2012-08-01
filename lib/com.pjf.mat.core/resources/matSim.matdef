@@ -9,6 +9,7 @@ diagram.element.1.loc.x=504
 diagram.element.1.loc.y=396
 diagram.element.1.in.1=6.out.0
 diagram.element.1.in.2=2.out.0
+diagram.element.1.in.3=5.out.0
 
 diagram.element.2.name=tg1
 diagram.element.2.type=TG1

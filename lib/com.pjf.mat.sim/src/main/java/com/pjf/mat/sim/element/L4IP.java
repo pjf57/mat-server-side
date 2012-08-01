@@ -95,7 +95,7 @@ public class L4IP extends BaseElement implements SimElement {
 		BooleanValue q = fn(c_cf2,lastValue[instr][2],y);
 		BooleanValue z = lop(c_lop,p,q);
 		if (z.isValid()){ 
-			Event evtOut = new Event(elementId,instr,z.getRawData());
+			Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,z.getRawData());
 			host.publishEvent(evtOut,LATENCY);
 		}
 	}

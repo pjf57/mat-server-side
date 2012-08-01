@@ -97,7 +97,8 @@ public class SortedEventQueue {
 			b = new Bucket(evtTime);
 			list.put(evtTime,b);
 		}
-		b.add(evt);		
+		b.add(evt);
+		logger.warn("add(" + evt + "," + evtTime + " - bucket is " + b);
 	}
 
 	/**

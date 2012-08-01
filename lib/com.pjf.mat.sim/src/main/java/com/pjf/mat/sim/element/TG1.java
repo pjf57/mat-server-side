@@ -72,7 +72,7 @@ public class TG1 extends BaseElement implements SimElement {
 			logger.debug("processTick(): gapCntr= " + gapCntr);
 			if (gapCntr == 0) {
 				// send event
-				Event evt = new Event(elementId, instrumentId, data);
+				Event evt = new Event(host.getCurrentSimTime(),elementId, instrumentId, data);
 				host.publishEvent(evt,LATENCY);
 				gapCntr = c_gap;
 				data += c_p1;

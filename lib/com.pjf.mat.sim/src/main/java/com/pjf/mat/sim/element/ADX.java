@@ -102,7 +102,7 @@ public class ADX extends BaseElement implements SimElement {
 				if (aEma.isValid()) {
 					float adx = 100 * aEma.getValue();
 					adxStore.put(adx, instr);
-					Event evtOut = new Event(elementId,instr,adx);
+					Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,adx);
 					host.publishEvent(evtOut,LATENCY);
 				}
 			}

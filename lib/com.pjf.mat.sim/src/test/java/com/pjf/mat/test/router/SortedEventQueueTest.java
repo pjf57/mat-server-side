@@ -32,7 +32,7 @@ public class SortedEventQueueTest extends TestCase {
 		Collection<Event> events;
 		Timestamp t = new Timestamp();
 		t.add(100);
-		q.add(new Event(2,3,50.0f), t);
+		q.add(new Event(t,2,3,50.0f), t);
 		events = q.takeEvents(t);
 		assertEquals(events.size(),1);
 		Event e = events.iterator().next();
@@ -48,7 +48,7 @@ public class SortedEventQueueTest extends TestCase {
 		t1.add(100);
 		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
-		q.add(new Event(2,3,50.0f), t2);
+		q.add(new Event(t2,2,3,50.0f), t2);
 		events = q.takeEvents(t1);
 		assertEquals(events.size(),0);
 		events = q.takeEvents(t2);
@@ -68,7 +68,7 @@ public class SortedEventQueueTest extends TestCase {
 		t1.add(100);
 		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
-		q.add(new Event(2,3,50.0f), t1);
+		q.add(new Event(t1,2,3,50.0f), t1);
 		events = q.takeEvents(t2);
 		assertEquals(events.size(),1);
 		Event e = events.iterator().next();
@@ -84,8 +84,8 @@ public class SortedEventQueueTest extends TestCase {
 		Collection<Event> events;
 		Timestamp t = new Timestamp();
 		t.add(100);
-		q.add(new Event(2,3,50.0f), t);
-		q.add(new Event(2,3,51.0f), t);
+		q.add(new Event(t,2,3,50.0f), t);
+		q.add(new Event(t,2,3,51.0f), t);
 		events = q.takeEvents(t);
 		assertEquals(events.size(),2);
 		Iterator<Event> iter = events.iterator();
@@ -104,8 +104,8 @@ public class SortedEventQueueTest extends TestCase {
 		t1.add(100);
 		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
-		q.add(new Event(2,3,50.0f), t1);
-		q.add(new Event(2,3,51.0f), t2);
+		q.add(new Event(t1,2,3,50.0f), t1);
+		q.add(new Event(t2,2,3,51.0f), t2);
 		Event e;
 		events = q.takeEvents(t1);
 		assertEquals(events.size(),1);
@@ -127,8 +127,8 @@ public class SortedEventQueueTest extends TestCase {
 		t1.add(100);
 		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
-		q.add(new Event(2,3,51.0f), t2);
-		q.add(new Event(2,3,50.0f), t1);
+		q.add(new Event(t2,2,3,51.0f), t2);
+		q.add(new Event(t1,2,3,50.0f), t1);
 		Event e;
 		events = q.takeEvents(t1);
 		assertEquals(events.size(),1);
@@ -149,8 +149,8 @@ public class SortedEventQueueTest extends TestCase {
 		t1.add(100);
 		Timestamp t2 = new Timestamp(t1);
 		t2.add(5);
-		q.add(new Event(2,3,50.0f), t1);
-		q.add(new Event(2,3,51.0f), t2);
+		q.add(new Event(t1,2,3,50.0f), t1);
+		q.add(new Event(t2,2,3,51.0f), t2);
 		Event e;
 		events = q.takeEvents(t2);
 		assertEquals(events.size(),2);
@@ -172,8 +172,8 @@ public class SortedEventQueueTest extends TestCase {
 		t2.add(5);
 		Timestamp t3 = new Timestamp(t2);
 		t3.add(20);
-		q.add(new Event(2,3,50.0f), t1);
-		q.add(new Event(2,3,51.0f), t2);
+		q.add(new Event(t1,2,3,50.0f), t1);
+		q.add(new Event(t2,2,3,51.0f), t2);
 		Event e;
 		events = q.takeEvents(t3);
 		assertEquals(events.size(),2);

@@ -28,13 +28,14 @@ import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.comms.BaseComms;
 import com.pjf.mat.sim.router.Router;
+import com.pjf.mat.sim.router.Router1;
 
 
 public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	private final static Logger logger = Logger.getLogger(MatSim.class);
 	private final List<SimElement> simElements;
 	private Clock clk;
-	private final Router router;
+	private final Router1 router;
 	private final LookupHandler lkuHandler;
 	private boolean stopOnError;
 	
@@ -43,7 +44,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		stopOnError = true;
 		simElements = new ArrayList<SimElement>();
 		clk = new Clock(this,10,logger);
-		router = new Router(this);
+		router = new Router1(this);
 		lkuHandler = new LookupHandler(this);
 	}
 

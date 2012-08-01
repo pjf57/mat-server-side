@@ -29,6 +29,7 @@ public class Logger extends BaseElement implements SimElement {
 
 	@Override
 	protected void processEvent(Timestamp ts, int input, Event evt) {
+		logger.debug("processEvent() - " + evt);
 		host.publishEventLog(ts, evt.getSrc(), evt.getInstrument_id(), evt.getRawData());
 	}
 
