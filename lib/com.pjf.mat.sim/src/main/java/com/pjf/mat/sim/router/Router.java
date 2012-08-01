@@ -1,8 +1,6 @@
 package com.pjf.mat.sim.router;
 
-import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.Logger;
 
@@ -19,34 +17,20 @@ import com.pjf.mat.sim.types.Event;
  * 
  * @author pjf
  */
-public class Router extends Thread {
+public class Router {
 	private final static Logger logger = Logger.getLogger(Router.class);
 	private final SimAccess sim;
 	private PriorityBlockingQueue<Event> queue;
-	private boolean shutdown;
-	private Semaphore sem;
 	private int nextTag;
-	
-	class queueOrderComparator implements Comparator<Event>{
-
-		@Override
-		public int compare(Event a, Event b) {
-			return -1 * (a.compareTo(b));
-		}
-	}
-	
+		
 	public Router(SimAccess sim) {
 		this.sim = sim;
-		setName("Router1");
 		nextTag = 0;
-		shutdown = false;
-		queue = new PriorityBlockingQueue<Event>(10,new queueOrderComparator());
-		sem = new Semaphore(0);
+		queue = new PriorityBlockingQueue<Event>();
 	}
 
 	public void start() {
 		logger.debug("Starting Router");
-		// FIXME 	super.start();
 	}
 	
 	public synchronized void post(Event evt, int latency) {
@@ -68,30 +52,13 @@ public class Router extends Thread {
 		queue.add(evt);
 	}
 	
-	@Override
-	public void run() {
-		while (!shutdown) {
-			try {
-				// wait for sim clock tick
-				sem.acquire();
-				synchronized(this) {
-					propagateEvents();
-				}
-			} catch (InterruptedException e) {
-				logger.warn("interrupt: " + e.getMessage());
-				// ignore interrupts
-			}
-		}
-		logger.info("Shutdown.");
-	}
-
 	/**
 	 * Take all events from queue upto and including specified time
 	 * and propagate them into all the elements.
 	 */
 	private void propagateEvents() {
 		Timestamp now = sim.getCurrentSimTime();
-		// FIXME					logger.warn("run() - take events from queue, time=" + now);
+		logger.debug("propagateEvents() - take events from queue, time=" + now);
 		while (true) {
 			Event evt = queue.peek();
 			if (evt == null) {
@@ -139,14 +106,9 @@ public class Router extends Thread {
 			logger.debug("simMicroTick(" + sim.getCurrentSimTime() + "): queue is " + queue);
 		}
 		propagateEvents();
-	// FIXME	sem.release();
 	}
 
 	public void shutdown() {
 		logger.debug("Shutting down ...");
-		shutdown = true;
-		// kick the queue
-		Event evt = new Event(new Timestamp(),0,0,0);
-		post(evt,0);
 		}
 	}
