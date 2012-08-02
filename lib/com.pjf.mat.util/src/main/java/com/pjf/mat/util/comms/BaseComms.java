@@ -192,11 +192,11 @@ public abstract class BaseComms implements Comms {
 			// process first/next log item
 			int src = msg[upto++];
 			int instrId = msg[upto++];
-			upto+=2;
+			long timestamp = Conversion.getLongFromBytes(msg,upto,6);
+			upto+=6;
 			int data = Conversion.getIntFromBytes(msg,upto,4);
 			upto +=4;
-			// FIXME - get timestamp from msg
-			notifyEvent(new Timestamp(),src, instrId, data);
+			notifyEvent(new Timestamp(timestamp),src, instrId, data);
 		}		
 	}
 

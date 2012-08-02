@@ -54,6 +54,7 @@ public interface MatElementDefs {
 	public final int EL_C_STATUS_REQ 		= 0x03; // request status for el id [data(5..0)](all if el id = 0)
 	public final int EL_C_CONFIG_REQ 		= 0x04; // request config for el id [data(5..0)]
 	public final int EL_C_HWSIG_REQ  		= 0x05; // request hw signature
+	public final int EL_C_CLKSYNC_REQ  		= 0x06; // request a clk_ts sync [data is clk reference]
 
 //	------------------------------
 //	-- EMA

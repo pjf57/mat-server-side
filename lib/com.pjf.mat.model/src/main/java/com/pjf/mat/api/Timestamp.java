@@ -10,12 +10,27 @@ public class Timestamp implements Comparable<Timestamp>{
 	private final static long nsBase = 8;			// timebase in ns
 	private long microticks;						// clks since origin
 	
+	/**
+	 * Construct timestamp and set to invalid value
+	 */
 	public Timestamp() {
-		microticks = 0;
+		microticks = -1;
 	}
 	
+	/**
+	 * Copy constructor for timestamp
+	 * @param time
+	 */
 	public Timestamp(Timestamp time) {
 		this.microticks = time.microticks;
+	}
+
+	/**
+	 * Construct timestamp with specified microticks
+	 * @param init
+	 */
+	public Timestamp(long init) {
+		microticks = init;
 	}
 
 	public long getMicroticks() {
@@ -73,6 +88,10 @@ public class Timestamp implements Comparable<Timestamp>{
 			return secs.toPlainString() + "s";
 		}
 		return str;
+	}
+
+	public boolean isValid() {
+		return microticks != -1;
 	}
 
 }

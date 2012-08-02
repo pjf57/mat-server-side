@@ -26,4 +26,6 @@ public interface MatApi {
 	public void checkHWSignature() throws Exception;
 	
 	public long getSWSignature();
+	public void syncClock(int origin) throws Exception;
+
 }

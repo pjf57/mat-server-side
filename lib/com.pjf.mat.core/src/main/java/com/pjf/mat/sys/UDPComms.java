@@ -12,6 +12,7 @@ import org.apache.log4j.Logger;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
+import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.util.comms.BaseComms;
 import com.pjf.mat.util.comms.UDPCxn;
@@ -159,6 +160,15 @@ public class UDPComms extends BaseComms implements Comms {
 		logger.info("processRxHwSig() - signature received: ");
 		hwSig = sig;
 		hwSigSem.release();
+	}
+
+
+	@Override
+	public void synchroniseClock(int syncOrigin) throws IOException {
+		EncodedConfigItemList cfg = new EncodedConfigItemList();
+		cfg.put(0,MatElementDefs.EL_C_CLKSYNC_REQ | 0x80,0);
+		logger.info("synchroniseClock(" + syncOrigin + "): encoded " + cfg.getLength() + " bytes");
+		cxn.send(cfg.getData(),port);
 	}
 
 

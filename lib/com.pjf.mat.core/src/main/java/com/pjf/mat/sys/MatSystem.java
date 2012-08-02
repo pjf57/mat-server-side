@@ -124,6 +124,7 @@ public abstract class MatSystem {
 	protected void run() throws Exception {
 		logger.info("-----");	reqStatus(); Thread.sleep(500);
 		configure(mat);
+		mat.syncClock(0);
 		logger.info("-----");	reqStatus(); Thread.sleep(500);
 		sendTradeBurst(mat,feed);
 		logger.info("-----");	reqStatus(); Thread.sleep(500);

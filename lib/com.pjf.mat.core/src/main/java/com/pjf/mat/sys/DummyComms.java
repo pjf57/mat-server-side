@@ -181,4 +181,9 @@ public class DummyComms extends BaseComms implements Comms {
 		return mat.getModel().getSWSignature();
 	}
 
+	@Override
+	public void synchroniseClock(int syncOrigin) throws Exception {
+		logger.info("synchroniseClock(" + syncOrigin + ")");		
+	}
+
 }

@@ -112,6 +112,12 @@ public class MatInterface implements MatApi {
 	}
 
 
+	@Override
+	public void syncClock(int origin) throws Exception {
+		comms.synchroniseClock(origin);	
+	}
+
+
 
 
 

@@ -13,6 +13,7 @@ public class Clock extends Thread implements ClockTick{
 	private int timestamp;
 	private int counter;
 	private boolean shutdown;
+	private int timestampOrigin;		// 32 bit origin of timestamp
 	
 	public Clock(SimAccess host, int periodMs, MatLogger logger) {
 		this.logger = logger;
@@ -22,10 +23,15 @@ public class Clock extends Thread implements ClockTick{
 		timestamp = 0;
 		counter = 0;
 		shutdown = false;
+		timestampOrigin = -1;
 	}
 	
 	public void reset() {
 		this.timestamp = 0;
+	}
+	
+	public int getOrigin() {
+		return timestampOrigin;
 	}
 	
 	/**
@@ -45,16 +51,18 @@ public class Clock extends Thread implements ClockTick{
 	}
 
 	private void processMicroTick() {
-		simTime.add(1);		// count another microtick in the sim time
-		// FIXME should be trace
-//		logger.debug("processMicroTick(): " + simTime);
-		host.publishMicroTick(getSimTime());
-		counter++;
-		if (counter >= TICK_RATIO) {
-			counter = 0;
-			timestamp = (timestamp + 1) & 0xffff;
-			logger.debug("Tick - " + this);
-			host.publishClockTick(this);  
+		if (simTime.isValid()) {
+			simTime.add(1);		// count another microtick in the sim time
+			// FIXME should be trace
+	//		logger.debug("processMicroTick(): " + simTime);
+			host.publishMicroTick(getSimTime());
+			counter++;
+			if (counter >= TICK_RATIO) {
+				counter = 0;
+				timestamp = (timestamp + 1) & 0xffff;
+				logger.debug("Tick - " + this);
+				host.publishClockTick(this);  
+			}
 		}
 	}
 
@@ -71,6 +79,11 @@ public class Clock extends Thread implements ClockTick{
 	@Override
 	public String toString() {
 		return "simtime=" + simTime + ", timestamp=" + timestamp;
+	}
+
+	public void sync(int syncOrigin) {
+		timestampOrigin = syncOrigin;
+		simTime = new Timestamp(0);		
 	}
 
 }

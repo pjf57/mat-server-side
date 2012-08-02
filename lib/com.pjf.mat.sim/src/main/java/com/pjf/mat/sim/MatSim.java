@@ -255,4 +255,10 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		clk.start();
 	}
 
+	@Override
+	public void synchroniseClock(int syncOrigin) throws Exception {
+		logger.info("synchroniseClock(" + syncOrigin + ")");
+		clk.sync(syncOrigin);		
+	}
+
 }
