@@ -16,7 +16,7 @@ public class LkuAuditLog {
 	private LkuResult result;
 	private final float data;
 	
-	private static final int CLK_TIME_US = 8;	// microtick time
+	private static final int CLK_TIME_NS = 8;	// microtick time
 
 	public LkuAuditLog(Timestamp timestamp, Element requester,
 			int instrument_id, int operation, Element responder, int rspTimeMicroticks,
@@ -71,19 +71,19 @@ public class LkuAuditLog {
 		buf.append(",instr="); buf.append(instrument_id);
 		buf.append(",op="); buf.append(operation);
 		if (result.equals(LkuResult.TIMEOUT)) {
-			buf.append(" TIMEOUT after "); buf.append(rspTimeMicroticks*CLK_TIME_US); buf.append("us"); 
+			buf.append(" TIMEOUT after "); buf.append(rspTimeMicroticks*CLK_TIME_NS); buf.append("ns"); 
 			buf.append(" Data="); buf.append(data);
 		} else if (result.equals(LkuResult.ERROR)) {
-			buf.append(" ERROR result after "); buf.append(rspTimeMicroticks*CLK_TIME_US); buf.append("us");
+			buf.append(" ERROR result after "); buf.append(rspTimeMicroticks*CLK_TIME_NS); buf.append("ns");
 			buf.append(" Data="); buf.append(data);
 		} else if (result.equals(LkuResult.UNKNOWN)) {
-			buf.append(" UNKNOWN result after "); buf.append(rspTimeMicroticks*CLK_TIME_US); buf.append("us");
+			buf.append(" UNKNOWN result after "); buf.append(rspTimeMicroticks*CLK_TIME_NS); buf.append("ns");
 			buf.append(" Data="); buf.append(data);
 		} else {
 			buf.append(" rsp:"); buf.append(getShortName(responder));
 			buf.append(" "); buf.append(result);
 			buf.append(" Data="); buf.append(data);
-			buf.append(" in "); buf.append(rspTimeMicroticks*CLK_TIME_US); buf.append("us");
+			buf.append(" in "); buf.append(rspTimeMicroticks*CLK_TIME_NS); buf.append("ns");
 		}
 		return buf.toString();
 	}

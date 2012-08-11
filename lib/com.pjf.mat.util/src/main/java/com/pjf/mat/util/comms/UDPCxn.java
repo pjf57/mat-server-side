@@ -77,7 +77,7 @@ public class UDPCxn {
     	 * @throws IOException
     	 */
     	public byte[] rcv() throws IOException {
-  	      	byte[] buf = new byte[1024];
+  	      	byte[] buf = new byte[1500];
 	  	    DatagramPacket pkt = new DatagramPacket(buf, buf.length);
 	  	    boolean gotPkt = false;
 			byte[] data = new byte[0];;

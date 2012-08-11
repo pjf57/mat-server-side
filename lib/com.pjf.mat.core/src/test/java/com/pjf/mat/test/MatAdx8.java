@@ -18,6 +18,7 @@ public class MatAdx8 extends MatSystem {
 //		MatSystemLoader loader = new MatSystemLoader(p);
 //		loader.initialize(mat);
 		
+		Element sys = mat.getModel().getElement(0);
 		Element mfd = mat.getModel().getElement(7);
 		Element tg1 = mat.getModel().getElement(2);
 		Element ema = mat.getModel().getElement(6);
@@ -26,6 +27,8 @@ public class MatAdx8 extends MatSystem {
 		Element atr = mat.getModel().getElement(4);
 		Element adx = mat.getModel().getElement(5);
 
+		// configure system attributes
+		sys.getAttribute("lookup_audit_autosend").setValue("4");
 		// configure element attributes
 		mfd.getAttribute("udp_listen_port").setValue("15000");
 		mfd.getAttribute("price_op").setValue("0");
@@ -33,11 +36,11 @@ public class MatAdx8 extends MatSystem {
 		mfd.getAttribute("mdtype").setValue("1");
 		ema.getAttribute("len").setValue("7");
 		ema.getAttribute("alpha").setValue("0.25");
-		tg1.getAttribute("len").setValue("100");
-		tg1.getAttribute("gap").setValue("2");
+		tg1.getAttribute("len").setValue("1000");
+		tg1.getAttribute("gap").setValue("10000");
 		tg1.getAttribute("initial_value").setValue("50");
 		tg1.getAttribute("p1").setValue("0.25");
-		hloc.getAttribute("period").setValue("10");	// 
+		hloc.getAttribute("period").setValue("100000");	// 
 		hloc.getAttribute("metric").setValue("11");			// 
 		hloc.getAttribute("throttle").setValue("0");
 		atr.getAttribute("len").setValue("3");	// 
@@ -50,8 +53,7 @@ public class MatAdx8 extends MatSystem {
 		adx.getAttribute("NDN_EMA_alpha").setValue("0.5");	// 
 		adx.getAttribute("ADX_EMA_len").setValue("3");	// 
 		adx.getAttribute("ADX_EMA_alpha").setValue("0.5");	// 
-
-
+		
 		// configure element connections
 //		ema.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
 		hloc.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
