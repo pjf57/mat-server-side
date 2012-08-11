@@ -47,7 +47,13 @@ public abstract class BaseElement implements SimElement {
 			srcRouting[i] = 0;	// no connection
 		}
 	}
+	
 
+	@Override
+	public int getId() {
+		return elementId;
+	}
+	
 	/**
 	 * Handle an incoming event.
 	 * Process event if it has been routed to one of our inputs

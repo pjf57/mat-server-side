@@ -2,6 +2,7 @@ package com.pjf.mat.util.comms;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -9,6 +10,8 @@ import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
+import com.pjf.mat.api.LkuAuditLog;
+import com.pjf.mat.api.LkuResult;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.NotificationCallback;
@@ -99,9 +102,11 @@ public abstract class BaseComms implements Comms {
 		case MatElementDefs.ST_TX_HWSIG: processHWSigMsg(msg); break;
 		case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg);	break;
 		case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg); break;
+		case MatElementDefs.ST_TX_LKUAUDIT: processLkuAuditLogMsg(msg); break;
 		default: logger.error("Unkown status message received: [" + Conversion.toHexString(msg)); break;
 		}
 	}
+
 
 
 	/**
@@ -198,6 +203,55 @@ public abstract class BaseComms implements Comms {
 			upto +=4;
 			notifyEvent(new Timestamp(timestamp),src, instrId, data);
 		}		
+	}
+
+	/**
+	 * @param msg
+	 * |#items|ts(48bit)|RQ_EL_ID|instr|lku_op|RSP_EL_ID|rsp time|rslt|data(32bit)| .. next ..|
+	 */
+	private void processLkuAuditLogMsg(byte[] msg) {
+		byte items = msg[1];
+		int upto = 2;
+		List<LkuAuditLog> logs = new ArrayList<LkuAuditLog>();
+		while (items-- > 0) {
+			// process first/next log item
+			long timestamp = Conversion.getLongFromBytes(msg,upto,6);
+			upto+=6;
+			int requesterId = msg[upto++];
+			int instrId = msg[upto++];
+			int op = msg[upto++];
+			int responderId = msg[upto++];
+			int rspTime = msg[upto++];
+			int resultCode = msg[upto++];
+			int data = Conversion.getIntFromBytes(msg,upto,4);
+			float fdata = Float.intBitsToFloat(data);
+			upto +=4;
+			// resolve format of incoming binary data
+			Element requester = mat.getModel().getElement(requesterId);
+			Element responder = mat.getModel().getElement(responderId);
+			LkuResult rslt = LkuResult.UNKNOWN;
+			switch(resultCode) {
+			case 0:	rslt = LkuResult.NO_DATA;	break;
+			case 1:	rslt = LkuResult.OK;		break;
+			case 2:	rslt = LkuResult.ERROR;		break;
+			case 3:	rslt = LkuResult.TIMEOUT;	break;
+			}
+			LkuAuditLog log = new LkuAuditLog(new Timestamp(timestamp),requester,instrId,
+					op,responder,rspTime,rslt,fdata);
+			logs.add(log);
+			notifyLkuAuditLogsReceipt(logs);
+		}
+	}
+	
+
+	/**
+	 * Notify subscribers of a collection of LKU audit logs
+	 * @param logs
+	 */
+	protected void notifyLkuAuditLogsReceipt(Collection<LkuAuditLog> logs) {
+		for (NotificationCallback subscriber : notificationSubscribers) {
+			subscriber.notifyLkuAuditLogReceipt(logs);
+		}
 	}
 
 	/**

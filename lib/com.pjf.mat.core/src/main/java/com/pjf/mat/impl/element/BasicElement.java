@@ -212,4 +212,9 @@ public class BasicElement implements Element {
 				&& ((type != null && type.equals(other.getType()))
 					|| other.getType() == null);		
 	}
+
+	@Override
+	public String getShortName() {
+		return Integer.toString(id) + "/" + getType();
+	}
 }

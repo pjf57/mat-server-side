@@ -24,4 +24,5 @@ public interface Element extends Item {
 	
 	public Attribute getAttribute(String name);	// return null if not found
 	public void setStatus(Status newStatus);
+	public String getShortName();
 }

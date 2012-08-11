@@ -1,6 +1,7 @@
 package com.pjf.mat.sys;
 
 import java.io.FileInputStream;
+import java.util.Collection;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.pjf.marketsim.EventFeed;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
+import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.NotificationCallback;
@@ -40,6 +42,13 @@ public abstract class MatSystem {
 			logger.info("Status Update: element=" + element.getId() +
 						" type=" + element.getType() +
 						" state=" + element.getElementStatus());			
+		}
+
+		@Override
+		public void notifyLkuAuditLogReceipt(Collection<LkuAuditLog> logs) {
+			for (LkuAuditLog log : logs) {
+				logger.info("Received LKU Audit Log: [" + log + "]");
+			}
 		}
 		
 	}
@@ -127,7 +136,7 @@ public abstract class MatSystem {
 		mat.syncClock(0);
 		logger.info("-----");	reqStatus(); Thread.sleep(500);
 		sendTradeBurst(mat,feed);
-		logger.info("-----");	reqStatus(); Thread.sleep(500);
+		logger.info("-----");	reqAuditLogs(); reqStatus(); Thread.sleep(500);
 		Thread.sleep(1000);
 	}
 
@@ -164,10 +173,9 @@ public abstract class MatSystem {
 		mat.getHWStatus();		
 	}
 	
-	
-	
-
-
+	private void reqAuditLogs() throws Exception {
+		mat.reqLkuAuditLogs();		
+	}
 
 	protected static Properties loadProperties(String resource) throws Exception {
 		Properties props = new Properties();

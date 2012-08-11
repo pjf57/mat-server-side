@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.model;
 
+import com.pjf.mat.api.LkuResult;
 import com.pjf.mat.sim.types.FloatValue;
 import com.pjf.mat.sim.types.IntValue;
 import com.pjf.mat.util.Conversion;
@@ -75,4 +76,23 @@ public class LookupResult {
 		}
 		return buf.toString();
 	}
+
+
+	/**
+	 * 
+	 * @return Convert result code to an LKU Result
+	 */
+	public LkuResult getLkuResult() {
+		if (validity.equals(LookupValidity.OK)) {
+			return LkuResult.OK;
+		}
+		if (validity.equals(LookupValidity.NODATA)) {
+			return LkuResult.NO_DATA;
+		}
+		if (validity.equals(LookupValidity.TIMEOUT)) {
+			return LkuResult.TIMEOUT;
+		}
+		return LkuResult.UNKNOWN;
+	}
+
 }

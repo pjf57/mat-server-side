@@ -12,4 +12,5 @@ public interface SimElement {
 	public void getStatus();
 	public void shutdown();
 	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception;
+	public int getId();
 }

@@ -11,6 +11,7 @@ import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
+import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.Status;
@@ -26,21 +27,23 @@ import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.comms.BaseComms;
 import com.pjf.mat.sim.router.Router;
+import com.pjf.mat.api.LkuResult;
 
 
 public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	private final static Logger logger = Logger.getLogger(MatSim.class);
 	private final List<SimElement> simElements;
+	private final LkuAuditLogger lkuAuditLogger;
 	private Clock clk;
 	private final Router router;
 	private boolean stopOnError;
-	
 	
 	public MatSim(MatLogger logger) {
 		stopOnError = true;
 		simElements = new ArrayList<SimElement>();
 		clk = new Clock(this,10,logger);
 		router = new Router(this);
+		lkuAuditLogger = new LkuAuditLogger();
 	}
 
 	public void setClock(Clock clock) {
@@ -196,21 +199,25 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	public LookupResult lookup(int source, int instrumentId, int lookupKey)
 			throws Exception {
 		LookupResult result = null;
+		Timestamp startTime = clk.getSimTime();
 		String logstr = "lookup(src=" + source + ",instr=" + instrumentId +
 				",key=" + lookupKey + "): ";
+		Element responder = null;
 		for (SimElement se : simElements) {
 			result = se.handleLookup(instrumentId, lookupKey);
 			if (!result.getValidity().equals(LookupValidity.TIMEOUT)) {
 				// this element handled the request - so break out of the loop
+				responder = mat.getModel().getElement(se.getId());
 				break;
 			}
 		}
-		if (result == null) {
-			String msg = logstr + "Unexpected null value";
-			notifyError(msg);
-		} else {
-			logger.debug(logstr + " returned " + result);
-		}
+		Timestamp endTime = clk.getSimTime();
+		int lookupTime = (int) (endTime.getMicroticks() - startTime.getMicroticks());
+		LkuResult resultCode = result.getLkuResult();
+		Element sourceEl = mat.getModel().getElement(source);
+		lkuAuditLogger.addLog(startTime,sourceEl,instrumentId,lookupKey,
+				responder,resultCode,result.getFloatData(),lookupTime);
+		logger.debug(logstr + " returned " + result);
 		return result;
 	}
 
@@ -259,6 +266,13 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	public void synchroniseClock(int syncOrigin) throws Exception {
 		logger.info("synchroniseClock(" + syncOrigin + ")");
 		clk.sync(syncOrigin);		
+	}
+
+	@Override
+	public void requestLkuAuditLogs() throws Exception {
+		logger.info("requestLkuAuditLogs()");
+		Collection<LkuAuditLog> logs = lkuAuditLogger.getLogs(80);
+		notifyLkuAuditLogsReceipt(logs);
 	}
 
 }

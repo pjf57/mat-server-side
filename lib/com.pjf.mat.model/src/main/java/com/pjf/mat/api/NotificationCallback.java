@@ -1,5 +1,7 @@
 package com.pjf.mat.api;
 
+import java.util.Collection;
+
 public interface NotificationCallback {
 	/**
 	 * An output event log has been received from the element logger.
@@ -18,5 +20,12 @@ public interface NotificationCallback {
 	 * @param element
 	 */
 	public void notifyElementStatusUpdate(Element element);
+	
+	/**
+	 * Notify the receipt of some lookup audit logs. These are in no particular order.
+	 * 
+	 * @param logs
+	 */
+	public void notifyLkuAuditLogReceipt(Collection<LkuAuditLog> logs);
 
 }

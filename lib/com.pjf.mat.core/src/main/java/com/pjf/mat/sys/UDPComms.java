@@ -172,6 +172,15 @@ public class UDPComms extends BaseComms implements Comms {
 	}
 
 
+	@Override
+	public void requestLkuAuditLogs() throws Exception {
+		EncodedConfigItemList cfg = new EncodedConfigItemList();
+		cfg.put(0,MatElementDefs.EL_C_LKU_AUDIT_REQ | 0x80,0);
+		logger.info("requestLkuAuditLogs(): encoded " + cfg.getLength() + " bytes");
+		cxn.send(cfg.getData(),port);
+	}
+
+
 
 	
 

@@ -27,5 +27,6 @@ public interface MatApi {
 	
 	public long getSWSignature();
 	public void syncClock(int origin) throws Exception;
+	public void reqLkuAuditLogs() throws Exception;
 
 }

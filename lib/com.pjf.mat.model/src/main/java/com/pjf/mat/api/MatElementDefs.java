@@ -23,10 +23,11 @@ public interface MatElementDefs {
 //	-- STATUS transmission types
 //	------------------------------
 	
-	public final int ST_TX_STATUS = 1;
-	public final int ST_TX_CONFIG = 2;
-	public final int ST_TX_EVTLOG = 3;
-	public final int ST_TX_HWSIG  = 4;
+	public final int ST_TX_STATUS 		= 1;
+	public final int ST_TX_CONFIG 		= 2;
+	public final int ST_TX_EVTLOG 		= 3;
+	public final int ST_TX_HWSIG  		= 4;
+	public final int ST_TX_LKUAUDIT		= 5;
 	
 //	------------------------------
 //	-- Market event types
@@ -55,6 +56,8 @@ public interface MatElementDefs {
 	public final int EL_C_CONFIG_REQ 		= 0x04; // request config for el id [data(5..0)]
 	public final int EL_C_HWSIG_REQ  		= 0x05; // request hw signature
 	public final int EL_C_CLKSYNC_REQ  		= 0x06; // request a clk_ts sync [data is clk reference]
+	public final int EL_C_LKU_AUDIT_THRESH	= 0x07; // set threshold for lku audit logs autosend
+	public final int EL_C_LKU_AUDIT_REQ		= 0x08; // request immed tx of lku audit logs	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
 
 //	------------------------------
 //	-- EMA

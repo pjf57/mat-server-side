@@ -118,6 +118,12 @@ public class MatInterface implements MatApi {
 	}
 
 
+	@Override
+	public void reqLkuAuditLogs() throws Exception {
+		comms.requestLkuAuditLogs();
+	}
+
+
 
 
 

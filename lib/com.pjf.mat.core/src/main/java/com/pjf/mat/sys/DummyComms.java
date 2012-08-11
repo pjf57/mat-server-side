@@ -186,4 +186,9 @@ public class DummyComms extends BaseComms implements Comms {
 		logger.info("synchroniseClock(" + syncOrigin + ")");		
 	}
 
+	@Override
+	public void requestLkuAuditLogs() throws Exception {
+		logger.info("Requesting LKU Audit logs");		
+	}
+
 }
