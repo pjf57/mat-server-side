@@ -3,6 +3,8 @@ diagram.hw.id=mat.properties.sim
 diagram.hw.sig=0xEB22E8B623
 diagram.title=MAT Simulator Test
 
+diagram.element.0.prop.lookup_audit_autosend=5
+
 diagram.element.1.name=Logger
 diagram.element.1.type=LOGGER
 diagram.element.1.loc.x=504

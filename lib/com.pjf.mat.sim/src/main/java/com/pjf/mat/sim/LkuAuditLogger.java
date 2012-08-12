@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.LkuResult;
+import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Timestamp;
+import com.pjf.mat.sim.types.ConfigItem;
 
 /**
  * Manages the repository of LKU audit logs
@@ -16,10 +20,15 @@ import com.pjf.mat.api.Timestamp;
  *
  */
 public class LkuAuditLogger {
+	private final static Logger logger = Logger.getLogger(LkuAuditLogger.class);
 	private final List<LkuAuditLog> queue;
+	private int autoThreshold;
+	
+	private final int MAX_LOGS = 80;
 	
 	public LkuAuditLogger() {
 		queue = new ArrayList<LkuAuditLog>();
+		autoThreshold = 0;
 	}
 	
 	public synchronized void addLog(LkuAuditLog log) {
@@ -59,7 +68,35 @@ public class LkuAuditLogger {
 		
 		LkuAuditLog log = new LkuAuditLog(startTime, requester, instrumentId, lookupKey, 
 				responder, lookupTime, resultCode, data);
-		queue.add(log);		
+		addLog(log);		
+	}
+
+	public void putConfig(ConfigItem cfg) {
+		if (cfg.getElementId() == 0) {
+			switch (cfg.getItemId()) {
+			case MatElementDefs.EL_C_LKU_AUDIT_THRESH: setAuditThreshold(cfg.getRawData());	break;
+			}
+		}
+		
+	}
+
+	private void setAuditThreshold(int data) {
+		logger.info("setAuditThreshold(" + data + ")");
+		autoThreshold = data;		
+	}
+	
+	/**
+	 * Check if should autosend
+	 * 
+	 * @return collection of audit logs, or null
+	 */
+	public Collection<LkuAuditLog> checkAutoSend() {
+		Collection<LkuAuditLog> ret = null;
+		if (autoThreshold > 0 && queue.size() >= autoThreshold) {
+			logger.info("checkAutoSend() - queue size = " + queue.size() + ", autoThreshold = " + autoThreshold);
+			ret = getLogs(MAX_LOGS);
+		}
+		return ret;
 	}
 	
 

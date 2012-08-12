@@ -87,6 +87,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 				for (SimElement se : simElements) {
 					se.putConfig(cfg);
 				}
+				lkuAuditLogger.putConfig(cfg);
 			}
 			// set connections
 			for (InputPort ip : el.getInputs()) {
@@ -244,6 +245,14 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	@Override
 	public void publishMicroTick(Timestamp simTime) {
 		router.simMicroTick(simTime);
+		checkLkuAuditLogAutosend();
+	}
+
+	private void checkLkuAuditLogAutosend() {
+		Collection<LkuAuditLog> logs = lkuAuditLogger.checkAutoSend();
+		if (logs != null) {
+			notifyLkuAuditLogsReceipt(logs);			
+		}
 	}
 
 	@Override
