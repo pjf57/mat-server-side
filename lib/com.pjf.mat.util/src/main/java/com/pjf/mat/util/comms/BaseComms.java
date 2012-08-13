@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
+import com.pjf.mat.api.EventLog;
 import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.LkuResult;
@@ -280,13 +281,10 @@ public abstract class BaseComms implements Comms {
 			value = Float.toString(fval);
 		}
 		Element srcElement = mat.getModel().getElement(src);
-		String srcName = "unknown";
-		if (srcElement != null) {
-			srcName = srcElement.getType();
-		}
-		logger.debug("Event from element=" + src + ":" + srcName + " InstrId=" + instrId + " val=" + value);
+		EventLog evt = new EventLog(ts,srcElement,instrId, data, value);
+		logger.debug("Event from element=" + evt);
 		for (NotificationCallback subscriber : notificationSubscribers) {
-			subscriber.notifyEventLog(ts,srcElement, instrId, data, value);
+			subscriber.notifyEventLog(evt);
 		}
 	}
 	

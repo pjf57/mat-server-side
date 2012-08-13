@@ -9,11 +9,11 @@ import org.apache.log4j.Logger;
 import com.pjf.marketsim.EventFeed;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
+import com.pjf.mat.api.EventLog;
 import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.NotificationCallback;
-import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
 import com.pjf.mat.sim.MatSim;
@@ -25,16 +25,17 @@ public abstract class MatSystem {
 	private MatInterface mat = null;
 	private MatSim sim = null;
 	private EventFeed feed;
+	private UnifiedEventLogger ueLogger;
 
 	class NotificationHandler implements NotificationCallback {
 
 		@Override
-		public void notifyEventLog(Timestamp timestamp, Element src, int intrument_id, int rawValue,
-				String dispValue) {
-			logger.info("Event: ts=" + timestamp + " src=" + src.getId() +
-						" type=" + src.getType() +
-						" instrument=" + intrument_id +
-						" value=" + dispValue);			
+		public void notifyEventLog(EventLog evt) {
+			ueLogger.addLog(evt);
+			logger.info("Event: ts=" + evt.getTimestamp() + " src=" + evt.getSrc().getId() +
+						" type=" + evt.getSrc().getType() +
+						" instrument=" + evt.getIntrumentId() +
+						" value=" + evt.getDispValue());			
 		}
 
 		@Override
@@ -48,12 +49,14 @@ public abstract class MatSystem {
 		public void notifyLkuAuditLogReceipt(Collection<LkuAuditLog> logs) {
 			for (LkuAuditLog log : logs) {
 				logger.info("Received LKU Audit Log: [" + log + "]");
+				ueLogger.addLog(log);
 			}
 		}
 		
 	}
 
 	public MatSystem(){
+		ueLogger = new UnifiedEventLogger();
 	}
 	
 	
@@ -138,6 +141,9 @@ public abstract class MatSystem {
 		sendTradeBurst(mat,feed);
 		logger.info("-----");	reqAuditLogs(); reqStatus(); Thread.sleep(500);
 		Thread.sleep(1000);
+		logger.info("----------------------------------------");
+		ueLogger.logAndClear();
+		logger.info("----------------------------------------");
 	}
 
 	protected void boot() {

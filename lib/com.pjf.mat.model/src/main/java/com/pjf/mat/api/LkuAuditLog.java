@@ -6,7 +6,7 @@ package com.pjf.mat.api;
  * @author pjf
  *
  */
-public class LkuAuditLog {
+public class LkuAuditLog implements TimeOrdered {
 	private final Timestamp timestamp;
 	private final Element requester;		// element that requested 
 	private final int instrument_id;
@@ -66,10 +66,11 @@ public class LkuAuditLog {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
+		buf.append("Lookup:");
 		buf.append(timestamp);
-		buf.append(" req:"); buf.append(getShortName(responder));
+		buf.append(": req:"); buf.append(getShortName(requester));
 		buf.append(",instr="); buf.append(instrument_id);
-		buf.append(",op="); buf.append(operation);
+		buf.append(",op="); buf.append(MatElementDefs.LkuOpToString(operation));
 		if (result.equals(LkuResult.TIMEOUT)) {
 			buf.append(" TIMEOUT after "); buf.append(rspTimeMicroticks*CLK_TIME_NS); buf.append("ns"); 
 			buf.append(" Data="); buf.append(data);
@@ -139,6 +140,11 @@ public class LkuAuditLog {
 		} else if (!timestamp.equals(other.timestamp))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(TimeOrdered o) {
+		return timestamp.compareTo(o.getTimestamp());
 	}
 	
 
