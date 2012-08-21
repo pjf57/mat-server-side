@@ -28,6 +28,7 @@ public class MatElementDefs {
 	public static final int ST_TX_EVTLOG 		= 3;
 	public static final int ST_TX_HWSIG  		= 4;
 	public static final int ST_TX_LKUAUDIT		= 5;
+	public static final int ST_TX_RTRAUDIT		= 6;
 	
 //	------------------------------
 //	-- Market event types
@@ -58,6 +59,9 @@ public class MatElementDefs {
 	public static final int EL_C_CLKSYNC_REQ  		= 0x06; // request a clk_ts sync [data is clk reference]
 	public static final int EL_C_LKU_AUDIT_THRESH	= 0x07; // set threshold for lku audit logs autosend
 	public static final int EL_C_LKU_AUDIT_REQ		= 0x08; // request immed tx of lku audit logs	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
+	public static final int EL_C_RTR_AUDIT_THRESH	= 0x09; // set threshold for Router audit logs autosend
+	public static final int EL_C_RTR_AUDIT_REQ		= 0x0a; // request immed tx of Router audit logs	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
+
 
 //	------------------------------
 //	-- EMA
@@ -160,5 +164,19 @@ public class MatElementDefs {
 		default:		str = "Unknown[" + op + "]";	break;
 		}
 		return str;
+	}
+	
+	public static String ElementTypeToString(int type) {
+		String typeStr ="";
+		switch(type) {
+		case MatElementDefs.EL_TYP_TG1			: typeStr = "TG1";			break;
+		case MatElementDefs.EL_TYP_EMA			: typeStr = "EMA";			break;
+		case MatElementDefs.EL_TYP_LOG			: typeStr = "LOGGER";		break;
+		case MatElementDefs.EL_TYP_LOGIC_4IP	: typeStr = "Logic_4IP";	break;
+		case MatElementDefs.EL_TYP_ARITH_4IP	: typeStr = "Arith_4IP";	break;
+		case MatElementDefs.EL_TYP_UDP_RAW_MKT	: typeStr = "UDPrawMKT";	break;
+		default					: typeStr = "unknown(" + type + ")";		break;
+		}
+		return typeStr;
 	}
 }

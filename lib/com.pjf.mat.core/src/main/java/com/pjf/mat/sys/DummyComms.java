@@ -191,4 +191,9 @@ public class DummyComms extends BaseComms implements Comms {
 		logger.info("Requesting LKU Audit logs");		
 	}
 
+	@Override
+	public void requestRtrAuditLogs() throws Exception {
+		logger.info("Requesting RTR Audit logs");		
+	}
+
 }

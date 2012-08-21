@@ -5,7 +5,7 @@ import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 
 public interface SimElement {
-	public void putEvent(Event evt) throws Exception;
+	public boolean putEvent(Event evt) throws Exception; // return true if took the event
 	public void putConfig(ConfigItem cfg);
 	public void putCmd(Cmd cmd);
 	public void processTick(ClockTick tick);

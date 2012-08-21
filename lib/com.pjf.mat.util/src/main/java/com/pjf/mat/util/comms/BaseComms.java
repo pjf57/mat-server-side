@@ -2,7 +2,9 @@ package com.pjf.mat.util.comms;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -17,6 +19,7 @@ import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.OutputPort;
+import com.pjf.mat.api.RtrAuditLog;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.util.Conversion;
@@ -104,6 +107,7 @@ public abstract class BaseComms implements Comms {
 		case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg);	break;
 		case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg); break;
 		case MatElementDefs.ST_TX_LKUAUDIT: processLkuAuditLogMsg(msg); break;
+		case MatElementDefs.ST_TX_RTRAUDIT: processRtrAuditLogMsg(msg); break;
 		default: logger.error("Unkown status message received: [" + Conversion.toHexString(msg)); break;
 		}
 	}
@@ -144,16 +148,7 @@ public abstract class BaseComms implements Comms {
 			int intState = msg[upto++];
 			int evtCount = Conversion.getIntFromBytes(msg,upto,4);
 			upto += 4;
-			String typeStr = "";
-			switch(type) {
-			case MatElementDefs.EL_TYP_TG1			: typeStr = "TG1";			break;
-			case MatElementDefs.EL_TYP_EMA			: typeStr = "EMA";			break;
-			case MatElementDefs.EL_TYP_LOG			: typeStr = "LOGGER";		break;
-			case MatElementDefs.EL_TYP_LOGIC_4IP	: typeStr = "Logic_4IP";	break;
-			case MatElementDefs.EL_TYP_ARITH_4IP	: typeStr = "Arith_4IP";	break;
-			case MatElementDefs.EL_TYP_UDP_RAW_MKT	: typeStr = "UDPrawMKT";	break;
-			default					: typeStr = "unknown(" + type + ")";		break;
-			}
+			String typeStr = MatElementDefs.ElementTypeToString(type);
 			String basisStateStr = "";
 			switch(basisState) {
 			case BS_INIT:	basisStateStr = "INIT";							break;
@@ -244,6 +239,62 @@ public abstract class BaseComms implements Comms {
 		}
 	}
 	
+	/**
+	 * @param msg
+	 * |#items|ts(48bit)|src|takers(32 bit map)|instr|data(32bit)|qtime|delivery time| .. next ..|
+	 */
+	private void processRtrAuditLogMsg(byte[] msg) {
+		byte items = msg[1];
+		int upto = 2;
+		List<RtrAuditLog> logs = new ArrayList<RtrAuditLog>();
+		while (items-- > 0) {
+			// process first/next log item
+			long timestamp = Conversion.getLongFromBytes(msg,upto,6);
+			upto+=6;
+			int sourceId = msg[upto++];
+			int takerBitmap = Conversion.getIntFromBytes(msg,upto,4);
+			upto += 4;
+			int instrId = msg[upto++];
+			int data = Conversion.getIntFromBytes(msg,upto,4);
+			float fdata = Float.intBitsToFloat(data);
+			upto +=4;
+			int qTime = msg[upto++];
+			int delTime = msg[upto++];
+			// resolve format of incoming binary data
+			Element source = mat.getModel().getElement(sourceId);
+			Set<Element> takers = ConvertBitmapToElementSet(takerBitmap);
+			RtrAuditLog log = new RtrAuditLog(new Timestamp(timestamp),source,takers,
+					instrId,qTime,delTime,fdata);
+			logs.add(log);
+			notifyRtrAuditLogsReceipt(logs);
+		}
+	}
+	
+
+	/**
+	 * Convert a bitmap of elements into a set of elements
+	 * 
+	 * @param bitmap - bitmap of elements, bit 0=ID0, bit 31=ID31
+	 * @return set of elements or empty set if bitmap==0
+	 */
+	private Set<Element> ConvertBitmapToElementSet(int takers) {
+		int t = takers;
+		Set<Element> set = new HashSet<Element>();
+		int id = 0;
+		while (id < 32) {
+			if ( (t & 1) != 0) {
+				Element el = mat.getModel().getElement(id);
+				if (el == null) {
+					logger.error("ConvertBitmapToElementSet has unknown element id=" + id);
+				} else {
+					set.add(el);
+				}
+				id++;
+				t /= 2;
+			}
+		}
+		return set;
+	}
 
 	/**
 	 * Notify subscribers of a collection of LKU audit logs
@@ -252,6 +303,16 @@ public abstract class BaseComms implements Comms {
 	protected void notifyLkuAuditLogsReceipt(Collection<LkuAuditLog> logs) {
 		for (NotificationCallback subscriber : notificationSubscribers) {
 			subscriber.notifyLkuAuditLogReceipt(logs);
+		}
+	}
+
+	/**
+	 * Notify subscribers of a collection of LKU audit logs
+	 * @param logs
+	 */
+	protected void notifyRtrAuditLogsReceipt(Collection<RtrAuditLog> logs) {
+		for (NotificationCallback subscriber : notificationSubscribers) {
+			subscriber.notifyRtrAuditLogReceipt(logs);
 		}
 	}
 

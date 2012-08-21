@@ -24,4 +24,11 @@ public interface NotificationCallback {
 	 */
 	public void notifyLkuAuditLogReceipt(Collection<LkuAuditLog> logs);
 
+	/**
+	 * Notify the receipt of some router audit logs. These are in no particular order.
+	 * 
+	 * @param logs
+	 */
+	public void notifyRtrAuditLogReceipt(Collection<RtrAuditLog> logs);
+
 }

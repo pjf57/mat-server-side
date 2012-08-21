@@ -2,7 +2,9 @@ package com.pjf.mat.sim;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -14,6 +16,7 @@ import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.MatLogger;
+import com.pjf.mat.api.RtrAuditLog;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.element.ElementFactory;
@@ -34,6 +37,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	private final static Logger logger = Logger.getLogger(MatSim.class);
 	private final List<SimElement> simElements;
 	private final LkuAuditLogger lkuAuditLogger;
+	private final RtrAuditLogger rtrAuditLogger;
 	private Clock clk;
 	private final Router router;
 	private boolean stopOnError;
@@ -44,6 +48,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		clk = new Clock(this,10,logger);
 		router = new Router(this);
 		lkuAuditLogger = new LkuAuditLogger();
+		rtrAuditLogger = new RtrAuditLogger();
 	}
 
 	public void setClock(Clock clock) {
@@ -88,6 +93,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 					se.putConfig(cfg);
 				}
 				lkuAuditLogger.putConfig(cfg);
+				rtrAuditLogger.putConfig(cfg);
 			}
 			// set connections
 			for (InputPort ip : el.getInputs()) {
@@ -225,15 +231,32 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	@Override
 	public void postEventToElements(Event evt) throws ElementException {
 		if (evt.getSrc() != 0) {
+			Timestamp startDelivery = clk.getSimTime();
+			Set<Element> takers = new HashSet<Element>();
 			for (SimElement se : simElements) {
 				try {
-					se.putEvent(evt);
+					boolean taken = se.putEvent(evt);
+					if (taken) {
+						int id = se.getId();
+						Element el = mat.getModel().getElement(id);
+						if (el == null) {
+							notifyError("postEventToElements(" + evt + ") taker id=" + id + " has no model element");
+						} else {
+							takers.add(el);
+						}
+					}
 				} catch (Exception e) {
 					String msg = "Simulation error processing event into:" +
 						se + " Event=" + evt + " - " + e.getMessage();
 					notifyError(msg);
 				}
 			}
+			Timestamp endDelivery = clk.getSimTime();
+			long qtime = startDelivery.getMicroticks() - evt.getTimestamp().getMicroticks();
+			long deltime = endDelivery.getMicroticks() - startDelivery.getMicroticks();
+			Element source = mat.getModel().getElement(evt.getSrc());
+			rtrAuditLogger.addLog(evt.getTimestamp(),source,takers,
+					evt.getInstrument_id(),(int) qtime, (int) deltime, evt.getFloatData());
 		}
 	}
 
@@ -246,12 +269,20 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	public void publishMicroTick(Timestamp simTime) {
 		router.simMicroTick(simTime);
 		checkLkuAuditLogAutosend();
+		checkRtrAuditLogAutosend();
 	}
 
 	private void checkLkuAuditLogAutosend() {
 		Collection<LkuAuditLog> logs = lkuAuditLogger.checkAutoSend();
 		if (logs != null) {
 			notifyLkuAuditLogsReceipt(logs);			
+		}
+	}
+
+	private void checkRtrAuditLogAutosend() {
+		Collection<RtrAuditLog> logs = rtrAuditLogger.checkAutoSend();
+		if (logs != null) {
+			notifyRtrAuditLogsReceipt(logs);			
 		}
 	}
 
@@ -282,6 +313,13 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		logger.info("requestLkuAuditLogs()");
 		Collection<LkuAuditLog> logs = lkuAuditLogger.getLogs(80);
 		notifyLkuAuditLogsReceipt(logs);
+	}
+
+	@Override
+	public void requestRtrAuditLogs() throws Exception {
+		logger.info("requestRtrAuditLogs()");
+		Collection<RtrAuditLog> logs = rtrAuditLogger.getLogs(80);
+		notifyRtrAuditLogsReceipt(logs);
 	}
 
 }

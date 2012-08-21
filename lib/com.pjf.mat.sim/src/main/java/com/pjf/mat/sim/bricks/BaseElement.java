@@ -57,20 +57,23 @@ public abstract class BaseElement implements SimElement {
 	/**
 	 * Handle an incoming event.
 	 * Process event if it has been routed to one of our inputs
-	 * Use a queue and separate thread to decouple processing from incoming delivery thread
 	 * 
+	 * @return true if took the event
 	 * @throws Exception 
 	 */
 	@Override
-	public void putEvent(Event evt) throws Exception {
+	public boolean putEvent(Event evt) throws Exception {
+		boolean taken = false;
 		for (int ip=0; ip<MAX_INPUTS; ip++) {
 			if (evt.getSrc() == srcRouting[ip]) {
 				logger.debug(getIdStr() + "Received Event on input " + (ip+1) +
 						": " + evt);
 				evtCount++;
 				processEvent(ip+1,evt);
+				taken = true;
 			}				
 		}
+		return taken;
 	}
 
 	@Override

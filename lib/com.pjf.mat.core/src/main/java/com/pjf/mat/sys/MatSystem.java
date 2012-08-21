@@ -14,6 +14,7 @@ import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.NotificationCallback;
+import com.pjf.mat.api.RtrAuditLog;
 import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
 import com.pjf.mat.sim.MatSim;
@@ -49,6 +50,14 @@ public abstract class MatSystem {
 		public void notifyLkuAuditLogReceipt(Collection<LkuAuditLog> logs) {
 			for (LkuAuditLog log : logs) {
 				logger.info("Received LKU Audit Log: [" + log + "]");
+				ueLogger.addLog(log);
+			}
+		}
+
+		@Override
+		public void notifyRtrAuditLogReceipt(Collection<RtrAuditLog> logs) {
+			for (RtrAuditLog log : logs) {
+				logger.info("Received Router Audit Log: [" + log + "]");
 				ueLogger.addLog(log);
 			}
 		}
