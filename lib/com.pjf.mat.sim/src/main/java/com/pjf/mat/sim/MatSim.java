@@ -98,9 +98,8 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 			// set connections
 			for (InputPort ip : el.getInputs()) {
 				if (ip.getConnectedSrc() != null) {
-					ConfigItem cfg = new ConfigItem(el.getId(),						
-							MatElementDefs.EL_C_SRC_ROUTE,
-							((ip.getId()-1) << 8) | ip.getConnectedSrc().getParent().getId());
+					ConfigItem cfg = new ConfigItem(el.getId(), MatElementDefs.EL_C_SRC_ROUTE,
+							ip.getConnectedSrc().getParent().getId(),ip.getId());
 					for (SimElement se : simElements) {
 						se.putConfig(cfg);
 					}

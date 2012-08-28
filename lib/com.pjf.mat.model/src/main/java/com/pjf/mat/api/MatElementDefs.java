@@ -10,6 +10,7 @@ public class MatElementDefs {
 	// element type IDSs
 	public static final int EL_TYP_ROUTER		= 0x01;
 	public static final int EL_TYP_EMA 			= 0x10;
+	public static final int EL_TYP_MACD			= 0x11;
 	public static final int EL_TYP_TG1 			= 0x20;
 	public static final int EL_TYP_LOG 			= 0x30;
 	public static final int EL_TYP_LOGIC_4IP	= 0x40;
@@ -67,9 +68,19 @@ public class MatElementDefs {
 //	-- EMA
 //	------------------------------
 	public static final int EL_EMA_C_ALPHA 			= 0x03; //  set EMA alpha parameter
-	public static final int EL_EMA_C_LEN 			= 0x04; // set EMA length parameter
+	public static final int EL_EMA_C_LEN 			= 0x04; //  set EMA length parameter
 
-
+//	------------------------------
+//	-- MACD
+//	------------------------------
+	public static final int EL_MACD_C_FS_ALPHA		= 0x03; //  set fast EMA alpha parameter
+	public static final int EL_MACD_C_FS_LEN		= 0x04; //  set fast EMA length parameter
+	public static final int EL_MACD_C_SL_ALPHA		= 0x05; //  set slow EMA alpha parameter
+	public static final int EL_MACD_C_SL_LEN		= 0x06; //  set slow EMA length parameter
+	public static final int EL_MACD_C_SG_ALPHA		= 0x07; //  set signal EMA alpha parameter
+	public static final int EL_MACD_C_SG_LEN		= 0x08; //  set signal EMA length parameter
+	public static final int EL_MACD_C_SET_OP		= 0x09; //  set MACD OP: 0=MACD, 1=SIGNAL, 2=HIST
+	
 //	------------------------------
 //	-- Traffic gen v1
 //	------------------------------

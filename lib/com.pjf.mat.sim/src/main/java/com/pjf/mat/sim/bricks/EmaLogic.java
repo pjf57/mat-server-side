@@ -42,7 +42,7 @@ public class EmaLogic {
 		FloatValue output = new FloatValue();
 		float nextVal = (alpha * (data - last[instrumentId])) + last[instrumentId];
 		last[instrumentId] = nextVal;
-		if (length[instrumentId] >= len) {
+		if (length[instrumentId] >= len-1) {
 			// only put output if had sufficient values
 			output.set(nextVal);
 		} else {

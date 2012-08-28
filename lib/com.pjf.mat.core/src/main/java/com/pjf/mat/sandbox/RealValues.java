@@ -16,7 +16,7 @@ public class RealValues {
 	}
 	
 	void doSingle() {
-		System.out.println(Integer.toHexString(Float.floatToIntBits(19f)));
+		System.out.println(Integer.toHexString(Float.floatToIntBits(0.4f)));
 		System.out.println(Integer.toHexString(Float.floatToIntBits(20f)));
 		System.out.println(Integer.toHexString(Float.floatToIntBits(25f)));
 		System.out.println(Integer.toHexString(Float.floatToIntBits(30f)));

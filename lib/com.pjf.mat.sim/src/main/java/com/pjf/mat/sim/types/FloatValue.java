@@ -1,6 +1,7 @@
 package com.pjf.mat.sim.types;
 
 import com.pjf.mat.sim.model.Value;
+import com.pjf.mat.util.Conversion;
 
 public class FloatValue extends BaseValue implements Value {
 	private float data;
@@ -33,9 +34,18 @@ public class FloatValue extends BaseValue implements Value {
 	@Override
 	public String toString() {
 		if (valid) {
-			return Float.toString(data);
+			return Float.toString(data) + " [" + 
+				Conversion.toHexIntString(Float.floatToIntBits(data))+ "]" ;
 		}
 		return "invalid";
+	}
+
+	public FloatValue subtract(FloatValue s) {
+		FloatValue fv = new FloatValue();
+		if (isValid()  &&  s.isValid()) {
+			fv.set(getValue() - s.getValue());
+		}
+		return fv;
 	}
 
 }
