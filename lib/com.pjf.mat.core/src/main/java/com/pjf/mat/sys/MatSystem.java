@@ -15,6 +15,7 @@ import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.RtrAuditLog;
+import com.pjf.mat.api.TimeOrdered;
 import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
 import com.pjf.mat.sim.MatSim;
@@ -26,7 +27,8 @@ public abstract class MatSystem {
 	private MatInterface mat = null;
 	private MatSim sim = null;
 	private EventFeed feed;
-	private UnifiedEventLogger ueLogger;
+	private final UnifiedEventLogger ueLogger;
+	private final NotificationHandler notificationHandler;
 
 	class NotificationHandler implements NotificationCallback {
 
@@ -61,11 +63,17 @@ public abstract class MatSystem {
 				ueLogger.addLog(log);
 			}
 		}
+
+		@Override
+		public void notifyUnifiedEventLog(TimeOrdered log) {
+			logger.info("Unified Event Log: " + log);			
+		}
 		
 	}
 
 	public MatSystem(){
-		ueLogger = new UnifiedEventLogger();
+		notificationHandler = new NotificationHandler();
+		ueLogger = new UnifiedEventLogger(notificationHandler);
 	}
 	
 	
@@ -127,7 +135,7 @@ public abstract class MatSystem {
 		} else {
 			comms = new UDPComms("192.168.0.9",2000);
 		}
-		comms.addNotificationSubscriber(new NotificationHandler());
+		comms.addNotificationSubscriber(notificationHandler);
 		MatInterfaceModel model = new MatInterfaceModel(props);
 		mat = new MatInterface(comms,model);
 		comms.setMat(mat);
@@ -151,7 +159,7 @@ public abstract class MatSystem {
 		logger.info("-----");	reqAuditLogs(); reqStatus(); Thread.sleep(500);
 		Thread.sleep(1000);
 		logger.info("----------------------------------------");
-		ueLogger.logAndClear();
+		ueLogger.flush();
 		logger.info("----------------------------------------");
 	}
 

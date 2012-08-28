@@ -30,5 +30,14 @@ public interface NotificationCallback {
 	 * @param logs
 	 */
 	public void notifyRtrAuditLogReceipt(Collection<RtrAuditLog> logs);
+	
+	/**
+	 * Notify the receipt of a unified log entry.
+	 * These logs are delayed by a fixed time (typ 500ms) so that they
+	 * can be presented in time order.
+	 * 
+	 * @param log
+	 */
+	public void notifyUnifiedEventLog(TimeOrdered log);
 
 }

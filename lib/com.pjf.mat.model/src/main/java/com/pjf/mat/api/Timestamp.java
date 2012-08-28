@@ -56,7 +56,18 @@ public class Timestamp implements Comparable<Timestamp>{
 	public void add(int increment) {
 		microticks += increment;
 	}
-	
+
+	/**
+	 * Return the difference between two timestamps in ns
+	 * 
+	 * @param t1 - earlier timestamp
+	 * @return time difference (ns)
+	 */
+	public long diffNs(Timestamp t1) {
+		long diff = microticks - t1.getMicroticks();
+		return nsBase * diff;
+	}
+
 	@Override
 	public int hashCode() {
 		return new Long(microticks).hashCode();
@@ -93,5 +104,6 @@ public class Timestamp implements Comparable<Timestamp>{
 	public boolean isValid() {
 		return microticks != -1;
 	}
+
 
 }
