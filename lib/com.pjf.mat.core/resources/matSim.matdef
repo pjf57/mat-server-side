@@ -38,7 +38,7 @@ diagram.element.4.loc.x=276
 diagram.element.4.loc.y=36
 diagram.element.4.in.0=2.out.0
 diagram.element.4.prop.period=10
-diagram.element.4.prop.metric=11
+diagram.element.4.prop.output_metric=Close(N-1)
 diagram.element.4.prop.throttle=0
 
 diagram.element.5.name=atr
@@ -48,7 +48,7 @@ diagram.element.5.loc.y=36
 diagram.element.5.in.0=4.out.0
 diagram.element.5.prop.len=3
 diagram.element.5.prop.alpha=0.5
-diagram.element.5.prop.IP_Has_Close(N-1)=1
+diagram.element.5.prop.IP_Has_Close(N-1)=true
 
 diagram.element.6.name=adx
 diagram.element.6.type=ADX
