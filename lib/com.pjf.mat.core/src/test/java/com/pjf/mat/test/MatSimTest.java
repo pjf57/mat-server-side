@@ -3,6 +3,7 @@ package com.pjf.mat.test;
 import java.util.Properties;
 
 import com.pjf.marketsim.EventFeed;
+import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
 import com.pjf.mat.sys.MatSystemLoader;
@@ -21,12 +22,12 @@ public class MatSimTest extends MatSystem {
 		MatSystemLoader loader = new MatSystemLoader(p);
 		loader.initialize(mat.getModel());
 		
-//		Element lgr = mat.getModel().getElement(1);
-//		Element tg1 = mat.getModel().getElement(2);
-//		Element ema1 = mat.getModel().getElement(3);
-//		Element hloc = mat.getModel().getElement(4);
-//		Element atr = mat.getModel().getElement(5);
-//		Element adx = mat.getModel().getElement(6);
+		Element lgr = mat.getModel().getElement(1);
+		Element tg1 = mat.getModel().getElement(2);
+		Element ema1 = mat.getModel().getElement(3);
+		Element hloc = mat.getModel().getElement(4);
+		Element atr = mat.getModel().getElement(5);
+		Element adx = mat.getModel().getElement(6);
 //
 //		// configure element attributes
 //		tg1.getAttribute("len").setValue("100");

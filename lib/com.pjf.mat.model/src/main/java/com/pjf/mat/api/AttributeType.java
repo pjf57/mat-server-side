@@ -10,5 +10,7 @@ public enum AttributeType {
 	/** @model name="float" */
 	FLOAT, 
 	/** @model name="hex" */
-	HEX;
+	HEX,
+	/** @model name="enum" */
+	ENUM;
 }

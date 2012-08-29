@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
+import com.pjf.mat.api.EnumValue;
 import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.MatModel;
 import com.pjf.mat.api.OutputPort;
@@ -20,6 +21,7 @@ import com.pjf.mat.impl.element.BasicInputPort;
 import com.pjf.mat.impl.element.BasicOutputPort;
 import com.pjf.mat.impl.element.FloatOutputPort;
 import com.pjf.mat.impl.element.IntegerOutputPort;
+import com.pjf.mat.util.attr.EnumAttribute;
 import com.pjf.mat.util.attr.FloatAttribute;
 import com.pjf.mat.util.attr.HexAttribute;
 import com.pjf.mat.util.attr.IntegerAttribute;
@@ -150,6 +152,9 @@ public class MatInterfaceModel implements MatModel {
 				} else if (attrType.equals("float")) {
 					attr = new FloatAttribute(attrName,configId);
 					type.addAttribute(attr);
+				} else if (attrType.equals("enum")) {
+					attr = loadEnumAttribute(a,attrName,configId);			
+					type.addAttribute(attr);
 				} else {
 					logger.error("Unrecognized attribute type: " + attrType);
 				}
@@ -219,6 +224,46 @@ public class MatInterfaceModel implements MatModel {
 		}
 
 		return type;
+	}
+
+	/**
+	 * Create an enum attribute and load its values list from the properties file
+	 * 
+	 * @param prefix - property prefix of the form: type1.attr2
+	 * @param attrName
+	 * @param configId
+	 * @return the completed attribute
+	 * @throws Exception 
+	 * 
+	 * The values list is defined in the properties in the form:
+	 * 	type1.attr2.enum1=name:value:description
+	 */
+	private Attribute loadEnumAttribute(String prefix, String attrName, int configId) throws Exception {
+		EnumAttribute attr = new EnumAttribute(attrName,configId);
+		int en = 1;
+		boolean keepReading = true;
+		while (keepReading) {
+			String p = prefix + ".enum" + en;
+			String enumSpec = props.getProperty(p);
+			if (enumSpec == null) {
+				keepReading = false;
+			} else {
+				// decode the enum spec
+				String[] tokens = enumSpec.split(":");
+				if (tokens.length < 2  ||  tokens.length > 3) {
+					throw new Exception("bad format for enum specification at " + p +
+							" [" + enumSpec + "]");
+				}
+				String description = "";
+				if (tokens.length > 2) {
+					description = tokens[2];
+				}
+				EnumValue ev = new EnumValue(tokens[0],Integer.parseInt(tokens[1]),en,description);
+				attr.addEnumValue(ev);
+				en++;
+			}
+		}
+		return attr;
 	}
 
 	@Override

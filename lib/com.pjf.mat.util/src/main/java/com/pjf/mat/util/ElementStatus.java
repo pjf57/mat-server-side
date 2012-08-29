@@ -51,13 +51,25 @@ public class ElementStatus implements Status{
 		Collection<Attribute> attrs = new ArrayList<Attribute>();
 		Attribute attr;
 		attr = new StringAttribute("basis state",0);
-		attr.setValue(basis_state);	
+		try {
+			attr.setValue(basis_state);
+		} catch (Exception e) {
+			// dont set
+		}	
 		attrs.add(attr);
 		attr = new IntegerAttribute("element state",0);
-		attr.setValue(Integer.toBinaryString(el_state));	
+		try {
+			attr.setValue(Integer.toBinaryString(el_state));
+		} catch (Exception e) {
+			// dont set
+		}	
 		attrs.add(attr);
 		attr = new IntegerAttribute("ip_evt_cnt",0);
-		attr.setValue(Long.toString(evt_cnt));	
+		try {
+			attr.setValue(Long.toString(evt_cnt));
+		} catch (Exception e) {
+			// dont set
+		}	
 		attrs.add(attr);		
 		return attrs;
 	}

@@ -1,5 +1,7 @@
 package com.pjf.mat.api;
 
+import java.util.SortedSet;
+
 /** @model */
 public interface Attribute extends Cloneable {
 	/** @model */
@@ -12,7 +14,12 @@ public interface Attribute extends Cloneable {
 	/** @model */
 	public int getConfigId();
 	
-	public void setValue(String value);
+	public void setValue(String value) throws Exception;
+	
+	/**
+	 * @return sorted set of enum values (or null if not an enum)
+	 */
+	public SortedSet<EnumValue> getEnumValues();
 	
 	/** @model */
 	public Attribute clone();	
