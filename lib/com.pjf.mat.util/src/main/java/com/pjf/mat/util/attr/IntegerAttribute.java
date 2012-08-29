@@ -17,7 +17,7 @@ public class IntegerAttribute extends StringAttribute {
 	}
 
 	@Override
-	public void setValue(String value) {
+	public void setValue(String value) throws Exception {
 		this.value = Integer.parseInt(value);
 	}
 

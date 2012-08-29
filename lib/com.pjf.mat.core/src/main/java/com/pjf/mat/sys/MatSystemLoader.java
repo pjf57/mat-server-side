@@ -20,12 +20,12 @@ public class MatSystemLoader {
 		this(new MatPropertiesHelper(properties));
 	}
 	
-	public void initialize(final MatModel mat) {
+	public void initialize(final MatModel mat) throws Exception {
 		helper.processElementProperties(new MatPropertyProcessor() {
 			int currentId = -1;
 			Element srcElement = null;
 			@Override
-			public void process(int id, String key, String value) {
+			public void process(int id, String key, String value) throws Exception {
 				if (id != currentId) {
 					srcElement = mat.getElement(id);
 					currentId = id;
@@ -47,6 +47,9 @@ public class MatSystemLoader {
 					Element tgtElement = mat.getElement(eltId);
 					if (tgtElement != null) {
 						Attribute attr = tgtElement.getAttribute(name);
+						if (attr == null) {
+							throw new Exception("No attribute [" + name + "] found in " + tgtElement);
+						}
 						attr.setValue(value);
 					}
 				}

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class MatPropertiesHelper {
 
 	public static interface MatPropertyProcessor {
-		public void process(int elementId, String key, String value);
+		public void process(int elementId, String key, String value) throws Exception;
 	}
 	
 	// ------------------------------------------------------------------------
@@ -113,7 +113,7 @@ public class MatPropertiesHelper {
 //		return element;
 //	}
 
-	public void processElementProperties(MatPropertyProcessor processor) {
+	public void processElementProperties(MatPropertyProcessor processor) throws Exception {
 		String[] names = getPropertyNames(PREFIX_ELEMENT);
 		Arrays.sort(names);
 		for(String name: names) {

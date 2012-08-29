@@ -1,7 +1,10 @@
 package com.pjf.mat.util.attr;
 
+import java.util.SortedSet;
+
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.AttributeType;
+import com.pjf.mat.api.EnumValue;
 
 public class StringAttribute implements Attribute, Cloneable {
 	private final String name;
@@ -25,7 +28,7 @@ public class StringAttribute implements Attribute, Cloneable {
 	}
 
 	@Override
-	public void setValue(String value) {
+	public void setValue(String value) throws Exception {
 		this.value = value;
 	}
 	
@@ -76,6 +79,11 @@ public class StringAttribute implements Attribute, Cloneable {
 	@Override
 	public AttributeType getType() {
 		return AttributeType.STR;
+	}
+
+	@Override
+	public SortedSet<EnumValue> getEnumValues() {
+		return null;	// simple attributes dont have enum values
 	}
 
 }
