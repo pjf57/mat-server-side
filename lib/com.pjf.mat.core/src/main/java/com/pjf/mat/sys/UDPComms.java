@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collection;
-import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.Logger;
 
@@ -19,12 +18,13 @@ import com.pjf.mat.util.comms.UDPCxn;
 
 public class UDPComms extends BaseComms implements Comms {
 	private final static Logger logger = Logger.getLogger(UDPComms.class);
+	private static final long HWSIG_TIMEOUT_MS = 2000;
 	private UDPCxn cxn;
 	private final String ip;
 	private int port;
 	private final Reader reader;
 	private long hwSig;
-	private Semaphore hwSigSem;
+	private TimeoutSemaphore hwSigSem;
 	
 	
 	
@@ -68,7 +68,7 @@ public class UDPComms extends BaseComms implements Comms {
 		this.ip = ip;
 		this.port = port;
 		this.mat = null;
-		hwSigSem = new Semaphore(0);
+		hwSigSem = new TimeoutSemaphore(0);
 		hwSig = 0;
 		this.reader = new Reader();
 		reader.start();
@@ -128,7 +128,10 @@ public class UDPComms extends BaseComms implements Comms {
 		// now wait till we have response back
 		// TODO add timeout
 		logger.info("getHWSignature() - waiting for signatue from HW ...");
-		hwSigSem.acquire();
+		hwSigSem.acquire(HWSIG_TIMEOUT_MS);
+		if (hwSigSem.timedOut()) {
+			throw new Exception("Request for HW Signature timed out");
+		}
 		return hwSig;
 	}
 
