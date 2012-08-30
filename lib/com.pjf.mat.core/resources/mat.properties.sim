@@ -1,10 +1,10 @@
 element0.type=ROUTER
 element1.type=LOGGER
-element2.type=TG1
-element3.type=EMA
-element4.type=HLOC
-element5.type=ATR
-element6.type=ADX
+#element2.type=TG1
+#element3.type=EMA
+#element4.type=HLOC
+#element5.type=ATR
+#element6.type=ADX
 
 type1.id=1
 type1.name=EMA:16
@@ -49,7 +49,7 @@ type2.output1.name=TG.stream
 type2.output1.type=float
 
 type3.id=3
-type3.name=ROUTER:0
+type3.name=ROUTER:1
 type3.attr1.id=7
 type3.attr1.name=lookup_audit_autosend
 type3.attr1.type=int
