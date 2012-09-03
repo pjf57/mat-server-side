@@ -13,6 +13,7 @@ import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
+import com.pjf.mat.util.Conversion;
 
 /**
  * Provides foundation functionality for elements:
@@ -198,6 +199,20 @@ public abstract class BaseElement implements SimElement {
 	public void shutdown() {
 		logger.debug("Element shutdown (default behaviour)");
 	}
+	
+	/**
+	 * @param val
+	 * @return string representation of val as float and hex
+	 */
+	protected String show(float val) {
+		StringBuffer buf = new StringBuffer("[");
+		buf.append(val);
+		buf.append(",");
+		buf.append(Conversion.toHexFloatString(val));
+		buf.append("]");
+		return buf.toString();
+	}
+
 	
 	@Override
 	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {

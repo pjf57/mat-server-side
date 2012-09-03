@@ -93,6 +93,15 @@ public class Conversion {
 		return ret;
 	}
 
+	/**
+	 * 
+	 * @param val
+	 * @return hex representation of float
+	 */
+	public static String toHexFloatString(float val) {
+		return toHexIntString(Float.floatToIntBits(val));
+	}
+
 
 
 }

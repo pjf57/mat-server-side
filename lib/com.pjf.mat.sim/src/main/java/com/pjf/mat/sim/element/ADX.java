@@ -77,7 +77,9 @@ public class ADX extends BaseElement implements SimElement {
 		FloatValue lowN   = lookup(instr, MatElementDefs.EL_HLOC_L_PREV_L).getFloatValue();
 		FloatValue lowN1  = lookup(instr, MatElementDefs.EL_HLOC_L_PRVM1_L).getFloatValue();
 		FloatValue atr    = lookup(instr, MatElementDefs.EL_ATR_L_ATR).getFloatValue();
-
+		logger.debug("processEvent(" + show(evt.getFloatData()) + "): highH=" + highN + ", highN1=" + highN1 +
+				", lowN=" + lowN + ", lowN1=" + lowN1 +
+				", atr=" + atr);
 		if (highN.isValid() && highN1.isValid() && 
 				lowN.isValid() && lowN1.isValid() &&
 				atr.isValid()) {
@@ -93,11 +95,17 @@ public class ADX extends BaseElement implements SimElement {
 			}
 			FloatValue pEma = pdnEma.processEvent(instr,pdmN);
 			FloatValue nEma = ndnEma.processEvent(instr,ndmN);
+			logger.debug("ADX: upn=" + show(upN) + ", dnn=" + show(dnN) +
+					", pdnN=" + show(pdmN) + ", ndmN=" + show(ndmN) +
+					", pEma=" + pEma + ", nEma=" + nEma);
 			if (pEma.isValid() && nEma.isValid()) {
-				float pdi = 100 * pEma.getValue() / atr.getValue();
-				float ndi = 100 * nEma.getValue() / atr.getValue();
+				float pdi = pEma.getValue() / atr.getValue();
+				float ndi = nEma.getValue() / atr.getValue();
 				float strength = Math.abs((pdi - ndi) / (pdi + ndi));
 				FloatValue aEma = adxEma.processEvent(instr, strength);
+				logger.debug("processEvent()---- pdi=" + show(pdi) + ", ndi=" + show(ndi) +
+						", sub=" + show(pdi-ndi) + ", add=" + show(pdi+ndi) +
+						", strength=" + show(strength) + ", aEma=" + aEma);
 				if (aEma.isValid()) {
 					float adx = 100 * aEma.getValue();
 					adxStore.put(adx, instr);

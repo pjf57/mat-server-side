@@ -1,5 +1,7 @@
 package com.pjf.mat.test.util;
 
+import junit.framework.TestCase;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
@@ -9,7 +11,6 @@ import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.Conversion;
 
-import junit.framework.TestCase;
 
 public class SimTestCase extends TestCase implements SimHost {
 	private Logger logger = Logger.getLogger(SimTestCase.class);
@@ -45,8 +46,7 @@ public class SimTestCase extends TestCase implements SimHost {
 	@Override
 	public LookupResult lookup(int id, int instrumentId, int lookupKey)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		throw new Exception ("Lookup used, but not implemented");
 	}
 
 	@Override

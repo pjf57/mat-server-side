@@ -71,13 +71,14 @@ public class ATR extends BaseElement implements SimElement {
 		FloatValue highN = lookup(instr, MatElementDefs.EL_HLOC_L_PREV_H).getFloatValue();
 		FloatValue lowN = lookup(instr, MatElementDefs.EL_HLOC_L_PREV_L).getFloatValue();
 		
-		logger.debug(getIdStr() + "High(N)=" + highN + " Low(N)=" + lowN + " Close(N-1)=" + closeN1);
+		logger.debug(getIdStr() + "evt=" + show(evt.getFloatData()) + ", High(N)=" + highN + " Low(N)=" + lowN + " Close(N-1)=" + closeN1);
 
 		if (closeN1.isValid() &&  highN.isValid() && lowN.isValid()) {
 			float val = Math.max(highN.getValue(), closeN1.getValue()) -
 						Math.min(lowN.getValue(), closeN1.getValue());
 			
 			FloatValue output = ema.processEvent(instr, val);
+			logger.debug(getIdStr() + "--- emaIp=" + show(val) + ", ema=" + output);
 			if (output.isValid()) {
 				atrStore.put(output.getValue(), instr);
 				Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,output.getValue());
