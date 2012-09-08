@@ -174,6 +174,7 @@ public abstract class MatSystem {
 		} catch (Exception e) {
 			logger.error("Outer error catcher: " + e.getMessage());
 			e.printStackTrace();
+			shutdown();
 		}		
 	}
 

@@ -36,6 +36,7 @@ public class TimeoutSemaphore {
 	
 	public void release() {
 		sem.release();
+		timer.cancel();
 	}
 	
 	public boolean timedOut() {

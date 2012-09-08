@@ -77,6 +77,7 @@ public class UDPComms extends BaseComms implements Comms {
 	
 	public void shutdown() {
 		reader.shutdown();
+		hwSigSem.release();
 	}
 	
 	@Override
