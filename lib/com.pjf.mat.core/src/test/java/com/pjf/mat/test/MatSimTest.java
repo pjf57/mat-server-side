@@ -17,7 +17,7 @@ public class MatSimTest extends MatSystem {
 	@Override
 	protected void configure(MatApi mat) throws Exception {
 
-		Properties p = loadProperties("resources/matSim.matdef1");
+		Properties p = loadProperties("resources/matSim.matdef");
 		MatSystemLoader loader = new MatSystemLoader(p);
 		loader.initialize(mat.getModel());
 		

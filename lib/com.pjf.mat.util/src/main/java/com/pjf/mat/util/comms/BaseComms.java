@@ -235,8 +235,8 @@ public abstract class BaseComms implements Comms {
 			LkuAuditLog log = new LkuAuditLog(new Timestamp(timestamp),requester,instrId,
 					op,responder,rspTime,rslt,fdata);
 			logs.add(log);
-			notifyLkuAuditLogsReceipt(logs);
 		}
+		notifyLkuAuditLogsReceipt(logs);
 	}
 	
 	/**
@@ -266,8 +266,8 @@ public abstract class BaseComms implements Comms {
 			RtrAuditLog log = new RtrAuditLog(new Timestamp(timestamp),source,takers,
 					instrId,qTime,delTime,fdata);
 			logs.add(log);
-			notifyRtrAuditLogsReceipt(logs);
 		}
+		notifyRtrAuditLogsReceipt(logs);
 	}
 	
 
@@ -289,9 +289,9 @@ public abstract class BaseComms implements Comms {
 				} else {
 					set.add(el);
 				}
-				id++;
-				t /= 2;
 			}
+			id++;
+			t /= 2;
 		}
 		return set;
 	}

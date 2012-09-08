@@ -35,7 +35,7 @@ public abstract class MatSystem {
 		@Override
 		public void notifyEventLog(EventLog evt) {
 			ueLogger.addLog(evt);
-			logger.info("Event: ts=" + evt.getTimestamp() + " src=" + evt.getSrc().getId() +
+			logger.debug("Event: ts=" + evt.getTimestamp() + " src=" + evt.getSrc().getId() +
 						" type=" + evt.getSrc().getType() +
 						" instrument=" + evt.getIntrumentId() +
 						" value=" + evt.getDispValue());			
@@ -51,7 +51,7 @@ public abstract class MatSystem {
 		@Override
 		public void notifyLkuAuditLogReceipt(Collection<LkuAuditLog> logs) {
 			for (LkuAuditLog log : logs) {
-				logger.info("Received LKU Audit Log: [" + log + "]");
+				logger.debug("Received LKU Audit Log: [" + log + "]");
 				ueLogger.addLog(log);
 			}
 		}
@@ -59,7 +59,7 @@ public abstract class MatSystem {
 		@Override
 		public void notifyRtrAuditLogReceipt(Collection<RtrAuditLog> logs) {
 			for (RtrAuditLog log : logs) {
-				logger.info("Received Router Audit Log: [" + log + "]");
+				logger.debug("Received Router Audit Log: [" + log + "]");
 				ueLogger.addLog(log);
 			}
 		}
@@ -181,6 +181,7 @@ public abstract class MatSystem {
 	public void shutdown() {
 		logger.info("Shutting down ...");
 		mat.shutdown();
+		ueLogger.shutdown();
 	}
 
 

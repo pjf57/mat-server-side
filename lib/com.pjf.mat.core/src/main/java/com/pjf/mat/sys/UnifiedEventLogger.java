@@ -27,18 +27,29 @@ public class UnifiedEventLogger {
 	private Timestamp lastAddedTs;	// timestamp of event last added
 
 	class PumpWorker extends Thread {
+		private boolean running;
+		
 		public PumpWorker() {
 			setName("UELogger");
+			running = true;
 		}
 		
 		@Override
 		public void run() {
-			try {
-				Thread.sleep(windowMs);
-				pump();
-			} catch (InterruptedException e) {
-				logger.debug("Thread interrupted: " + e.getMessage());
+			while (running) {
+				try {
+					Thread.sleep(windowMs);
+					if (running) {
+						pump();
+					}
+				} catch (InterruptedException e) {
+					logger.debug("Thread interrupted: " + e.getMessage());
+				}
 			}
+		}
+
+		public void shutdown() {
+			running = false;
 		}
 	}
 	
@@ -63,14 +74,15 @@ public class UnifiedEventLogger {
 			while (true) {
 				TimeOrdered first = store.peek();
 				long diffNs = lastAddedTs.diffNs(first.getTimestamp());
-				if (diffNs > 1000000L * (long) windowMs) {
-					TimeOrdered log;
-					try {
-						log = store.take();
-						notificationHandler.notifyUnifiedEventLog(log);
-					} catch (InterruptedException e) {
-						logger.warn("pump() - interrupted - " + e.getMessage());
-					}
+				if (diffNs < 1000000L * (long) windowMs) {
+					break;
+				}
+				TimeOrdered log;
+				try {
+					log = store.take();
+					notificationHandler.notifyUnifiedEventLog(log);
+				} catch (InterruptedException e) {
+					logger.warn("pump() - interrupted - " + e.getMessage());
 				}
 			}
 		}
@@ -86,6 +98,12 @@ public class UnifiedEventLogger {
 			}
 		}
 	}
+
+	public void shutdown() {
+		pumper.shutdown();		
+	}
+	
+	
 	
 
 }

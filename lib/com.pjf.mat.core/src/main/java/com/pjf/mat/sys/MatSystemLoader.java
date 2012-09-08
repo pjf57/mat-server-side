@@ -37,6 +37,10 @@ public class MatSystemLoader {
 					int out = helper.getOutPortIdFromProperty(value);
 					int target = helper.getElementIdFromProperty(value);
 					Element tgtElement = mat.getElement(target);
+					if (tgtElement == null) {
+						throw new Exception("Error loading for id=" + id + ", key=" + key + ", value=" + value +
+								", srcElement=" + srcElement.getShortName() + " tgtElement is null for target=" + target);
+					}
 					srcElement.getInputs().get(in).connectTo(tgtElement.getOutputs().get(out));
 				}
 				

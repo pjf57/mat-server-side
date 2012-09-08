@@ -92,7 +92,7 @@ public class RtrAuditLogger {
 	public Collection<RtrAuditLog> checkAutoSend() {
 		Collection<RtrAuditLog> ret = null;
 		if (autoThreshold > 0 && queue.size() >= autoThreshold) {
-			logger.info("checkAutoSend() - queue size = " + queue.size() + ", autoThreshold = " + autoThreshold);
+			logger.debug("checkAutoSend() - queue size = " + queue.size() + ", autoThreshold = " + autoThreshold);
 			ret = getLogs(MAX_LOGS);
 		}
 		return ret;

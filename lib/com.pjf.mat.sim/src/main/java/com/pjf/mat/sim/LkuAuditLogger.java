@@ -93,7 +93,7 @@ public class LkuAuditLogger {
 	public Collection<LkuAuditLog> checkAutoSend() {
 		Collection<LkuAuditLog> ret = null;
 		if (autoThreshold > 0 && queue.size() >= autoThreshold) {
-			logger.info("checkAutoSend() - queue size = " + queue.size() + ", autoThreshold = " + autoThreshold);
+			logger.debug("checkAutoSend() - queue size = " + queue.size() + ", autoThreshold = " + autoThreshold);
 			ret = getLogs(MAX_LOGS);
 		}
 		return ret;
