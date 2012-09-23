@@ -62,7 +62,6 @@ public class MatAdx8 extends MatSystem {
 		macd.getAttribute("SLOW_EMA_len").setValue("7");	// 
 		macd.getAttribute("SIGNAL_EMA_alpha").setValue("0.5");	// 
 		macd.getAttribute("SIGNAL_EMA_len").setValue("3");	// 
-		macd.getAttribute("Output_select").setValue("HIST");	// 
 		
 		// configure element connections
 //		ema.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
@@ -72,7 +71,8 @@ public class MatAdx8 extends MatSystem {
 		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 //		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 //		lgr.getInputs().get(1).connectTo(hloc.getOutputs().get(0));
-//		lgr.getInputs().get(2).connectTo(atr.getOutputs().get(0));
+		lgr.getInputs().get(1).connectTo(macd.getOutputs().get(0));
+		lgr.getInputs().get(2).connectTo(macd.getOutputs().get(2));
 		lgr.getInputs().get(3).connectTo(adx.getOutputs().get(0));
 		logger.info("mat is: " + mat);
 

@@ -11,6 +11,7 @@ import java.util.Set;
 public class RtrAuditLog implements TimeOrdered {
 	private final Timestamp timestamp;
 	private final Element source;			// element that produced the event 
+	private final int sourcePort;			// port on the element that produced the event 
 	private final int instrument_id;
 	private final float data;
 	private final Set<Element> takers;		// element that took the event
@@ -24,16 +25,18 @@ public class RtrAuditLog implements TimeOrdered {
 	 * 
 	 * @param timestamp
 	 * @param source
+	 * @param sourcePort 
 	 * @param takers
 	 * @param instrument_id
 	 * @param qTime
 	 * @param deltime
 	 * @param data
 	 */
-	public RtrAuditLog(Timestamp timestamp, Element source, Set<Element> takers, 
+	public RtrAuditLog(Timestamp timestamp, Element source, int sourcePort, Set<Element> takers, 
 			int instrument_id, int qTime, int deltime, float data) {
 		this.timestamp = timestamp;
 		this.source = source;
+		this.sourcePort = sourcePort;
 		this.instrument_id = instrument_id;
 		this.qTimeMicroticks = qTime;
 		this.delTimeMicroticks = deltime;
@@ -47,6 +50,10 @@ public class RtrAuditLog implements TimeOrdered {
 	
 	public Element getSource() {
 		return source;
+	}
+
+	public OutputPort getSourcePort() {
+		return source.getOutputs().get(sourcePort);
 	}
 
 	public int getInstrument_id() {
@@ -74,7 +81,7 @@ public class RtrAuditLog implements TimeOrdered {
 		StringBuffer buf = new StringBuffer();
 		buf.append("Router:");
 		buf.append(timestamp);
-		buf.append(": src:"); buf.append(getShortName(source));
+		buf.append(": src:"); buf.append(getShortName(source)); buf.append(":"); buf.append(source.getOutputs().get(sourcePort).getName());
 		buf.append(",instr="); buf.append(instrument_id);
 		buf.append(" Data="); buf.append(data);
 		buf.append(" Takers:[ ");
@@ -104,6 +111,7 @@ public class RtrAuditLog implements TimeOrdered {
 		result = prime * result + Float.floatToIntBits(data);
 		result = prime * result + instrument_id;
 		result = prime * result + ((source == null) ? 0 : source.hashCode());
+		result = prime * result + sourcePort;
 		result = prime * result
 				+ ((timestamp == null) ? 0 : timestamp.hashCode());
 		return result;
@@ -127,6 +135,9 @@ public class RtrAuditLog implements TimeOrdered {
 				return false;
 		} else if (!source.equals(other.source))
 			return false;
+		if (sourcePort != other.sourcePort) {
+			return false;
+		}
 		if (timestamp == null) {
 			if (other.timestamp != null)
 				return false;

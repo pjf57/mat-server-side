@@ -171,7 +171,8 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	@Override
 	public void publishEventLog(Timestamp ts, int srcId, int intrumentId, int rawValue) {
 		logger.debug("publishEventLog()");
-		notifyEvent(ts,srcId,intrumentId,rawValue);
+		//FIXME add real port id instead of 0
+		notifyEvent(ts,srcId,0,intrumentId,rawValue);
 	}
 
 	@Override
@@ -254,7 +255,8 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 			long qtime = startDelivery.getMicroticks() - evt.getTimestamp().getMicroticks();
 			long deltime = endDelivery.getMicroticks() - startDelivery.getMicroticks();
 			Element source = mat.getModel().getElement(evt.getSrc());
-			rtrAuditLogger.addLog(evt.getTimestamp(),source,takers,
+			// FIXME - specify real port rather than zero
+			rtrAuditLogger.addLog(evt.getTimestamp(),source,0,takers,
 					evt.getInstrument_id(),(int) qtime, (int) deltime, evt.getFloatData());
 		}
 	}

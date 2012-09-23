@@ -192,12 +192,13 @@ public abstract class BaseComms implements Comms {
 		while (items-- > 0) {
 			// process first/next log item
 			int src = msg[upto++];
+			int port = msg[upto++];
 			int instrId = msg[upto++];
 			long timestamp = Conversion.getLongFromBytes(msg,upto,6);
 			upto+=6;
 			int data = Conversion.getIntFromBytes(msg,upto,4);
 			upto +=4;
-			notifyEvent(new Timestamp(timestamp),src, instrId, data);
+			notifyEvent(new Timestamp(timestamp),src, port, instrId, data);
 		}		
 	}
 
@@ -252,6 +253,7 @@ public abstract class BaseComms implements Comms {
 			long timestamp = Conversion.getLongFromBytes(msg,upto,6);
 			upto+=6;
 			int sourceId = msg[upto++];
+			int sourcePort = msg[upto++];
 			int takerBitmap = Conversion.getIntFromBytes(msg,upto,4);
 			upto += 4;
 			int instrId = msg[upto++];
@@ -263,7 +265,7 @@ public abstract class BaseComms implements Comms {
 			// resolve format of incoming binary data
 			Element source = mat.getModel().getElement(sourceId);
 			Set<Element> takers = ConvertBitmapToElementSet(takerBitmap);
-			RtrAuditLog log = new RtrAuditLog(new Timestamp(timestamp),source,takers,
+			RtrAuditLog log = new RtrAuditLog(new Timestamp(timestamp),source,sourcePort,takers,
 					instrId,qTime,delTime,fdata);
 			logs.add(log);
 		}
@@ -323,14 +325,15 @@ public abstract class BaseComms implements Comms {
 	 * @param src
 	 * @param instrId
 	 * @param data
+	 * @param data2 
 	 */
-	protected void notifyEvent(Timestamp ts, int src, int instrId, int data) {
+	protected void notifyEvent(Timestamp ts, int src, int port, int instrId, int data) {
 		OutputPort op = null;
 		if (src > 0  &&  mat != null) {
 			Element el = mat.getModel().getElement(src);
 			if (el != null) {
 				if (el.getOutputs().size() > 0) {
-					op = el.getOutputs().get(0);
+					op = el.getOutputs().get(port);
 				}
 			}
 		}
@@ -342,7 +345,7 @@ public abstract class BaseComms implements Comms {
 			value = Float.toString(fval);
 		}
 		Element srcElement = mat.getModel().getElement(src);
-		EventLog evt = new EventLog(ts,srcElement,instrId, data, value);
+		EventLog evt = new EventLog(ts,srcElement,op,instrId, data, value);
 		logger.debug("Event from element=" + evt);
 		for (NotificationCallback subscriber : notificationSubscribers) {
 			subscriber.notifyEventLog(evt);
@@ -368,8 +371,9 @@ public abstract class BaseComms implements Comms {
 		}		
 		// encode connections
 		for (InputPort ip : el.getInputs()) {
-			if (ip.getConnectedSrc() != null) {
-				int val = ((ip.getId()-1) << 8) | ip.getConnectedSrc().getParent().getId();
+			OutputPort src = ip.getConnectedSrc();
+			if (src != null) {
+				int val = ((ip.getId()-1) << 16) | (src.getId()-1) << 8 | src.getParent().getId();
 				cfg.put(el.getId(), MatElementDefs.EL_C_SRC_ROUTE, val);
 			}
 		}		

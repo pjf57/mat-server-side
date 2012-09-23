@@ -3,14 +3,16 @@ package com.pjf.mat.api;
 public class EventLog implements TimeOrdered {
 	private final Timestamp timestamp;
 	private final Element src;
+	private final OutputPort output;
 	private final int intrumentId;
 	private final int rawValue;
 	private final String dispValue;
 	
-	public EventLog(Timestamp timestamp, Element src, int intrumentId,
+	public EventLog(Timestamp timestamp, Element src, OutputPort op, int intrumentId,
 			int rawValue, String dispValue) {
 		this.timestamp = timestamp;
 		this.src = src;
+		this.output = op;
 		this.intrumentId = intrumentId;
 		this.rawValue = rawValue;
 		this.dispValue = dispValue;
@@ -22,6 +24,10 @@ public class EventLog implements TimeOrdered {
 
 	public Element getSrc() {
 		return src;
+	}
+	
+	public OutputPort getSourcePort() {
+		return output;
 	}
 
 	public int getIntrumentId() {
@@ -43,6 +49,10 @@ public class EventLog implements TimeOrdered {
 		buf.append(timestamp); 
 		buf.append(": ");
 		buf.append(src.getShortName()); 
+		if (output != null) {
+			buf.append(":");
+			buf.append(output.getName());
+		}
 		buf.append(" InstrId=");
 		buf.append(intrumentId);
 		buf.append(" val=");
