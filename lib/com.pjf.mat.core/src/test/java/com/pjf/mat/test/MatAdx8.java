@@ -55,10 +55,20 @@ public class MatAdx8 extends MatSystem {
 		adx.getAttribute("ADX_EMA_len").setValue("3");	// 
 		adx.getAttribute("ADX_EMA_alpha").setValue("0.5");	// 
 		
+		// Configure MACD
+		macd.getAttribute("FAST_EMA_alpha").setValue("0.5");	// 
+		macd.getAttribute("FAST_EMA_len").setValue("3");	// 
+		macd.getAttribute("SLOW_EMA_alpha").setValue("0.25");	// 
+		macd.getAttribute("SLOW_EMA_len").setValue("7");	// 
+		macd.getAttribute("SIGNAL_EMA_alpha").setValue("0.5");	// 
+		macd.getAttribute("SIGNAL_EMA_len").setValue("3");	// 
+		macd.getAttribute("Output_select").setValue("HIST");	// 
+		
 		// configure element connections
 //		ema.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
+		macd.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 		hloc.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
-///		atr.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
+		atr.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 //		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 //		lgr.getInputs().get(1).connectTo(hloc.getOutputs().get(0));

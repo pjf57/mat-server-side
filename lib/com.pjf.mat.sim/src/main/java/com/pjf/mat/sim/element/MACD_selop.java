@@ -12,25 +12,19 @@ import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.sim.types.FloatValue;
 
 /**
- * Implements MACD - Moving Average Convergence Divergence
+ * Implements MACD - Moving Average Convergence Divergence with selectable output
  * 
- * 		port 0: MACD   		= Fast_EMA(Price) - Slow_EMA(price) 
- *		port 1: Signal 		= EMA(MACD)
- *		port 2: Histogram: 	= MACD Line - Signal
+ * 		MACD   = Fast_EMA(Price) - Slow_EMA(price) 
+ *		Signal = EMA(MACD)
+ *		Histogram: = MACD Line - Signal
  * 
  * @author pjf
  *
  */
-public class MACD extends BaseElement implements SimElement {
-	private final static Logger logger = Logger.getLogger(MACD.class);
-	private static final int LATENCY_MACD = 24;	// input to output latency (microticks)
-	private static final int LATENCY_SIGNAL = 41;	// input to output latency (microticks)
-	private static final int LATENCY_HIST = 45;	// input to output latency (microticks)
-	// define output ports
-	public static final int MACD_PORT = 0;
-	public static final int SIGNAL_PORT = 1;
-	public static final int HIST_PORT = 2;
-
+public class MACD_selop extends BaseElement implements SimElement {
+	private final static Logger logger = Logger.getLogger(MACD_selop.class);
+	//FIXME - get correct latency
+	private static final int LATENCY = 14;	// input to output latency (microticks)
 	private EmaLogic fastEma;
 	private EmaLogic slowEma;
 	private EmaLogic signalEma;
@@ -40,8 +34,9 @@ public class MACD extends BaseElement implements SimElement {
 	private int c_slow_len;				// sl length of sequence
 	private float c_signal_alpha;		// sg exp coefficient
 	private int c_signal_len;			// sg length of sequence
+	private int c_op_sel;				// which output to select
 	
-	public MACD(int id, SimHost host) {
+	public MACD_selop(int id, SimHost host) {
 		super(id, MatElementDefs.EL_TYP_MACD,host);
 		fastEma = new EmaLogic();
 		slowEma = new EmaLogic();
@@ -58,6 +53,7 @@ public class MACD extends BaseElement implements SimElement {
 		case MatElementDefs.EL_MACD_C_SL_LEN: 	c_slow_len   = cfg.getRawData();	break;
 		case MatElementDefs.EL_MACD_C_SG_ALPHA: c_signal_alpha = cfg.getFloatData();break;
 		case MatElementDefs.EL_MACD_C_SG_LEN: 	c_signal_len   = cfg.getRawData();	break;
+		case MatElementDefs.EL_MACD_C_SET_OP: 	c_op_sel	   = cfg.getRawData();	break;
 		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
 		}
 	}
@@ -85,18 +81,17 @@ public class MACD extends BaseElement implements SimElement {
 				hist = macd.subtract(signal);
 			}
 		}
-		// make outputs
-		if (macd.isValid()) {
-			Event evtOut = new Event(host.getCurrentSimTime(),elementId,MACD_PORT,evt.getInstrument_id(),macd.getValue());
-			host.publishEvent(evtOut,LATENCY_MACD);	
+		// select output
+		FloatValue output = new FloatValue();
+		switch (c_op_sel) {
+		case 0: output = macd;		break;
+		case 1: output = signal;	break;
+		case 2: output = hist;		break;
+		default: output = macd;		break;
 		}
-		if (signal.isValid()) {
-			Event evtOut = new Event(host.getCurrentSimTime(),elementId,SIGNAL_PORT,evt.getInstrument_id(),signal.getValue());
-			host.publishEvent(evtOut,LATENCY_SIGNAL);	
-		}
-		if (hist.isValid()) {
-			Event evtOut = new Event(host.getCurrentSimTime(),elementId,HIST_PORT,evt.getInstrument_id(),hist.getValue());
-			host.publishEvent(evtOut,LATENCY_HIST);	
+		if (output.isValid()) {
+			Event evtOut = new Event(host.getCurrentSimTime(),elementId,evt.getInstrument_id(),output.getValue());
+			host.publishEvent(evtOut,LATENCY);
 		}
 	}
 
