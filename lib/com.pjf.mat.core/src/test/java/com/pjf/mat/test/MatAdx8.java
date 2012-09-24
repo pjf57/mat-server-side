@@ -65,14 +65,14 @@ public class MatAdx8 extends MatSystem {
 		
 		// configure element connections
 //		ema.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
-		macd.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
+		//		macd.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 		hloc.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 		atr.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 //		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 //		lgr.getInputs().get(1).connectTo(hloc.getOutputs().get(0));
-		lgr.getInputs().get(1).connectTo(macd.getOutputs().get(0));
-		lgr.getInputs().get(2).connectTo(macd.getOutputs().get(2));
+		//		lgr.getInputs().get(1).connectTo(macd.getOutputs().get(0));
+		//		lgr.getInputs().get(2).connectTo(macd.getOutputs().get(2));
 		lgr.getInputs().get(3).connectTo(adx.getOutputs().get(0));
 		logger.info("mat is: " + mat);
 
