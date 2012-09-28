@@ -74,6 +74,7 @@ public class MatAdx8 extends MatSystem {
 		//		lgr.getInputs().get(1).connectTo(macd.getOutputs().get(0));
 		//		lgr.getInputs().get(2).connectTo(macd.getOutputs().get(2));
 		lgr.getInputs().get(3).connectTo(adx.getOutputs().get(0));
+		lgr.getInputs().get(2).connectTo(macd.getOutput("hist"));
 		logger.info("mat is: " + mat);
 
 		mat.configureHW();

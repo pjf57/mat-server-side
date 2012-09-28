@@ -217,4 +217,19 @@ public class BasicElement implements Element {
 	public String getShortName() {
 		return Integer.toString(id) + "/" + getType();
 	}
+
+	@Override
+	public OutputPort getOutput(String name) throws Exception {
+		OutputPort out = null;
+		for (OutputPort p : outputs) {
+			if (p.getName().equals(name)) {
+				out = p;
+				break;
+			}
+		}
+		if (out == null) {
+			throw new Exception("No such output named [" + name + "] on element " + this);
+		}
+		return out;
+	}
 }

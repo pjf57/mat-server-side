@@ -24,5 +24,12 @@ public interface Element extends Item {
 	
 	public Attribute getAttribute(String name);	// return null if not found
 	public void setStatus(Status newStatus);
+	
 	public String getShortName();
+
+	/**
+	 * @return output by name
+	 * @throws Exception if no such output
+	 */
+	public OutputPort getOutput(String name) throws Exception;
 }
