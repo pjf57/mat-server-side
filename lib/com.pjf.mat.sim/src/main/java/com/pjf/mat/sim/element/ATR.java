@@ -4,7 +4,7 @@ package com.pjf.mat.sim.element;
 import org.apache.log4j.Logger;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.sim.bricks.BaseElement;
-import com.pjf.mat.sim.bricks.EmaLogic;
+import com.pjf.mat.sim.bricks.EmaCore;
 import com.pjf.mat.sim.bricks.InstrumentStore;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.LookupValidity;
@@ -32,13 +32,13 @@ public class ATR extends BaseElement implements SimElement {
 	private float c_alpha;			// exp coefficient
 	private int c_len;				// length of sequence
 	private boolean c_ipHasCloseN1;	// indicates if input has close(N-1) value
-	private EmaLogic ema;
+	private EmaCore ema;
 	private InstrumentStore atrStore;	// store of ATR values
 		
 	public ATR(int id, SimHost host) {
 		super(id, MatElementDefs.EL_TYP_ATR,host);
 		atrStore = new InstrumentStore("atr");
-		ema = new EmaLogic();
+		ema = new EmaCore();
 	}
 
 	@Override

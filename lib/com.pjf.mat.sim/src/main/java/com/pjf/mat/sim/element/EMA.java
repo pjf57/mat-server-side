@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.sim.bricks.BaseElement;
-import com.pjf.mat.sim.bricks.EmaLogic;
+import com.pjf.mat.sim.bricks.EmaCore;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.types.ConfigItem;
@@ -20,13 +20,13 @@ import com.pjf.mat.sim.types.FloatValue;
 public class EMA extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(EMA.class);
 	private static final int LATENCY = 14;	// input to output latency (microticks)
-	private EmaLogic ema;
+	private EmaCore ema;
 	private float c_alpha;		// exp coefficient
 	private int c_len;			// length of sequence
 	
 	public EMA(int id, SimHost host) {
 		super(id, MatElementDefs.EL_TYP_EMA,host);
-		ema = new EmaLogic();
+		ema = new EmaCore();
 	}
 
 

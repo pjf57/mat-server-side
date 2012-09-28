@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.sim.bricks.BaseElement;
-import com.pjf.mat.sim.bricks.EmaLogic;
+import com.pjf.mat.sim.bricks.EmaCore;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.types.ConfigItem;
@@ -31,9 +31,9 @@ public class MACD extends BaseElement implements SimElement {
 	public static final int SIGNAL_PORT = 1;
 	public static final int HIST_PORT = 2;
 
-	private EmaLogic fastEma;
-	private EmaLogic slowEma;
-	private EmaLogic signalEma;
+	private EmaCore fastEma;
+	private EmaCore slowEma;
+	private EmaCore signalEma;
 	private float c_fast_alpha;			// fs exp coefficient
 	private int c_fast_len;				// fs length of sequence
 	private float c_slow_alpha;			// sl exp coefficient
@@ -43,9 +43,9 @@ public class MACD extends BaseElement implements SimElement {
 	
 	public MACD(int id, SimHost host) {
 		super(id, MatElementDefs.EL_TYP_MACD,host);
-		fastEma = new EmaLogic();
-		slowEma = new EmaLogic();
-		signalEma = new EmaLogic();
+		fastEma = new EmaCore();
+		slowEma = new EmaCore();
+		signalEma = new EmaCore();
 	}
 
 

@@ -4,7 +4,7 @@ package com.pjf.mat.sim.element;
 import org.apache.log4j.Logger;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.sim.bricks.BaseElement;
-import com.pjf.mat.sim.bricks.EmaLogic;
+import com.pjf.mat.sim.bricks.EmaCore;
 import com.pjf.mat.sim.bricks.InstrumentStore;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.LookupValidity;
@@ -35,17 +35,17 @@ public class ADX extends BaseElement implements SimElement {
 	private int c_ndn_len;				// NDN EMA length of sequence
 	private float c_adx_alpha;			// ADX EMA exp coefficient
 	private int c_adx_len;				// ADX EMA length of sequence
-	private EmaLogic pdnEma;
-	private EmaLogic ndnEma;
-	private EmaLogic adxEma;
+	private EmaCore pdnEma;
+	private EmaCore ndnEma;
+	private EmaCore adxEma;
 	private InstrumentStore adxStore;	// store of ADX values
 		
 	public ADX(int id, SimHost host) {
 		super(id, MatElementDefs.EL_TYP_ADX,host);
 		adxStore = new InstrumentStore("adx");
-		pdnEma = new EmaLogic();
-		ndnEma = new EmaLogic();
-		adxEma = new EmaLogic();
+		pdnEma = new EmaCore();
+		ndnEma = new EmaCore();
+		adxEma = new EmaCore();
 	}
 
 	@Override

@@ -10,13 +10,13 @@ import com.pjf.mat.sim.types.FloatValue;
  * @author pjf
  *
  */
-public class EmaLogic {
+public class EmaCore {
 	private float alpha;		// exp coefficient
 	private int len;			// length of sequence
 	private float[] last;
 	private int[] length;
 
-	public EmaLogic() {
+	public EmaCore() {
 		last = new float[MatElementDefs.MAX_INSTRUMENTS];
 		length = new int[MatElementDefs.MAX_INSTRUMENTS];
 		for (int instr=0; instr<MatElementDefs.MAX_INSTRUMENTS; instr++) {

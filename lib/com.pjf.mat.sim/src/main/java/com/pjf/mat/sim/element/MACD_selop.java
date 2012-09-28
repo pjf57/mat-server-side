@@ -4,7 +4,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.sim.bricks.BaseElement;
-import com.pjf.mat.sim.bricks.EmaLogic;
+import com.pjf.mat.sim.bricks.EmaCore;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.types.ConfigItem;
@@ -25,9 +25,9 @@ public class MACD_selop extends BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(MACD_selop.class);
 	//FIXME - get correct latency
 	private static final int LATENCY = 14;	// input to output latency (microticks)
-	private EmaLogic fastEma;
-	private EmaLogic slowEma;
-	private EmaLogic signalEma;
+	private EmaCore fastEma;
+	private EmaCore slowEma;
+	private EmaCore signalEma;
 	private float c_fast_alpha;			// fs exp coefficient
 	private int c_fast_len;				// fs length of sequence
 	private float c_slow_alpha;			// sl exp coefficient
@@ -38,9 +38,9 @@ public class MACD_selop extends BaseElement implements SimElement {
 	
 	public MACD_selop(int id, SimHost host) {
 		super(id, MatElementDefs.EL_TYP_MACD,host);
-		fastEma = new EmaLogic();
-		slowEma = new EmaLogic();
-		signalEma = new EmaLogic();
+		fastEma = new EmaCore();
+		slowEma = new EmaCore();
+		signalEma = new EmaCore();
 	}
 
 

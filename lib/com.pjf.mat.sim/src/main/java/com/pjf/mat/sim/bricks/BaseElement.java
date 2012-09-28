@@ -32,20 +32,61 @@ public abstract class BaseElement implements SimElement {
 	protected final int elementId;
 	protected final int elementHWType;
 	protected final SimHost host;
-	private int[] srcRouting;
+	private SourceRoute[] srcRouting;
 	private final int MAX_INPUTS = 4;
 	protected BaseState baseState;
 	protected int evtCount;	
+
+	/**
+	 * Class to hold a source route specification for one input
+	 */
+	private class SourceRoute {
+		private int element;		// source element ID
+		private int port;			// source port number
+		
+		public SourceRoute() {
+			clear();
+		}
+		
+		public void clear() {
+			element = 0;
+			port = 0;
+		}
+
+		/**
+		 * @return true if this source route matches the specified event source
+		 */
+		public boolean matches(Event evt) {
+			return (evt.getSrc() == element) && (evt.getSrcPort() == port);
+		}
+
+		public void set(int element, int port) {
+			this.element = element;
+			this.port = port;			
+		}
+		
+		@Override
+		public String toString() {
+			return "" + element + ":" + port;
+		}
+	}
 	
+	/**
+	 * Normal constructor
+	 * 
+	 * @param id		id of this element
+	 * @param hwType	type of this element (hw id)
+	 * @param host		reference to host interface
+	 */
 	public BaseElement(int id, int hwType, SimHost host) {
 		this.elementId = id;
 		this.elementHWType = hwType;
 		this.host = host;
 		baseState = BaseState.CFG;
 		evtCount = 0;
-		srcRouting = new int[MAX_INPUTS];
+		srcRouting = new SourceRoute[MAX_INPUTS];
 		for (int i=0; i<MAX_INPUTS; i++) {
-			srcRouting[i] = 0;	// no connection
+			srcRouting[i] = new SourceRoute();	// init with no connection
 		}
 	}
 	
@@ -66,7 +107,7 @@ public abstract class BaseElement implements SimElement {
 	public boolean putEvent(Event evt) throws Exception {
 		boolean taken = false;
 		for (int ip=0; ip<MAX_INPUTS; ip++) {
-			if (evt.getSrc() == srcRouting[ip]) {
+			if (srcRouting[ip].matches(evt)) {
 				logger.debug(getIdStr() + "Received Event on input " + (ip+1) +
 						": " + evt);
 				evtCount++;
@@ -84,9 +125,10 @@ public abstract class BaseElement implements SimElement {
 			
 			switch (cfg.getItemId()) {
 			case MatElementDefs.EL_C_SRC_ROUTE: 
-				int input = (cfg.getRawData() / 256) & 3;	// 0..3
+				int input = (cfg.getRawData() >> 16) & 3;	// 0..3
+				int port = ((cfg.getRawData() >> 8)-1) & 3;	// 0..3
 				int source = cfg.getRawData() & 0x3f;
-				srcRouting[input] = source;
+				srcRouting[input].set(source,port);
 				break;
 			case MatElementDefs.EL_C_RESET: 
 				setBaseState(BaseState.RST);

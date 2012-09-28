@@ -10,9 +10,9 @@ diagram.element.1.name=Logger
 diagram.element.1.type=LOGGER
 diagram.element.1.loc.x=504
 diagram.element.1.loc.y=396
-diagram.element.1.in.1=6.out.0
-diagram.element.1.in.2=2.out.0
-diagram.element.1.in.3=5.out.0
+diagram.element.1.in.1=7.out.2
+diagram.element.1.in.2=7.out.1
+diagram.element.1.in.3=7.out.0
 diagram.element.1.in.0=4.out.0
 
 diagram.element.2.name=tg1
@@ -61,6 +61,18 @@ diagram.element.6.prop.NDN_EMA_len=3
 diagram.element.6.prop.NDN_EMA_alpha=0.5
 diagram.element.6.prop.ADX_EMA_len=3
 diagram.element.6.prop.ADX_EMA_alpha=0.5
+
+diagram.element.7.name=macd
+diagram.element.7.type=MACD
+diagram.element.7.loc.x=372
+diagram.element.7.loc.y=240
+diagram.element.7.in.0=2.out.0
+diagram.element.7.prop.FAST_EMA_len=3
+diagram.element.7.prop.FAST_EMA_alpha=0.5
+diagram.element.7.prop.SLOW_EMA_len=7
+diagram.element.7.prop.SLOW_EMA_alpha=0.25
+diagram.element.7.prop.SIGNAL_EMA_len=3
+diagram.element.7.prop.SIGNAL_EMA_alpha=0.5
 
 diagram.element.20.name=note
 diagram.element.20.type=NOTE
