@@ -25,7 +25,7 @@ public class SimTestCase extends TestCase implements SimHost {
 	}
 
 	@Override
-	public void publishEventLog(Timestamp ts, int srcId, int intrumentId,
+	public void publishEventLog(Timestamp ts, int srcId, int srcPort, int intrumentId,
 			int rawValue) {
 		// TODO Auto-generated method stub
 		

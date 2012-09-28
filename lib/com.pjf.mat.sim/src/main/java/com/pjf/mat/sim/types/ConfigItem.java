@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.types;
 
+import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.util.Conversion;
 
 /**
@@ -44,13 +45,27 @@ public class ConfigItem {
 	 * 
 	 * @param elementId	- element to configure
 	 * @param itemId	- config item
-	 * @param source	- source element to connect from
+	 * @param out		- output to connect from
 	 * @param input		- input number (1..4)
 	 */
-	public ConfigItem(int elementId, int itemId, int source, int input) {
+	public ConfigItem(int elementId, int itemId, OutputPort out, int input) {
 		this.elementId = elementId;
 		this.itemId = itemId;
-		this.rawData = ((input-1) << 8) | source;
+		this.rawData = ((input-1) << 16) | out.getId() << 8 | out.getParent().getId();
+	}
+
+	/**
+	 * Construct a config item as a cxn config - specifying the src element and port 0
+	 * 
+	 * @param elementId	- element to configure
+	 * @param itemId	- config item
+	 * @param srcElementId	- output to connect from
+	 * @param input		- input number (1..4)
+	 */
+	public ConfigItem(int elementId, int itemId, int srcElementId, int input) {
+		this.elementId = elementId;
+		this.itemId = itemId;
+		this.rawData = ((input-1) << 16) | 0 << 8 | srcElementId;
 	}
 
 	public int getElementId() {

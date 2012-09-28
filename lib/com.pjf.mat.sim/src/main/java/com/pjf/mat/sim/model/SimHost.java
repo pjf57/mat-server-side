@@ -23,10 +23,11 @@ public interface SimHost {
 	 * 
 	 * @param ts			the timestamp of the event
 	 * @param srcId			The id of the element sending the event
+	 * @param srcPort		The source output port number
 	 * @param intrumentId	The ID of the instrument
 	 * @param rawValue		The raw value of the event data
 	 */
-	public void publishEventLog(Timestamp ts, int srcId, int intrumentId, int rawValue);
+	public void publishEventLog(Timestamp ts, int srcId, int srcPort, int intrumentId, int rawValue);
 
 	/**
 	 * publish a change in an element's status

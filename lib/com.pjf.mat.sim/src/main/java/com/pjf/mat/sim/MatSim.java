@@ -99,7 +99,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 			for (InputPort ip : el.getInputs()) {
 				if (ip.getConnectedSrc() != null) {
 					ConfigItem cfg = new ConfigItem(el.getId(), MatElementDefs.EL_C_SRC_ROUTE,
-							ip.getConnectedSrc().getParent().getId(),ip.getId());
+							ip.getConnectedSrc(),ip.getId());
 					for (SimElement se : simElements) {
 						se.putConfig(cfg);
 					}
@@ -169,10 +169,9 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public void publishEventLog(Timestamp ts, int srcId, int intrumentId, int rawValue) {
+	public void publishEventLog(Timestamp ts, int srcId, int srcPort, int intrumentId, int rawValue) {
 		logger.debug("publishEventLog()");
-		//FIXME add real port id instead of 0
-		notifyEvent(ts,srcId,0,intrumentId,rawValue);
+		notifyEvent(ts,srcId,srcPort,intrumentId,rawValue);
 	}
 
 	@Override
@@ -255,8 +254,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 			long qtime = startDelivery.getMicroticks() - evt.getTimestamp().getMicroticks();
 			long deltime = endDelivery.getMicroticks() - startDelivery.getMicroticks();
 			Element source = mat.getModel().getElement(evt.getSrc());
-			// FIXME - specify real port rather than zero
-			rtrAuditLogger.addLog(evt.getTimestamp(),source,0,takers,
+			rtrAuditLogger.addLog(evt.getTimestamp(),source,evt.getSrcPort(),takers,
 					evt.getInstrument_id(),(int) qtime, (int) deltime, evt.getFloatData());
 		}
 	}
