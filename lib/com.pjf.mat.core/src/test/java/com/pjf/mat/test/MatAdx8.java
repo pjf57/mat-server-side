@@ -69,6 +69,7 @@ public class MatAdx8 extends MatSystem {
 		hloc.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 		atr.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
+		macd.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 //		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 //		lgr.getInputs().get(1).connectTo(hloc.getOutputs().get(0));
 		//		lgr.getInputs().get(1).connectTo(macd.getOutputs().get(0));

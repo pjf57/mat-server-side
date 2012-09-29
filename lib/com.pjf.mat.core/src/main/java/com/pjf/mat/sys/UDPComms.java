@@ -102,14 +102,15 @@ public class UDPComms extends BaseComms implements Comms {
 
 	@Override
 	public Status requestStatus() throws Exception {
-			byte[] req = new byte[7];
+			byte[] req = new byte[8];
 			req[0] = 1;
 			req[1] = 0;
 			req[2] = (byte) 0x83;
 			req[3] = 0;
 			req[4] = 0;
 			req[5] = 0;
-			req[6] = (byte) 0xff;
+			req[6] = 0;
+			req[7] = (byte) 0xff;
 			cxn.send(req,port);
 		return null;
 	}
@@ -117,7 +118,7 @@ public class UDPComms extends BaseComms implements Comms {
 	@Override
 	public long getHWSignature() throws Exception{
 		// send request
-		byte[] req = new byte[7];
+		byte[] req = new byte[8];
 		req[0] = 1;
 		req[1] = 0;
 		req[2] = (byte) 0x85;
@@ -125,6 +126,7 @@ public class UDPComms extends BaseComms implements Comms {
 		req[4] = 0;
 		req[5] = 0;
 		req[6] = 0;
+		req[7] = 0;
 		cxn.send(req,port);
 		// now wait till we have response back
 		// TODO add timeout
@@ -138,14 +140,15 @@ public class UDPComms extends BaseComms implements Comms {
 
 	@Override
 	public Status requestStatus(Element element) throws Exception {
-		byte[] req = new byte[7];
+		byte[] req = new byte[8];
 		req[0] = 1;
 		req[1] = 0;
 		req[2] = (byte) 0x83;
 		req[3] = 0;
 		req[4] = 0;
 		req[5] = 0;
-		req[6] = (byte) element.getId();
+		req[6] = 0;
+		req[7] = (byte) element.getId();
 		cxn.send(req,port);
 		return null;
 	}

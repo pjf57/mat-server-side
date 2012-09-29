@@ -73,6 +73,9 @@ public class UnifiedEventLogger {
 		if (lastAddedTs != null) {
 			while (true) {
 				TimeOrdered first = store.peek();
+				if (first == null) {
+					break;
+				}
 				long diffNs = lastAddedTs.diffNs(first.getTimestamp());
 				if (diffNs < 1000000L * (long) windowMs) {
 					break;
