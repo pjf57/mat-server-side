@@ -13,6 +13,7 @@ import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.impl.element.SystemCmd;
 import com.pjf.mat.util.comms.BaseComms;
 import com.pjf.mat.util.comms.UDPCxn;
 
@@ -94,7 +95,7 @@ public class UDPComms extends BaseComms implements Comms {
 	@Override
 	public void sendCmd(Cmd cmd) throws IOException {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
-		cfg.put(cmd.getParent().getId(),cmd.getConfigId() | 0x80,0, 0);
+		cfg.put(cmd.getParentID(),cmd.getConfigId() | 0x80,cmd.getArg(), cmd.getData());
 		logger.info("sendCmd(" + cmd.getFullName() + "): encoded " + cfg.getLength() + " bytes");
 		cxn.send(cfg.getData(),port);
 	}
@@ -102,32 +103,16 @@ public class UDPComms extends BaseComms implements Comms {
 
 	@Override
 	public Status requestStatus() throws Exception {
-			byte[] req = new byte[8];
-			req[0] = 1;
-			req[1] = 0;
-			req[2] = (byte) 0x83;
-			req[3] = 0;
-			req[4] = 0;
-			req[5] = 0;
-			req[6] = 0;
-			req[7] = (byte) 0xff;
-			cxn.send(req,port);
+		SystemCmd cmd = new SystemCmd("Request_Status",MatElementDefs.EL_C_STATUS_REQ,0xff);
+		sendCmd(cmd);
 		return null;
 	}
 
 	@Override
 	public long getHWSignature() throws Exception{
 		// send request
-		byte[] req = new byte[8];
-		req[0] = 1;
-		req[1] = 0;
-		req[2] = (byte) 0x85;
-		req[3] = 0;
-		req[4] = 0;
-		req[5] = 0;
-		req[6] = 0;
-		req[7] = 0;
-		cxn.send(req,port);
+		SystemCmd cmd = new SystemCmd("Request_HWSig",MatElementDefs.EL_C_HWSIG_REQ);
+		sendCmd(cmd);
 		// now wait till we have response back
 		// TODO add timeout
 		logger.info("getHWSignature() - waiting for signatue from HW ...");
@@ -140,16 +125,8 @@ public class UDPComms extends BaseComms implements Comms {
 
 	@Override
 	public Status requestStatus(Element element) throws Exception {
-		byte[] req = new byte[8];
-		req[0] = 1;
-		req[1] = 0;
-		req[2] = (byte) 0x83;
-		req[3] = 0;
-		req[4] = 0;
-		req[5] = 0;
-		req[6] = 0;
-		req[7] = (byte) element.getId();
-		cxn.send(req,port);
+		SystemCmd cmd = new SystemCmd("Request_Status",MatElementDefs.EL_C_STATUS_REQ,element.getId());
+		sendCmd(cmd);
 		return null;
 	}
 

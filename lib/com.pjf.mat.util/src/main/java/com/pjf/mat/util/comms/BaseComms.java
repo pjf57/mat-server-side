@@ -72,7 +72,6 @@ public abstract class BaseComms implements Comms {
 			logger.debug("cfg.put(el=" + id + " cfgId=" + configId + " data=0x" + Integer.toHexString(value) +
 					") msg = [" + toHexString(data,upto-6,upto-1) + "]");			
 		}
-		
 
 		public byte[] getData() {
 			data[0] = (byte) itemCount;
@@ -87,6 +86,16 @@ public abstract class BaseComms implements Comms {
 		
 		public int getLength() {
 			return upto;
+		}
+		
+		@Override
+		public String toString() {
+			StringBuffer buf = new StringBuffer();
+			buf.append(itemCount); buf.append("/"); buf.append(upto);
+			buf.append("[");
+			buf.append(Conversion.toHexString(getData()));
+			buf.append("]");
+			return buf.toString();
 		}
 	}
 
