@@ -8,11 +8,8 @@ import java.util.Set;
  * @author pjf
  *
  */
-public class RtrAuditLog implements TimeOrdered {
-	private final Timestamp timestamp;
-	private final Element source;			// element that produced the event 
+public class RtrAuditLog extends BaseLog {
 	private final int sourcePort;			// port on the element that produced the event 
-	private final int instrument_id;
 	private final float data;
 	private final Set<Element> takers;		// element that took the event
 	private final int qTimeMicroticks;		// queueing time
@@ -27,37 +24,24 @@ public class RtrAuditLog implements TimeOrdered {
 	 * @param source
 	 * @param sourcePort 
 	 * @param takers
-	 * @param instrument_id
+	 * @param instrumentId
 	 * @param qTime
 	 * @param deltime
 	 * @param data
 	 */
 	public RtrAuditLog(Timestamp timestamp, Element source, int sourcePort, Set<Element> takers, 
-			int instrument_id, int qTime, int deltime, float data) {
-		this.timestamp = timestamp;
-		this.source = source;
+			int instrumentId, int qTime, int deltime, float data) {
+		super(timestamp,instrumentId,source);
 		this.sourcePort = sourcePort;
-		this.instrument_id = instrument_id;
 		this.qTimeMicroticks = qTime;
 		this.delTimeMicroticks = deltime;
 		this.data = data;
 		this.takers = takers;
 	}
-	
-	public Timestamp getTimestamp() {
-		return timestamp;
-	}
-	
-	public Element getSource() {
-		return source;
-	}
+		
 
 	public OutputPort getSourcePort() {
-		return source.getOutputs().get(sourcePort);
-	}
-
-	public int getInstrument_id() {
-		return instrument_id;
+		return getSrcElement().getOutputs().get(sourcePort);
 	}
 
 	public float getData() {
@@ -80,9 +64,10 @@ public class RtrAuditLog implements TimeOrdered {
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("Router:");
-		buf.append(timestamp);
-		buf.append(": src:"); buf.append(getShortName(source)); buf.append(":"); buf.append(source.getOutputs().get(sourcePort).getName());
-		buf.append(",instr="); buf.append(instrument_id);
+		buf.append(getTimestamp());
+		buf.append(": src:"); buf.append(getShortName(getSrcElement())); buf.append(":"); 
+		buf.append(getSrcElement().getOutputs().get(sourcePort).getName());
+		buf.append(",instr="); buf.append(getInstrumentId());
 		buf.append(" Data="); buf.append(data);
 		buf.append(" Takers:[ ");
 		for (Element el : takers) {
@@ -107,13 +92,9 @@ public class RtrAuditLog implements TimeOrdered {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		int result = super.hashCode();
 		result = prime * result + Float.floatToIntBits(data);
-		result = prime * result + instrument_id;
-		result = prime * result + ((source == null) ? 0 : source.hashCode());
 		result = prime * result + sourcePort;
-		result = prime * result
-				+ ((timestamp == null) ? 0 : timestamp.hashCode());
 		return result;
 	}
 
@@ -128,28 +109,15 @@ public class RtrAuditLog implements TimeOrdered {
 		RtrAuditLog other = (RtrAuditLog) obj;
 		if (Float.floatToIntBits(data) != Float.floatToIntBits(other.data))
 			return false;
-		if (instrument_id != other.instrument_id)
+		if (!super.equals(obj)) {
 			return false;
-		if (source == null) {
-			if (other.source != null)
-				return false;
-		} else if (!source.equals(other.source))
-			return false;
+		}
 		if (sourcePort != other.sourcePort) {
 			return false;
 		}
-		if (timestamp == null) {
-			if (other.timestamp != null)
-				return false;
-		} else if (!timestamp.equals(other.timestamp))
-			return false;
 		return true;
 	}
 
-	@Override
-	public int compareTo(TimeOrdered o) {
-		return timestamp.compareTo(o.getTimestamp());
-	}
 	
 
 }

@@ -35,9 +35,9 @@ public abstract class MatSystem {
 		@Override
 		public void notifyEventLog(EventLog evt) {
 			ueLogger.addLog(evt);
-			logger.debug("Event: ts=" + evt.getTimestamp() + " src=" + evt.getSrc().getId() +
-						" type=" + evt.getSrc().getType() +
-						" instrument=" + evt.getIntrumentId() +
+			logger.debug("Event: ts=" + evt.getTimestamp() + " src=" + evt.getSrcElement().getId() +
+						" type=" + evt.getSrcElement().getType() +
+						" instrument=" + evt.getInstrumentId() +
 						" value=" + evt.getDispValue());			
 		}
 
