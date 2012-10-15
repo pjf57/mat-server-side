@@ -60,7 +60,7 @@ public abstract class BaseComms implements Comms {
 			data = new byte[1500];
 		}
 
-		public void put(int id, int configId, int arg, int value) {
+		private void putRaw(int id, int configId, int arg, int value) {
 			data[upto++] = (byte) id;
 			data[upto++] = (byte) configId;
 			data[upto++] = (byte) arg;
@@ -72,6 +72,19 @@ public abstract class BaseComms implements Comms {
 			logger.debug("cfg.put(el=" + id + " cfgId=" + configId + " data=0x" + Integer.toHexString(value) +
 					") msg = [" + toHexString(data,upto-6,upto-1) + "]");			
 		}
+		
+		public void putConfigItem(int id, int configId, int arg, int value) {
+			putRaw(id,configId | 0x80,arg,value);
+		}
+		
+		public void putSystemItem(int id, int configId, int arg, int value) {
+			putRaw(id,configId | 0x40,arg,value);
+		}
+
+		public void putCmdItem(int id, int configId, int arg, int value) {
+			putRaw(id,configId | 0xc0,arg,value);
+		}
+
 
 		public byte[] getData() {
 			data[0] = (byte) itemCount;
@@ -377,18 +390,18 @@ public abstract class BaseComms implements Comms {
 	protected void hwEncodeConfig(Element el, EncodedConfigItemList cfg) throws Exception {	
 		// encode attribute values
 		for (Attribute attr : el.getAttributes()) {
-			cfg.put(el.getId(),attr.getConfigId(),0,attr.getEncodedData());
+			cfg.putConfigItem(el.getId(),attr.getConfigId(),0,attr.getEncodedData());
 		}		
 		// encode connections
 		for (InputPort ip : el.getInputs()) {
 			OutputPort src = ip.getConnectedSrc();
 			if (src != null) {
 				int val = ((ip.getId()-1) << 16) | (src.getId()-1) << 8 | src.getParent().getId();
-				cfg.put(el.getId(), MatElementDefs.EL_C_SRC_ROUTE, 0, val);
+				cfg.putSystemItem(el.getId(), MatElementDefs.EL_C_SRC_ROUTE, 0, val);
 			}
 		}		
 		// put config done for this element
-		cfg.put(el.getId(), MatElementDefs.EL_C_CFG_DONE, 0, 0);
+		cfg.putSystemItem(el.getId(), MatElementDefs.EL_C_CFG_DONE, 0, 0);
 	}
 
 

@@ -95,7 +95,7 @@ public class UDPComms extends BaseComms implements Comms {
 	@Override
 	public void sendCmd(Cmd cmd) throws IOException {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
-		cfg.put(cmd.getParentID(),cmd.getConfigId() | 0x80,cmd.getArg(), cmd.getData());
+		cfg.putCmdItem(cmd.getParentID(),cmd.getConfigId(),cmd.getArg(), cmd.getData());
 		logger.info("sendCmd(" + cmd.getFullName() + "): encoded " + cfg.getLength() + " bytes");
 		cxn.send(cfg.getData(),port);
 	}
@@ -150,7 +150,7 @@ public class UDPComms extends BaseComms implements Comms {
 	@Override
 	public void synchroniseClock(int syncOrigin) throws IOException {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
-		cfg.put(0,MatElementDefs.EL_C_CLKSYNC_REQ | 0x80,0, 0);
+		cfg.putCmdItem(0,MatElementDefs.EL_C_CLKSYNC_REQ | 0x80,0, 0);
 		logger.info("synchroniseClock(" + syncOrigin + "): encoded " + cfg.getLength() + " bytes");
 		cxn.send(cfg.getData(),port);
 	}
@@ -159,7 +159,7 @@ public class UDPComms extends BaseComms implements Comms {
 	@Override
 	public void requestLkuAuditLogs() throws Exception {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
-		cfg.put(0,MatElementDefs.EL_C_LKU_AUDIT_REQ | 0x80,0, 0);
+		cfg.putCmdItem(0,MatElementDefs.EL_C_LKU_AUDIT_REQ | 0x80,0, 0);
 		logger.info("requestLkuAuditLogs(): encoded " + cfg.getLength() + " bytes");
 		cxn.send(cfg.getData(),port);
 	}
@@ -168,7 +168,7 @@ public class UDPComms extends BaseComms implements Comms {
 	@Override
 	public void requestRtrAuditLogs() throws Exception {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
-		cfg.put(0,MatElementDefs.EL_C_RTR_AUDIT_REQ | 0x80,0, 0);
+		cfg.putCmdItem(0,MatElementDefs.EL_C_RTR_AUDIT_REQ | 0x80,0, 0);
 		logger.info("requestRtrAuditLogs(): encoded " + cfg.getLength() + " bytes");
 		cxn.send(cfg.getData(),port);
 	}

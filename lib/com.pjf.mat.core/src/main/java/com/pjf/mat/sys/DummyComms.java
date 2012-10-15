@@ -153,7 +153,7 @@ public class DummyComms extends BaseComms implements Comms {
 	@Override
 	public void sendCmd(Cmd cmd) throws IOException {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
-		cfg.put(cmd.getParent().getId(),cmd.getConfigId() | 0x80,0, 0);
+		cfg.putCmdItem(cmd.getParent().getId(),cmd.getConfigId() | 0x80,0, 0);
 		logger.info("sendCmd(" + cmd.getFullName() + "): encoded " + cfg.getLength() + " bytes");
 	}
 

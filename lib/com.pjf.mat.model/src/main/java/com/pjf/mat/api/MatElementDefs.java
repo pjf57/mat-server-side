@@ -45,23 +45,24 @@ public class MatElementDefs {
 //	-- CONFIG IDS
 //	------------------------------
 	
-//	-- config IDs for standardised config cmds
+//	-- SYSTEM CONFIG IDS
 	public static final int EL_C_RESET 			= 0x00;
 	public static final int EL_C_SRC_ROUTE 		= 0x01;	// xxxx xxxx xxxI xxSS (for source SS on input I)
 	public static final int EL_C_CFG_DONE 		= 0x02;	// config is done
 
 //	------------------------------
-//	-- SYSTEM CONTROL
+//	-- EL IDS for SYSTEM CONTROL
 //	------------------------------
-
-	public static final int EL_C_STATUS_REQ 		= 0x03; // request status for el id [data(5..0)](all if el id = 0)
-	public static final int EL_C_CONFIG_REQ 		= 0x04; // request config for el id [data(5..0)]
-	public static final int EL_C_HWSIG_REQ  		= 0x05; // request hw signature
-	public static final int EL_C_CLKSYNC_REQ  		= 0x06; // request a clk_ts sync [data is clk reference]
-	public static final int EL_C_LKU_AUDIT_THRESH	= 0x07; // set threshold for lku audit logs autosend
-	public static final int EL_C_LKU_AUDIT_REQ		= 0x08; // request immed tx of lku audit logs	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
-	public static final int EL_C_RTR_AUDIT_THRESH	= 0x09; // set threshold for Router audit logs autosend
-	public static final int EL_C_RTR_AUDIT_REQ		= 0x0a; // request immed tx of Router audit logs	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
+	// EL config
+	public static final int EL_C_LKU_AUDIT_THRESH	= 0x01; // set threshold for lku audit logs autosend
+	public static final int EL_C_RTR_AUDIT_THRESH	= 0x02; // set threshold for Router audit logs autosend
+	// CMDS
+	public static final int EL_C_STATUS_REQ 		= 0x01; // request status for el id [data(5..0)](all if el id = 0)
+	public static final int EL_C_CONFIG_REQ 		= 0x02; // request config for el id [data(5..0)]
+	public static final int EL_C_HWSIG_REQ  		= 0x03; // request hw signature
+	public static final int EL_C_CLKSYNC_REQ  		= 0x04; // request a clk_ts sync [data is clk reference]
+	public static final int EL_C_LKU_AUDIT_REQ		= 0x05; // request immed tx of lku audit logs	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
+	public static final int EL_C_RTR_AUDIT_REQ		= 0x06; // request immed tx of Router audit logs	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
 
 
 //	------------------------------
