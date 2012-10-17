@@ -2,6 +2,7 @@ package com.pjf.mat.util.attr;
 
 import java.util.SortedSet;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.AttributeType;
 import com.pjf.mat.api.EnumValue;
@@ -9,11 +10,13 @@ import com.pjf.mat.api.EnumValue;
 public class StringAttribute implements Attribute, Cloneable {
 	private final String name;
 	private String value;
+	private final AttrSysType sysType;
 	private final int configId;
 	
-	public StringAttribute(String name, int configId) {
+	public StringAttribute(String name, int configId, AttrSysType sysType) {
 		this.name = name;
 		this.configId = configId;
+		this.sysType = sysType;
 		this.value = "";
 	}
 
@@ -34,7 +37,7 @@ public class StringAttribute implements Attribute, Cloneable {
 	
 	@Override
 	public StringAttribute clone() {
-		StringAttribute attr = new StringAttribute(name,configId);
+		StringAttribute attr = new StringAttribute(name,configId,sysType);
 		attr.value = null;
 		return attr;
 	}
@@ -84,6 +87,11 @@ public class StringAttribute implements Attribute, Cloneable {
 	@Override
 	public SortedSet<EnumValue> getEnumValues() {
 		return null;	// simple attributes dont have enum values
+	}
+
+	@Override
+	public AttrSysType getSysType() {
+		return sysType;
 	}
 
 }

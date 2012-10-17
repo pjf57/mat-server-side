@@ -1,12 +1,13 @@
 package com.pjf.mat.util.attr;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.AttributeType;
 import com.pjf.mat.util.Conversion;
 
 public class HexAttribute extends IntegerAttribute {
 
-	public HexAttribute(String name, int configId) {
-		super(name, configId);
+	public HexAttribute(String name, int configId, AttrSysType sysType) {
+		super(name, configId, sysType);
 	}
 	
 	@Override
@@ -21,7 +22,7 @@ public class HexAttribute extends IntegerAttribute {
 
 	@Override
 	public IntegerAttribute clone() {
-		HexAttribute attr = new HexAttribute(getName(),getConfigId());
+		HexAttribute attr = new HexAttribute(getName(),getConfigId(),getSysType());
 		attr.value = value;
 		return attr;
 	}

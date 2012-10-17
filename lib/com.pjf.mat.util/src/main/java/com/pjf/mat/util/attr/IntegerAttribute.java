@@ -1,13 +1,14 @@
 package com.pjf.mat.util.attr;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.AttributeType;
 
 
 public class IntegerAttribute extends StringAttribute {
 	protected int value;
 	
-	public IntegerAttribute(String name, int configId) {
-		super(name,configId);
+	public IntegerAttribute(String name, int configId, AttrSysType sysType) {
+		super(name,configId,sysType);
 		value = 0;
 	}
 	
@@ -23,7 +24,7 @@ public class IntegerAttribute extends StringAttribute {
 
 	@Override
 	public IntegerAttribute clone() {
-		IntegerAttribute attr = new IntegerAttribute(getName(),getConfigId());
+		IntegerAttribute attr = new IntegerAttribute(getName(),getConfigId(),getSysType());
 		attr.value = value;
 		return attr;
 	}

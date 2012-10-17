@@ -14,6 +14,8 @@ public interface Attribute extends Cloneable {
 	/** @model */
 	public int getConfigId();
 	
+	public AttrSysType getSysType();
+	
 	public void setValue(String value) throws Exception;
 	
 	/**

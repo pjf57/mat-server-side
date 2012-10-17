@@ -3,6 +3,7 @@ package com.pjf.mat.util.attr;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.AttributeType;
 import com.pjf.mat.api.EnumValue;
 
@@ -14,8 +15,8 @@ import com.pjf.mat.api.EnumValue;
 public class EnumAttribute extends IntegerAttribute {
 	private SortedSet<EnumValue> values;
 
-	public EnumAttribute(String name, int configId) {
-		super(name, configId);
+	public EnumAttribute(String name, int configId, AttrSysType sysType) {
+		super(name, configId, sysType);
 		values = new TreeSet<EnumValue>();
 	}
 	
@@ -74,7 +75,7 @@ public class EnumAttribute extends IntegerAttribute {
 
 	@Override
 	public EnumAttribute clone() {
-		EnumAttribute attr = new EnumAttribute(getName(),getConfigId());
+		EnumAttribute attr = new EnumAttribute(getName(),getConfigId(),getSysType());
 		attr.value = value;
 		attr.values = values;
 		return attr;

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
@@ -139,21 +140,30 @@ public class MatInterfaceModel implements MatModel {
 				String attrName = props.getProperty(a + ".name");
 				String attrType = props.getProperty(a + ".type");
 				String attrConfigS = props.getProperty(a + ".config");
+				String sysTypeS = props.getProperty(a + ".systype");
+				AttrSysType sysType = AttrSysType.NORMAL;
+				if (sysTypeS != null) {
+					sysType = AttrSysType.valueOf(sysTypeS);
+					if (sysType == null) {
+						logger.error("Unrecognized systype: " + sysTypeS +
+								" on " + a + ".name = " + attrName);
+					}
+				}
 				int configId = Integer.parseInt(attrConfigS);
 				if (attrType.equals("int")) {
-					attr = new IntegerAttribute(attrName,configId);
+					attr = new IntegerAttribute(attrName,configId,sysType);
 					type.addAttribute(attr);
 				} else if (attrType.equals("hex")) {
-					attr = new HexAttribute(attrName,configId);
+					attr = new HexAttribute(attrName,configId,sysType);
 					type.addAttribute(attr);
 				} else if (attrType.equals("string")) {
-					attr = new StringAttribute(attrName,configId);
+					attr = new StringAttribute(attrName,configId,sysType);
 					type.addAttribute(attr);
 				} else if (attrType.equals("float")) {
-					attr = new FloatAttribute(attrName,configId);
+					attr = new FloatAttribute(attrName,configId,sysType);
 					type.addAttribute(attr);
 				} else if (attrType.equals("enum")) {
-					attr = loadEnumAttribute(a,attrName,configId);			
+					attr = loadEnumAttribute(a,attrName,configId,sysType);			
 					type.addAttribute(attr);
 				} else {
 					logger.error("Unrecognized attribute type: " + attrType);
@@ -232,14 +242,16 @@ public class MatInterfaceModel implements MatModel {
 	 * @param prefix - property prefix of the form: type1.attr2
 	 * @param attrName
 	 * @param configId
+	 * @param sysType
 	 * @return the completed attribute
 	 * @throws Exception 
 	 * 
 	 * The values list is defined in the properties in the form:
 	 * 	type1.attr2.enum1=name:value:description
 	 */
-	private Attribute loadEnumAttribute(String prefix, String attrName, int configId) throws Exception {
-		EnumAttribute attr = new EnumAttribute(attrName,configId);
+	private Attribute loadEnumAttribute(String prefix, String attrName, 
+			int configId, AttrSysType sysType) throws Exception {
+		EnumAttribute attr = new EnumAttribute(attrName,configId,sysType);
 		int en = 1;
 		boolean keepReading = true;
 		while (keepReading) {

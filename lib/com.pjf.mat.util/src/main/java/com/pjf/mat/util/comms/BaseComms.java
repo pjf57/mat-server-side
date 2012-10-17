@@ -390,7 +390,24 @@ public abstract class BaseComms implements Comms {
 	protected void hwEncodeConfig(Element el, EncodedConfigItemList cfg) throws Exception {	
 		// encode attribute values
 		for (Attribute attr : el.getAttributes()) {
-			cfg.putConfigItem(el.getId(),attr.getConfigId(),0,attr.getEncodedData());
+			switch (attr.getSysType()) {
+			
+			case NORMAL:
+				cfg.putConfigItem(el.getId(),attr.getConfigId(),0,attr.getEncodedData());
+				break;
+				
+			case SYSTEM:
+				cfg.putSystemItem(el.getId(),attr.getConfigId(),0,attr.getEncodedData());
+				break;
+				
+			case LKU_TARGET:
+				cfg.putConfigItem(el.getId(),MatElementDefs.EL_C_CFG_LKU_TRG,0,
+						(attr.getConfigId() << 8) | (attr.getEncodedData() & 0xff));
+				break;
+				
+			default:
+				throw new Exception("Dont know how to encode: " + attr);
+			}
 		}		
 		// encode connections
 		for (InputPort ip : el.getInputs()) {

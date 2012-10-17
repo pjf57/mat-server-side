@@ -3,6 +3,7 @@ package com.pjf.mat.util;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.util.attr.IntegerAttribute;
@@ -50,21 +51,21 @@ public class ElementStatus implements Status{
 	public Collection<Attribute> getAttributes() {
 		Collection<Attribute> attrs = new ArrayList<Attribute>();
 		Attribute attr;
-		attr = new StringAttribute("basis state",0);
+		attr = new StringAttribute("basis state",0,AttrSysType.NORMAL);
 		try {
 			attr.setValue(basis_state);
 		} catch (Exception e) {
 			// dont set
 		}	
 		attrs.add(attr);
-		attr = new IntegerAttribute("element state",0);
+		attr = new IntegerAttribute("element state",0,AttrSysType.NORMAL);
 		try {
 			attr.setValue(Integer.toBinaryString(el_state));
 		} catch (Exception e) {
 			// dont set
 		}	
 		attrs.add(attr);
-		attr = new IntegerAttribute("ip_evt_cnt",0);
+		attr = new IntegerAttribute("ip_evt_cnt",0,AttrSysType.NORMAL);
 		try {
 			attr.setValue(Long.toString(evt_cnt));
 		} catch (Exception e) {

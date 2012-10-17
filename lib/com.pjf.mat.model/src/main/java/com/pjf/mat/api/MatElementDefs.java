@@ -49,6 +49,7 @@ public class MatElementDefs {
 	public static final int EL_C_RESET 			= 0x00;
 	public static final int EL_C_SRC_ROUTE 		= 0x01;	// xxxx xxxx xxxI xxSS (for source SS on input I)
 	public static final int EL_C_CFG_DONE 		= 0x02;	// config is done
+	public static final int EL_C_CFG_LKU_TRG	= 0x03;	// xxxx xxxx xxxx xNTT (entry N with target TT)
 
 //	------------------------------
 //	-- EL IDS for SYSTEM CONTROL

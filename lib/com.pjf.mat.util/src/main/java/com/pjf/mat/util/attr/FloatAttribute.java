@@ -1,13 +1,14 @@
 package com.pjf.mat.util.attr;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.AttributeType;
 
 
 public class FloatAttribute extends StringAttribute {
 	private float value;
 
-	public FloatAttribute(String name, int configId) {
-		super(name,configId);
+	public FloatAttribute(String name, int configId, AttrSysType sysType) {
+		super(name,configId,sysType);
 		value = 0;
 	}
 	
@@ -23,7 +24,7 @@ public class FloatAttribute extends StringAttribute {
 
 	@Override
 	public FloatAttribute clone() {
-		FloatAttribute attr = new FloatAttribute(getName(),getConfigId());
+		FloatAttribute attr = new FloatAttribute(getName(),getConfigId(),getSysType());
 		attr.value = value;
 		return attr;
 	}
