@@ -29,13 +29,15 @@ import com.pjf.mat.util.Conversion;
 public abstract class BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(BaseElement.class);
 	protected static final int LOOKUP_TIMEOUT_DLY = 5;	// microtick delay on lookup tmo
+	private static final int MAX_LKU_TARGETS = 4;
 	protected final int elementId;
 	protected final int elementHWType;
 	protected final SimHost host;
 	private SourceRoute[] srcRouting;
 	private final int MAX_INPUTS = 4;
 	protected BaseState baseState;
-	protected int evtCount;	
+	protected int evtCount;
+	private int[] lkuTargets;	
 
 	/**
 	 * Class to hold a source route specification for one input
@@ -88,6 +90,11 @@ public abstract class BaseElement implements SimElement {
 		for (int i=0; i<MAX_INPUTS; i++) {
 			srcRouting[i] = new SourceRoute();	// init with no connection
 		}
+		lkuTargets = new int[MAX_LKU_TARGETS+1];
+		// default is to address all lookup targets
+		for (int i=0; i<=MAX_LKU_TARGETS; i++) {
+			lkuTargets[i] = MatElementDefs.EL_ID_ALL;
+		}
 	}
 	
 
@@ -95,6 +102,21 @@ public abstract class BaseElement implements SimElement {
 	public int getId() {
 		return elementId;
 	}
+	
+	/**
+	 * Return particular lookup target
+	 * 
+	 * @param trgNum - index of lookup target to return
+	 * @return		 - value of that lookup target
+	 * @throws Exception
+	 */
+	protected int getLookupTarget(int trgNum) throws Exception {
+		if (trgNum > MAX_LKU_TARGETS) {
+			throw new Exception("trgNum out of range");
+		}
+		return lkuTargets[trgNum];
+	}
+
 	
 	/**
 	 * Handle an incoming event.
@@ -119,29 +141,48 @@ public abstract class BaseElement implements SimElement {
 	}
 
 	@Override
-	public void putConfig(ConfigItem cfg) {
-		if (cfg.getElementId() == elementId) {
+	public void putConfig(ConfigItem cfg) throws Exception {
+		if ((cfg.getElementId() == elementId) || (cfg.getElementId() == MatElementDefs.EL_ID_ALL)) {
 			// config item is for us - check if we can process generically
-			
-			switch (cfg.getItemId()) {
-			case MatElementDefs.EL_C_SRC_ROUTE: 
-				int input = (cfg.getRawData() >> 16) & 3;	// 0..3
-				int port = ((cfg.getRawData() >> 8)-1) & 3;	// 0..3
-				int source = cfg.getRawData() & 0x3f;
-				srcRouting[input].set(source,port);
+			switch (cfg.getSysType()) {
+			case SYSTEM: doSysConfig(cfg);	break;
+	
+			case LKU_TARGET:
+				int num = (cfg.getRawData() >> 8) & 0xf;		// 0..15
+				int target = cfg.getRawData() & 0x3f;
+				if (num > MAX_LKU_TARGETS) {
+					throw new Exception("target number out of range for config: " + cfg);
+				}
+				lkuTargets[num] = target;
 				break;
-			case MatElementDefs.EL_C_RESET: 
-				setBaseState(BaseState.RST);
-				processReset();
-				break;
-			case MatElementDefs.EL_C_CFG_DONE: 
-				processConfigDone();
-				setBaseState(BaseState.RUN);
-				break;
-			default:
+	
+			case NORMAL:
 				// pass config item up to the element
 				processConfig(cfg);
+				break;
+				
+			default: throw new Exception("Unhandled configuration item: " + cfg);
 			}
+		}
+	}
+		
+	private void doSysConfig(ConfigItem cfg) throws Exception {
+		switch (cfg.getItemId()) {
+		case MatElementDefs.EL_C_SRC_ROUTE: 
+			int input = (cfg.getRawData() >> 16) & 3;	// 0..3
+			int port = ((cfg.getRawData() >> 8)-1) & 3;	// 0..3
+			int source = cfg.getRawData() & 0x3f;
+			srcRouting[input].set(source,port);
+			break;
+		case MatElementDefs.EL_C_RESET: 
+			setBaseState(BaseState.RST);
+			processReset();
+			break;
+		case MatElementDefs.EL_C_CFG_DONE: 
+			processConfigDone();
+			setBaseState(BaseState.RUN);
+			break;
+		default: throw new Exception("Unhandled configuration item: " + cfg);
 		}
 	}
 
@@ -150,11 +191,12 @@ public abstract class BaseElement implements SimElement {
 	 * 
 	 * @param instrumentId
 	 * @param lookupKey
+	 * @param target - element to target for lookup
 	 * @return lookup result
 	 * @throws Exception if an error occurred
 	 */
-	protected LookupResult lookup(int instrumentId, int lookupKey) throws Exception {
-		LookupResult result = host.lookup(elementId, instrumentId, lookupKey);
+	protected LookupResult lookup(int instrumentId, int lookupKey, int target) throws Exception {
+		LookupResult result = host.lookup(elementId, instrumentId, lookupKey, target);
 		return result;
 	}
 
@@ -257,8 +299,25 @@ public abstract class BaseElement implements SimElement {
 
 	
 	@Override
-	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
+	public LookupResult handleLookup(int instrumentId, int lookupKey, int target) throws Exception {
 		// default behaviour is timeout
+		LookupResult rslt = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
+		if ((target == elementId) || (target == MatElementDefs.EL_ID_ALL)) {
+			rslt = lookupBehaviour(instrumentId,lookupKey);
+		}
+		return rslt;
+	}
+
+
+	/**
+	 * Template method for lookup behaviour
+	 * 
+	 * @param instrumentId
+	 * @param lookupKey
+	 * @return the lookup result (validity = timeout if none)
+	 * @throws Exception 
+	 */
+	protected LookupResult lookupBehaviour(int instrumentId, int lookupKey) throws Exception {
 		return new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 	}
 }

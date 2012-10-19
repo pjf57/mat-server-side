@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Comms;
@@ -87,6 +88,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 			// set attributes
 			for (Attribute attr : el.getAttributes()) {
 				ConfigItem cfg = new ConfigItem(el.getId(),
+						attr.getSysType(),
 						attr.getConfigId(),
 						attr.getEncodedData());
 				for (SimElement se : simElements) {
@@ -108,7 +110,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 			// set config done for this element
 			SimElement se = getSimElement(el.getId());
 			if (se != null) {
-				se.putConfig(new ConfigItem(el.getId(),MatElementDefs.EL_C_CFG_DONE,0));
+				se.putConfig(new ConfigItem(el.getId(),AttrSysType.SYSTEM,MatElementDefs.EL_C_CFG_DONE,0));
 			}
 		}
 	}
@@ -202,7 +204,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public LookupResult lookup(int source, int instrumentId, int lookupKey)
+	public LookupResult lookup(int source, int instrumentId, int lookupKey, int target)
 			throws Exception {
 		LookupResult result = null;
 		Timestamp startTime = clk.getSimTime();
@@ -210,7 +212,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 				",key=" + lookupKey + "): ";
 		Element responder = null;
 		for (SimElement se : simElements) {
-			result = se.handleLookup(instrumentId, lookupKey);
+			result = se.handleLookup(instrumentId, lookupKey, target);
 			if (!result.getValidity().equals(LookupValidity.TIMEOUT)) {
 				// this element handled the request - so break out of the loop
 				responder = mat.getModel().getElement(se.getId());

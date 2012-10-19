@@ -94,7 +94,7 @@ public class MatInterfaceModel implements MatModel {
 	}
 
 	// read one element from properties - return null if non existent
-	private Element readElement(int id) {
+	private Element readElement(int id) throws Exception {
 		BasicElement el = null;
 		String e = "element" + id;
 		String elType = props.getProperty(e + ".type");

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
@@ -48,8 +49,9 @@ public class BasicElement implements Element {
 	 * @param id
 	 * @param elType
 	 * @param type
+	 * @throws Exception 
 	 */
-	public BasicElement(int id, String elType, Element type) {
+	public BasicElement(int id, String elType, Element type) throws Exception {
 		this.id = id;
 		this.type = elType;
 		this.hwType = type.getHWType();
@@ -60,10 +62,14 @@ public class BasicElement implements Element {
 		this.status = new ElementStatus();
 	}
 
-	private Map<String,Attribute> cloneAttributesFromType(Element type) {
+	private Map<String,Attribute> cloneAttributesFromType(Element type) throws Exception {
 		Map<String,Attribute> attrs = new HashMap<String,Attribute>();
 		for (Attribute att : type.getAttributes()) {
 			Attribute a = att.clone();
+			if (a.getSysType() == AttrSysType.LKU_TARGET) {
+				// default value of LKU Targets is "ALL"
+				a.setValue("63");
+			}
 			attrs.put(a.getName(),a);
 		}
 		return attrs;

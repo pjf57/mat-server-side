@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.element;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.model.LookupResult;
@@ -14,14 +15,14 @@ public class ADXTest extends SimTestCase {
 
 	public void testOutput() throws Exception {
 		ADX el = new ADX(6,this);
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_ADX_C_PDN_ALPHA, 0.666666f));
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_ADX_C_PDN_LEN, 2));
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_ADX_C_NDN_ALPHA, 0.666666f));
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_ADX_C_NDN_LEN, 2));
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_ADX_C_ADX_ALPHA, 0.5f));
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_ADX_C_ADX_LEN, 3));
+		el.putConfig(new ConfigItem(6, AttrSysType.NORMAL, MatElementDefs.EL_ADX_C_PDN_ALPHA, 0.666666f));
+		el.putConfig(new ConfigItem(6, AttrSysType.NORMAL, MatElementDefs.EL_ADX_C_PDN_LEN, 2));
+		el.putConfig(new ConfigItem(6, AttrSysType.NORMAL, MatElementDefs.EL_ADX_C_NDN_ALPHA, 0.666666f));
+		el.putConfig(new ConfigItem(6, AttrSysType.NORMAL, MatElementDefs.EL_ADX_C_NDN_LEN, 2));
+		el.putConfig(new ConfigItem(6, AttrSysType.NORMAL, MatElementDefs.EL_ADX_C_ADX_ALPHA, 0.5f));
+		el.putConfig(new ConfigItem(6, AttrSysType.NORMAL, MatElementDefs.EL_ADX_C_ADX_LEN, 3));
 		el.putConfig(new ConfigItem(6, MatElementDefs.EL_C_SRC_ROUTE,2,1));
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_C_CFG_DONE,0));
+		el.putConfig(new ConfigItem(6, AttrSysType.SYSTEM, MatElementDefs.EL_C_CFG_DONE,0));
 
 		lkuData = new float[]{10,8,9,7,2};
 		el.putEvent(new Event(new Timestamp(1L), 2, 12, 2f));
@@ -49,7 +50,7 @@ public class ADXTest extends SimTestCase {
 	}
 
 	@Override
-	public LookupResult lookup(int id, int instrumentId, int lookupKey)
+	public LookupResult lookupBehaviour(int id, int instrumentId, int lookupKey)
 			throws Exception {
 		int idx;
 		switch(lookupKey) {

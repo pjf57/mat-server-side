@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.element;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.model.LookupResult;
@@ -14,11 +15,11 @@ public class ATRTest extends SimTestCase {
 
 	public void testOutput() throws Exception {
 		ATR el = new ATR(6,this);
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_ATR_C_ALPHA, 0.666666f));
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_ATR_C_LEN, 2));
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_ATR_C_IP_CN1, 0));
+		el.putConfig(new ConfigItem(6, AttrSysType.NORMAL, MatElementDefs.EL_ATR_C_ALPHA, 0.666666f));
+		el.putConfig(new ConfigItem(6, AttrSysType.NORMAL, MatElementDefs.EL_ATR_C_LEN, 2));
+		el.putConfig(new ConfigItem(6, AttrSysType.NORMAL, MatElementDefs.EL_ATR_C_IP_CN1, 0));
 		el.putConfig(new ConfigItem(6, MatElementDefs.EL_C_SRC_ROUTE,2,1));
-		el.putConfig(new ConfigItem(6, MatElementDefs.EL_C_CFG_DONE,0));
+		el.putConfig(new ConfigItem(6, AttrSysType.SYSTEM, MatElementDefs.EL_C_CFG_DONE,0));
 		
 		lkuData = new float[]{3f,2f,0.5f}; // T3: C(n-1)=3, H(n)=2, L(n)=0.5
 		el.putEvent(new Event(new Timestamp(1L), 2, 12, 2f));
@@ -31,7 +32,7 @@ public class ATRTest extends SimTestCase {
 	}
 
 	@Override
-	public LookupResult lookup(int id, int instrumentId, int lookupKey)
+	public LookupResult lookupBehaviour(int id, int instrumentId, int lookupKey)
 			throws Exception {
 		int idx;
 		switch(lookupKey) {

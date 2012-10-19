@@ -44,8 +44,12 @@ public class SimTestCase extends TestCase implements SimHost {
 	}
 
 	@Override
-	public LookupResult lookup(int id, int instrumentId, int lookupKey)
+	public LookupResult lookup(int id, int instrumentId, int lookupKey, int target)
 			throws Exception {
+		return lookupBehaviour(id,instrumentId,lookupKey);
+	}
+		
+	protected LookupResult lookupBehaviour(int id, int instrumentId, int lookupKey) throws Exception {
 		throw new Exception ("Lookup used, but not implemented");
 	}
 

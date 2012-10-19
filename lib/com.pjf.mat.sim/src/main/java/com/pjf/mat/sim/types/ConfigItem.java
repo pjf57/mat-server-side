@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.types;
 
+import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.util.Conversion;
 
@@ -13,16 +14,20 @@ public class ConfigItem {
 	private final int rawData;
 	private final int itemId;
 	private final int elementId;	// which element this config is targeted at
+	private final AttrSysType sysType;
 	
 	/**
 	 * Construct config item with raw config data
 	 * 
+	 * 
 	 * @param elementId - element to configure
+	 * @param sysType	- the type of config
 	 * @param itemId	- item
 	 * @param rawData	- raw data
 	 */
-	public ConfigItem(int elementId, int itemId, int rawData) {
+	public ConfigItem(int elementId, AttrSysType sysType, int itemId, int rawData) {
 		this.elementId = elementId;
+		this.sysType = sysType;
 		this.rawData = rawData;
 		this.itemId = itemId;
 	}
@@ -31,11 +36,13 @@ public class ConfigItem {
 	 * Construct config item with float data
 	 * 
 	 * @param elementId - element to configure
+	 * @param sysType	- the type of config
 	 * @param itemId	- item
 	 * @param data		- float data
 	 */
-	public ConfigItem(int elementId, int itemId, float data) {
+	public ConfigItem(int elementId, AttrSysType sysType, int itemId, float data) {
 		this.elementId = elementId;
+		this.sysType = sysType;
 		this.rawData = Float.floatToIntBits(data);
 		this.itemId = itemId;
 	}
@@ -50,6 +57,7 @@ public class ConfigItem {
 	 */
 	public ConfigItem(int elementId, int itemId, OutputPort out, int input) {
 		this.elementId = elementId;
+		this.sysType = AttrSysType.SYSTEM;
 		this.itemId = itemId;
 		this.rawData = ((input-1) << 16) | out.getId() << 8 | out.getParent().getId();
 	}
@@ -64,6 +72,7 @@ public class ConfigItem {
 	 */
 	public ConfigItem(int elementId, int itemId, int srcElementId, int input) {
 		this.elementId = elementId;
+		this.sysType = AttrSysType.SYSTEM;
 		this.itemId = itemId;
 		this.rawData = ((input-1) << 16) | 0 << 8 | srcElementId;
 	}
@@ -84,10 +93,14 @@ public class ConfigItem {
 		return itemId;
 	}
 	
+	public AttrSysType getSysType() {
+		return sysType;
+	}
+	
 	@Override
 	public String toString() {
 		return "[elid=" + elementId + 
-		",cfgId=" + itemId + 
+		",cfgId=" + sysType + ":" + itemId + 
 		",data=" + Conversion.toHexIntString(rawData) + "]";
 	}
 	

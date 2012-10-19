@@ -61,6 +61,7 @@ diagram.element.6.prop.NDN_EMA_len=3
 diagram.element.6.prop.NDN_EMA_alpha=0.5
 diagram.element.6.prop.ADX_EMA_len=3
 diagram.element.6.prop.ADX_EMA_alpha=0.5
+diagram.element.6.LKU_TARGET_ATR=5
 
 diagram.element.7.name=macd
 diagram.element.7.type=MACD

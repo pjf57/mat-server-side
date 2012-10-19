@@ -72,11 +72,11 @@ public class ADX extends BaseElement implements SimElement {
 	protected void processEvent(int input, Event evt) throws Exception {
 		int instr = evt.getInstrument_id();
 		// get high(n), high(n-1), low(n), low(n-1)
-		FloatValue highN  = lookup(instr, MatElementDefs.EL_HLOC_L_PREV_H).getFloatValue();
-		FloatValue highN1 = lookup(instr, MatElementDefs.EL_HLOC_L_PRVM1_H).getFloatValue();
-		FloatValue lowN   = lookup(instr, MatElementDefs.EL_HLOC_L_PREV_L).getFloatValue();
-		FloatValue lowN1  = lookup(instr, MatElementDefs.EL_HLOC_L_PRVM1_L).getFloatValue();
-		FloatValue atr    = lookup(instr, MatElementDefs.EL_ATR_L_ATR).getFloatValue();
+		FloatValue highN  = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PREV_H).getFloatValue();
+		FloatValue highN1 = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PRVM1_H).getFloatValue();
+		FloatValue lowN   = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PREV_L).getFloatValue();
+		FloatValue lowN1  = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PRVM1_L).getFloatValue();
+		FloatValue atr    = AtrLookup(instr, MatElementDefs.EL_ATR_L_ATR).getFloatValue();
 		logger.debug("processEvent(" + show(evt.getFloatData()) + "): highH=" + highN + ", highN1=" + highN1 +
 				", lowN=" + lowN + ", lowN1=" + lowN1 +
 				", atr=" + atr);
@@ -116,8 +116,20 @@ public class ADX extends BaseElement implements SimElement {
 		}
 	}
 	
+
+	private LookupResult HlocLookup(int instr, int key) throws Exception {
+		LookupResult rslt = lookup(instr, key, getLookupTarget(0));
+		return rslt;
+	}
+
+	private LookupResult AtrLookup(int instr, int key) throws Exception {
+		LookupResult rslt = lookup(instr, key, getLookupTarget(1));
+		return rslt;
+	}
+
+
 	@Override
-	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
+	public LookupResult lookupBehaviour(int instrumentId, int lookupKey) throws Exception {
 		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		switch (lookupKey) {
 		case MatElementDefs.EL_ADX_L_ADX:

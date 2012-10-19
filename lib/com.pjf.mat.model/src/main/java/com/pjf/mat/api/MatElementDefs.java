@@ -6,6 +6,7 @@ public class MatElementDefs {
 	
 	// element IDs for standardised elements
 	public static final int EL_ID_SYSTEM_CONTROL = 0;
+	public static final int EL_ID_ALL = 0x3f;			// addresses all elements
 
 	// element type IDSs
 	public static final int EL_TYP_ROUTER		= 0x01;

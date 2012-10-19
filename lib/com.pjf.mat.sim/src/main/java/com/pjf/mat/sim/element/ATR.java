@@ -66,10 +66,10 @@ public class ATR extends BaseElement implements SimElement {
 		if (c_ipHasCloseN1) {
 			closeN1 = new FloatValue(evt.getFloatData());;
 		} else {
-			closeN1 = lookup(instr, MatElementDefs.EL_HLOC_L_PRVM1_C).getFloatValue();
+			closeN1 = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PRVM1_C).getFloatValue();
 		}
-		FloatValue highN = lookup(instr, MatElementDefs.EL_HLOC_L_PREV_H).getFloatValue();
-		FloatValue lowN = lookup(instr, MatElementDefs.EL_HLOC_L_PREV_L).getFloatValue();
+		FloatValue highN = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PREV_H).getFloatValue();
+		FloatValue lowN = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PREV_L).getFloatValue();
 		
 		logger.debug(getIdStr() + "evt=" + show(evt.getFloatData()) + ", High(N)=" + highN + " Low(N)=" + lowN + " Close(N-1)=" + closeN1);
 
@@ -89,13 +89,18 @@ public class ATR extends BaseElement implements SimElement {
 	
 
 	@Override
-	public LookupResult handleLookup(int instrumentId, int lookupKey) throws Exception {
+	public LookupResult lookupBehaviour(int instrumentId, int lookupKey) throws Exception {
 		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		switch (lookupKey) {
 		case MatElementDefs.EL_ATR_L_ATR:
 			result = new LookupResult(elementId,atrStore.get(instrumentId),LOOKUP_DLY); break;
 		}
 		return result;
+	}
+
+	private LookupResult HlocLookup(int instr, int key) throws Exception {
+		LookupResult rslt = lookup(instr, key, getLookupTarget(0));
+		return rslt;
 	}
 
 	@Override
