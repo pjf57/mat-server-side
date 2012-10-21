@@ -154,10 +154,18 @@ public abstract class MatSystem {
 		logger.info("-----");	reqStatus(); Thread.sleep(500);
 		configure(mat);
 		mat.syncClock(0);
-		logger.info("-----");	reqStatus(); Thread.sleep(500);
+		
+		logger.info("-----");	
+		reqStatus();
+		Thread.sleep(500);
 		sendTradeBurst(mat,feed);
-		logger.info("-----");	reqAuditLogs(); reqStatus(); Thread.sleep(500);
+		
+		logger.info("-----");	
+		reqAuditLogs(); 
+		reqStatus(); 
+		Thread.sleep(500);
 		Thread.sleep(1000);
+		
 		logger.info("----------------------------------------");
 		ueLogger.flush();
 		logger.info("----------------------------------------");
@@ -200,6 +208,7 @@ public abstract class MatSystem {
 	
 	private void reqAuditLogs() throws Exception {
 		mat.reqLkuAuditLogs();		
+		mat.reqRtrAuditLogs();		
 	}
 
 	protected static Properties loadProperties(String resource) throws Exception {
