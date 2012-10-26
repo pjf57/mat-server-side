@@ -46,7 +46,7 @@ public class MatAdx8 extends MatSystem {
 		hloc.getAttribute("throttle").setValue("0");
 		atr.getAttribute("len").setValue("3");	// 
 		atr.getAttribute("alpha").setValue("0.5");	// 
-		atr.getAttribute("IP_Has_Close(N-1)").setValue("1");	// 
+		atr.getAttribute("IP_Has_Close(N-1)").setValue("0");	// 
 
 		adx.getAttribute("PDN_EMA_len").setValue("3");	// 
 		adx.getAttribute("PDN_EMA_alpha").setValue("0.5");	// 
@@ -72,9 +72,9 @@ public class MatAdx8 extends MatSystem {
 //		macd.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 		
 		// logger connections
-		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
-		lgr.getInputs().get(1).connectTo(hloc.getOutputs().get(0));
-		lgr.getInputs().get(2).connectTo(atr.getOutputs().get(0));
+		//		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
+		//		lgr.getInputs().get(1).connectTo(hloc.getOutputs().get(0));
+				lgr.getInputs().get(2).connectTo(atr.getOutputs().get(0));
 		//		lgr.getInputs().get(1).connectTo(macd.getOutputs().get(0));
 		//		lgr.getInputs().get(2).connectTo(macd.getOutputs().get(2));
 //		lgr.getInputs().get(3).connectTo(adx.getOutputs().get(0));
