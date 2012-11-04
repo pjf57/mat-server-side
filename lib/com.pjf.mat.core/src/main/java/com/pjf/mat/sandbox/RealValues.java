@@ -20,9 +20,9 @@ public class RealValues {
 		System.out.println(Integer.toHexString(Float.floatToIntBits(100f)));
 		System.out.println(Integer.toHexString(Float.floatToIntBits(25f)));
 		System.out.println(Integer.toHexString(Float.floatToIntBits(30f)));
-		System.out.println(Float.intBitsToFloat(Integer.parseInt("41a1c000", 16)));
-		System.out.println(Float.intBitsToFloat(Integer.parseInt("41ade000", 16)));
-		System.out.println(Float.intBitsToFloat(Integer.parseInt("41b3f000", 16)));
+		System.out.println(Float.intBitsToFloat(Integer.parseInt("42aa0000", 16)));
+		System.out.println(Float.intBitsToFloat(Integer.parseInt("42770000", 16)));
+		System.out.println(Float.intBitsToFloat(Integer.parseInt("41b80000", 16)));
 	}
 
 	/**

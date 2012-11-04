@@ -37,7 +37,7 @@ public class MatAdx8 extends MatSystem {
 		mfd.getAttribute("mdtype").setValue("1");
 //		ema.getAttribute("len").setValue("7");
 //		ema.getAttribute("alpha").setValue("0.25");
-		tg1.getAttribute("len").setValue("1000");
+		tg1.getAttribute("len").setValue("2000");
 		tg1.getAttribute("gap").setValue("100");
 		tg1.getAttribute("initial_value").setValue("50");
 		tg1.getAttribute("p1").setValue("0.25");
@@ -68,16 +68,16 @@ public class MatAdx8 extends MatSystem {
 //		ema.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
 		hloc.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 		atr.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
-//		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
+		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
 //		macd.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
 		
 		// logger connections
 		//		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
-		//		lgr.getInputs().get(1).connectTo(hloc.getOutputs().get(0));
-				lgr.getInputs().get(2).connectTo(atr.getOutputs().get(0));
+//		lgr.getInputs().get(1).connectTo(hloc.getOutputs().get(0));
+//		lgr.getInputs().get(0).connectTo(atr.getOutputs().get(0));
 		//		lgr.getInputs().get(1).connectTo(macd.getOutputs().get(0));
 		//		lgr.getInputs().get(2).connectTo(macd.getOutputs().get(2));
-//		lgr.getInputs().get(3).connectTo(adx.getOutputs().get(0));
+		lgr.getInputs().get(3).connectTo(atr.getOutputs().get(0));
 //		lgr.getInputs().get(2).connectTo(macd.getOutput("hist"));
 		logger.info("mat is: " + mat);
 

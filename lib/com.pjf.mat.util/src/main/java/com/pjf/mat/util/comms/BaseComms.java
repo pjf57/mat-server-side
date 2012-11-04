@@ -401,7 +401,7 @@ public abstract class BaseComms implements Comms {
 				break;
 				
 			case LKU_TARGET:
-				cfg.putConfigItem(el.getId(),MatElementDefs.EL_C_CFG_LKU_TRG,0,
+				cfg.putSystemItem(el.getId(),MatElementDefs.EL_C_CFG_LKU_TRG,0,
 						(attr.getConfigId() << 8) | (attr.getEncodedData() & 0xff));
 				break;
 				
