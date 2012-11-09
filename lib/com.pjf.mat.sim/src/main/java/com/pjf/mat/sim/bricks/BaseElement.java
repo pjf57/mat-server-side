@@ -170,7 +170,7 @@ public abstract class BaseElement implements SimElement {
 		switch (cfg.getItemId()) {
 		case MatElementDefs.EL_C_SRC_ROUTE: 
 			int input = (cfg.getRawData() >> 16) & 3;	// 0..3
-			int port = ((cfg.getRawData() >> 8)-1) & 3;	// 0..3
+			int port = (cfg.getRawData() >> 8) & 3;	// 0..3
 			int source = cfg.getRawData() & 0x3f;
 			srcRouting[input].set(source,port);
 			break;

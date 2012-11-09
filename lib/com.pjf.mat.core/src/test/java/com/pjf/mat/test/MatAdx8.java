@@ -37,13 +37,13 @@ public class MatAdx8 extends MatSystem {
 		mfd.getAttribute("mdtype").setValue("1");
 //		ema.getAttribute("len").setValue("7");
 //		ema.getAttribute("alpha").setValue("0.25");
-		tg1.getAttribute("len").setValue("2000");
+		tg1.getAttribute("len").setValue("1000");
 		tg1.getAttribute("gap").setValue("100");
 		tg1.getAttribute("initial_value").setValue("50");
 		tg1.getAttribute("p1").setValue("0.25");
 		hloc.getAttribute("period").setValue("1000");	// 
 		hloc.getAttribute("metric").setValue("11");			// 
-		hloc.getAttribute("throttle").setValue("0");
+		hloc.getAttribute("throttle").setValue("5");
 		atr.getAttribute("len").setValue("3");	// 
 		atr.getAttribute("alpha").setValue("0.5");	// 
 		atr.getAttribute("IP_Has_Close(N-1)").setValue("0");	// 

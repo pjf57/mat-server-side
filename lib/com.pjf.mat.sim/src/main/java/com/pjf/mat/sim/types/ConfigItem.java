@@ -63,12 +63,12 @@ public class ConfigItem {
 	}
 
 	/**
-	 * Construct a config item as a cxn config - specifying the src element and port 0
+	 * Construct a config item as a cxn config - specifying the src element id and port 0
 	 * 
-	 * @param elementId	- element to configure
-	 * @param itemId	- config item
+	 * @param elementId		- element to configure
+	 * @param itemId		- config item
 	 * @param srcElementId	- output to connect from
-	 * @param input		- input number (1..4)
+	 * @param input			- input number (1..4)
 	 */
 	public ConfigItem(int elementId, int itemId, int srcElementId, int input) {
 		this.elementId = elementId;

@@ -107,7 +107,7 @@ public class Event implements Comparable<Event> {
 		" ts=" + timestamp + 
 		" src" + src + ":" + srcPort +
 		",InstrId=" + instrument_id + 
-		",data=" + ((isFloat) ? getFloatData() : Conversion.toHexIntString(rawData)) + "]";
+		",data=" + ((isFloat) ? getFloatData() : "") + " " + Conversion.toHexIntString(rawData) + "]";
 	}
 
 	@Override
