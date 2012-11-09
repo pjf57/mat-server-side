@@ -20,7 +20,8 @@ public class MatElementDefs {
 	public static final int EL_TYP_HLOC			= 0x60;
 	public static final int EL_TYP_ATR			= 0x61;
 	public static final int EL_TYP_ADX			= 0x62;
-	
+
+
 //	------------------------------
 //	-- STATUS transmission types
 //	------------------------------
@@ -183,6 +184,11 @@ public class MatElementDefs {
 	public static String ElementTypeToString(int type) {
 		String typeStr ="";
 		switch(type) {
+		case MatElementDefs.EL_TYP_ROUTER		: typeStr = "Router";		break;
+		case MatElementDefs.EL_TYP_MACD			: typeStr = "MACD";			break;
+		case MatElementDefs.EL_TYP_HLOC			: typeStr = "HLOC";			break;
+		case MatElementDefs.EL_TYP_ATR			: typeStr = "ATR";			break;
+		case MatElementDefs.EL_TYP_ADX			: typeStr = "ADX";			break;
 		case MatElementDefs.EL_TYP_TG1			: typeStr = "TG1";			break;
 		case MatElementDefs.EL_TYP_EMA			: typeStr = "EMA";			break;
 		case MatElementDefs.EL_TYP_LOG			: typeStr = "LOGGER";		break;
