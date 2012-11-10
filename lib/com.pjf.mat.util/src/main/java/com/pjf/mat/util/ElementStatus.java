@@ -10,31 +10,31 @@ import com.pjf.mat.util.attr.IntegerAttribute;
 import com.pjf.mat.util.attr.StringAttribute;
 
 public class ElementStatus implements Status{
-	private String basis_state;					// state of basis of element
+	private String basisState;					// state of basis of element
 	private int el_state;						// state of element
 	private long evt_cnt;						// #evts processed by element
 	
 	public ElementStatus() {
-		this.basis_state = "unknown";
+		this.basisState = "unknown";
 		this.el_state = 0;
 		this.evt_cnt = -1;
 	}
 
 	public ElementStatus(String basisState, int elState, long ip_evt_cnt) {
-		this.basis_state = basisState;
+		this.basisState = basisState;
 		this.el_state = elState;
 		this.evt_cnt = ip_evt_cnt;
 	}
 
 	public void setElementStatus(String basis_state, int el_state, long evt_cnt) {
-		this.basis_state = basis_state;
+		this.basisState = basis_state;
 		this.el_state = el_state;
 		this.evt_cnt = evt_cnt;
 	}
 
 	@Override
 	public String getBaseState() {
-		return basis_state;
+		return basisState;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class ElementStatus implements Status{
 		Attribute attr;
 		attr = new StringAttribute("basis state",0,AttrSysType.NORMAL);
 		try {
-			attr.setValue(basis_state);
+			attr.setValue(basisState);
 		} catch (Exception e) {
 			// dont set
 		}	
@@ -82,7 +82,17 @@ public class ElementStatus implements Status{
 	
 	@Override
 	public String toString() {
-		return "[" + basis_state + "," + el_state + "," + evt_cnt + "]";
+		return "[" + basisState + "," + el_state + "," + evt_cnt + "]";
+	}
+
+	@Override
+	public boolean isInConfigState() {
+		return basisState.equals(Status.CFG);
+	}
+
+	@Override
+	public boolean isInRunState() {
+		return basisState.equals(Status.RUN);
 	}
 
 }

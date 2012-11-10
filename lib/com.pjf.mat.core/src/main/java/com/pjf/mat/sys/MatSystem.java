@@ -12,12 +12,15 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.EventLog;
 import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.MatApi;
+import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.RtrAuditLog;
+import com.pjf.mat.api.Status;
 import com.pjf.mat.api.TimeOrdered;
 import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
+import com.pjf.mat.impl.element.BasicCmd;
 import com.pjf.mat.sim.MatSim;
 import com.pjf.mat.util.comms.BaseComms;
 
@@ -84,7 +87,7 @@ public abstract class MatSystem {
 	protected abstract void start() throws Exception;
 
 	/**
-	 * Template method to send data
+	 * Template method to configure the system
 	 * 
 	 * @param mat
 	 * @throws Exception
@@ -151,7 +154,9 @@ public abstract class MatSystem {
 	}
 
 	protected void run() throws Exception {
-		logger.info("-----");	reqStatus(); Thread.sleep(500);
+		logger.info("-----");	
+		reqStatus(); Thread.sleep(500);
+		putIntoConfigMode();
 		configure(mat);
 		mat.syncClock(0);
 		
@@ -204,6 +209,46 @@ public abstract class MatSystem {
 	
 	private void reqStatus() {
 		mat.getHWStatus();		
+	}
+	
+	/**
+	 * Send HW into configuration state if not already there
+	 * @throws Exception if unable to get all elements into config state
+	 * 
+	 */
+	private void putIntoConfigMode() throws Exception {
+		logger.info("Ensuring system is in config mode.");
+		boolean didReset = false;
+		for (Element el : mat.getModel().getElements()) {
+			if (el.getId() != 0) {	// ignore router element
+				Status s = el.getElementStatus();
+				if (!s.isInConfigState()) {
+					logger.info("Resetting " + el.getShortName() + " to force it to config state..");
+					mat.sendCmd(new BasicCmd(el, "reset", MatElementDefs.EL_C_RESET, 0));
+					didReset = true;
+				}
+			}
+		}
+		if (didReset) {
+			// check that all elements are ready for configuration
+			reqStatus();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				logger.info("Sleep interrupted - " + e);
+			}
+			// check all in config mode now
+			for (Element el : mat.getModel().getElements()) {
+				if (el.getId() != 0) {	// ignore router element
+					Status s = el.getElementStatus();
+					if (!s.isInConfigState()) {
+						logger.error("Unable to force element " + el.getShortName() + " into config state.");
+						throw new Exception("System not ready for configuration - el:" + el.getShortName());
+					}
+				}
+			}
+		}		
+		logger.info("Ready to config ...");
 	}
 	
 	private void reqAuditLogs() throws Exception {

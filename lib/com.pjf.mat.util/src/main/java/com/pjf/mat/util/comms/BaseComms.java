@@ -174,11 +174,11 @@ public abstract class BaseComms implements Comms {
 			String typeStr = MatElementDefs.ElementTypeToString(type);
 			String basisStateStr = "";
 			switch(basisState) {
-			case BS_INIT:	basisStateStr = "INIT";							break;
-			case BS_CFG:	basisStateStr = "CFG";							break;
-			case BS_RST:	basisStateStr = "RST";							break;
-			case BS_RUN:	basisStateStr = "RUN";							break;
-			default:		basisStateStr = "unknown(" + basisState + ")";	break;
+			case BS_INIT:	basisStateStr = Status.INIT;								break;
+			case BS_CFG:	basisStateStr = Status.CFG;									break;
+			case BS_RST:	basisStateStr = Status.RST;									break;
+			case BS_RUN:	basisStateStr = Status.RUN;									break;
+			default:		basisStateStr = Status.UNKNOWN + "(" + basisState + ")";	break;
 			}
 			processNewStatusUpdate(id,typeStr,basisStateStr,intState,evtCount);
 		}		
