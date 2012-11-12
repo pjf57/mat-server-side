@@ -3,6 +3,8 @@ package com.pjf.mat.util.attr;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.apache.log4j.Logger;
+
 import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.AttributeType;
 import com.pjf.mat.api.EnumValue;
@@ -13,9 +15,10 @@ import com.pjf.mat.api.EnumValue;
  * @author pjf
  */
 public class EnumAttribute extends IntegerAttribute {
+	private final static Logger logger = Logger.getLogger(EnumAttribute.class);
 	private SortedSet<EnumValue> values;
 
-	public EnumAttribute(String name, int configId, AttrSysType sysType) {
+	public EnumAttribute(String name, int configId, AttrSysType sysType) throws Exception {
 		super(name, configId, sysType);
 		values = new TreeSet<EnumValue>();
 	}
@@ -75,9 +78,14 @@ public class EnumAttribute extends IntegerAttribute {
 
 	@Override
 	public EnumAttribute clone() {
-		EnumAttribute attr = new EnumAttribute(getName(),getConfigId(),getSysType());
-		attr.value = value;
-		attr.values = values;
+		EnumAttribute attr = null;
+		try {
+			attr = new EnumAttribute(getName(),getConfigId(),getSysType());
+			attr.value = value;
+			attr.values = values;
+		} catch (Exception e) {
+			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
+		}
 		return attr;
 	}
 

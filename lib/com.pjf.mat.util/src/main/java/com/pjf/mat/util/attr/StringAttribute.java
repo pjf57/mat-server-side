@@ -2,18 +2,32 @@ package com.pjf.mat.util.attr;
 
 import java.util.SortedSet;
 
+import org.apache.log4j.Logger;
+
 import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.AttributeType;
 import com.pjf.mat.api.EnumValue;
 
+
 public class StringAttribute implements Attribute, Cloneable {
+	private final static Logger logger = Logger.getLogger(StringAttribute.class);
 	private final String name;
 	private String value;
 	private final AttrSysType sysType;
 	private final int configId;
 	
-	public StringAttribute(String name, int configId, AttrSysType sysType) {
+	public StringAttribute(String name, int configId, AttrSysType sysType, String defaultStr) throws Exception {
+		this.name = name;
+		this.configId = configId;
+		this.sysType = sysType;
+		this.value = "";
+		if (defaultStr != null) {
+			setValue(defaultStr);
+		}
+	}
+
+	public StringAttribute(String name, int configId, AttrSysType sysType) throws Exception {
 		this.name = name;
 		this.configId = configId;
 		this.sysType = sysType;
@@ -37,8 +51,12 @@ public class StringAttribute implements Attribute, Cloneable {
 	
 	@Override
 	public StringAttribute clone() {
-		StringAttribute attr = new StringAttribute(name,configId,sysType);
-		attr.value = null;
+		StringAttribute attr = null;
+		try {
+			attr = new StringAttribute(name,configId,sysType,getValue());
+		} catch (Exception e) {
+			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
+		}
 		return attr;
 	}
 

@@ -141,6 +141,7 @@ public class MatInterfaceModel implements MatModel {
 				String attrType = props.getProperty(a + ".type");
 				String attrConfigS = props.getProperty(a + ".config");
 				String sysTypeS = props.getProperty(a + ".systype");
+				String defaultS = props.getProperty(a + ".default");
 				AttrSysType sysType = AttrSysType.NORMAL;
 				if (sysTypeS != null) {
 					sysType = AttrSysType.valueOf(sysTypeS);
@@ -151,19 +152,19 @@ public class MatInterfaceModel implements MatModel {
 				}
 				int configId = Integer.parseInt(attrConfigS);
 				if (attrType.equals("int")) {
-					attr = new IntegerAttribute(attrName,configId,sysType);
+					attr = new IntegerAttribute(attrName,configId,sysType,defaultS);
 					type.addAttribute(attr);
 				} else if (attrType.equals("hex")) {
-					attr = new HexAttribute(attrName,configId,sysType);
+					attr = new HexAttribute(attrName,configId,sysType,defaultS);
 					type.addAttribute(attr);
 				} else if (attrType.equals("string")) {
-					attr = new StringAttribute(attrName,configId,sysType);
+					attr = new StringAttribute(attrName,configId,sysType,defaultS);
 					type.addAttribute(attr);
 				} else if (attrType.equals("float")) {
-					attr = new FloatAttribute(attrName,configId,sysType);
+					attr = new FloatAttribute(attrName,configId,sysType,defaultS);
 					type.addAttribute(attr);
 				} else if (attrType.equals("enum")) {
-					attr = loadEnumAttribute(a,attrName,configId,sysType);			
+					attr = loadEnumAttribute(a,attrName,configId,sysType,defaultS);			
 					type.addAttribute(attr);
 				} else {
 					logger.error("Unrecognized attribute type: " + attrType);
@@ -243,6 +244,7 @@ public class MatInterfaceModel implements MatModel {
 	 * @param attrName
 	 * @param configId
 	 * @param sysType
+	 * @param defaultStr 
 	 * @return the completed attribute
 	 * @throws Exception 
 	 * 
@@ -250,7 +252,7 @@ public class MatInterfaceModel implements MatModel {
 	 * 	type1.attr2.enum1=name:value:description
 	 */
 	private Attribute loadEnumAttribute(String prefix, String attrName, 
-			int configId, AttrSysType sysType) throws Exception {
+			int configId, AttrSysType sysType, String defaultStr) throws Exception {
 		EnumAttribute attr = new EnumAttribute(attrName,configId,sysType);
 		int en = 1;
 		boolean keepReading = true;
@@ -274,6 +276,9 @@ public class MatInterfaceModel implements MatModel {
 				attr.addEnumValue(ev);
 				en++;
 			}
+		}
+		if (defaultStr != null) {
+			attr.setValue(defaultStr);
 		}
 		return attr;
 	}

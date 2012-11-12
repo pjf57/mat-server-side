@@ -11,8 +11,9 @@ public interface Element extends Item {
 	public int getHWType();
 	/** @model transient="true" volatile="true" changeable="false" */
 	public Collection<Attribute> getAttributes();
-	/** @model transient="true" volatile="true" changeable="false" */
-	public Collection<Attribute> getStatusAttrs();
+	/** @throws Exception 
+	 * @model transient="true" volatile="true" changeable="false" */
+	public Collection<Attribute> getStatusAttrs() throws Exception;
 	/** @model type="InputPort" containment="true" */
 	public List<InputPort> getInputs();
 	/** @model type="OutputPort" containment="true" */

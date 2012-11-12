@@ -48,7 +48,7 @@ public class ElementStatus implements Status{
 	}
 
 	@Override
-	public Collection<Attribute> getAttributes() {
+	public Collection<Attribute> getAttributes() throws Exception {
 		Collection<Attribute> attrs = new ArrayList<Attribute>();
 		Attribute attr;
 		attr = new StringAttribute("basis state",0,AttrSysType.NORMAL);

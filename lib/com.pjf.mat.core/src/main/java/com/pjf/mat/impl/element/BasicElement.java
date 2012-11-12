@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Cmd;
@@ -16,6 +18,7 @@ import com.pjf.mat.api.Status;
 import com.pjf.mat.util.ElementStatus;
 
 public class BasicElement implements Element {
+	private final static Logger logger = Logger.getLogger(BasicElement.class);
 
 	private final int id;
 	private final String type;
@@ -128,7 +131,7 @@ public class BasicElement implements Element {
 	}
 
 	@Override
-	public Collection<Attribute> getStatusAttrs() {
+	public Collection<Attribute> getStatusAttrs() throws Exception {
 		return status.getAttributes();
 	}
 	
@@ -169,25 +172,30 @@ public class BasicElement implements Element {
 		StringBuffer buf = new StringBuffer("[");
 		buf.append("id="); buf.append(id);
 		buf.append(" type="); buf.append(type);
-		buf.append(" Inputs:");
-		for (InputPort x : inputs) {
-			buf.append(x); buf.append(' ');
-		}
-		buf.append(" Outputs:"); 
-		for (OutputPort x : outputs) {
-			buf.append(x); buf.append(' ');
-		}
-		buf.append(" Attr:"); 	
-		for (Attribute x : attributes.values()) {
-			buf.append(x); buf.append(' ');
-		}
-		buf.append(" Cmds:"); 	
-		for (Cmd x : cmds) {
-			buf.append(x); buf.append(' ');
-		}
-		buf.append(" Status:"); 	
-		for (Attribute x : status.getAttributes()) {
-			buf.append(x); buf.append(' ');
+		try {
+			buf.append(" Inputs:");
+			for (InputPort x : inputs) {
+				buf.append(x); buf.append(' ');
+			}
+			buf.append(" Outputs:"); 
+			for (OutputPort x : outputs) {
+				buf.append(x); buf.append(' ');
+			}
+			buf.append(" Attr:"); 	
+			for (Attribute x : attributes.values()) {
+				buf.append(x); buf.append(' ');
+			}
+			buf.append(" Cmds:"); 	
+			for (Cmd x : cmds) {
+				buf.append(x); buf.append(' ');
+			}
+			buf.append(" Status:"); 	
+			for (Attribute x : status.getAttributes()) {
+				buf.append(x); buf.append(' ');
+			}
+		} catch (Exception e) {
+			logger.error("Error getting attributes for element " + getShortName() + ": " + e.getMessage());
+			buf.append("*error*");
 		}
 		buf.append(']');
 		return buf.toString();

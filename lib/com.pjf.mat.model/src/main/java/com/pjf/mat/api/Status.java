@@ -7,7 +7,7 @@ public interface Status {
 	public String getRunState();
 	public int getRawRunState();
 	public long getEventInCount();
-	public Collection<Attribute> getAttributes();
+	public Collection<Attribute> getAttributes() throws Exception;
 	public boolean isInConfigState();
 	public boolean isInRunState();
 	
