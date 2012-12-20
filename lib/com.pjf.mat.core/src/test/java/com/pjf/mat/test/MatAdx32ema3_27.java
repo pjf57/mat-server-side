@@ -5,11 +5,11 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
 
-public class MatAdx8 extends MatSystem {
+public class MatAdx32ema3_27 extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat_adx.properties.8");
+		init("resources/mat.properties.32ema3-27");
 	}
 	
 	@Override
@@ -19,13 +19,14 @@ public class MatAdx8 extends MatSystem {
 //		loader.initialize(mat);
 		
 		Element sys = mat.getModel().getElement(0);
-		Element mfd = mat.getModel().getElement(7);
-		Element tg1 = mat.getModel().getElement(2);
-		Element macd = mat.getModel().getElement(3);
 		Element lgr = mat.getModel().getElement(1);
-		Element hloc = mat.getModel().getElement(4);
-		Element atr = mat.getModel().getElement(5);
-		Element adx = mat.getModel().getElement(6);
+		Element tg1 = mat.getModel().getElement(2);
+//		Element ema1 = mat.getModel().getElement(3);
+//		Element ema2 = mat.getModel().getElement(4);
+		Element hloc = mat.getModel().getElement(28);
+		Element atr = mat.getModel().getElement(29);
+		Element adx = mat.getModel().getElement(30);
+		Element mfd = mat.getModel().getElement(31);
 
 		// configure system attributes
 		sys.getAttribute("lookup_audit_autosend").setValue("4");
@@ -54,16 +55,16 @@ public class MatAdx8 extends MatSystem {
 		adx.getAttribute("NDN_EMA_alpha").setValue("0.5");	// 
 		adx.getAttribute("ADX_EMA_len").setValue("3");	// 
 		adx.getAttribute("ADX_EMA_alpha").setValue("0.5");	// 
-		adx.getAttribute("LKU_TARGET_ATR").setValue("5");	// 
+//		adx.getAttribute("LKU_TARGET_ATR").setValue("5");	// 
 		
 		// Configure MACD
-		macd.getAttribute("FAST_EMA_alpha").setValue("0.5");	// 
-		macd.getAttribute("FAST_EMA_len").setValue("3");	// 
-		macd.getAttribute("SLOW_EMA_alpha").setValue("0.25");	// 
-		macd.getAttribute("SLOW_EMA_len").setValue("7");	// 
-		macd.getAttribute("SIGNAL_EMA_alpha").setValue("0.5");	// 
-		macd.getAttribute("SIGNAL_EMA_len").setValue("3");	// 
-		macd.getAttribute("OP_ENABLE_MASK").setValue("2");	// enable only SIGNAL OP
+//		macd.getAttribute("FAST_EMA_alpha").setValue("0.5");	// 
+//		macd.getAttribute("FAST_EMA_len").setValue("3");	// 
+//		macd.getAttribute("SLOW_EMA_alpha").setValue("0.25");	// 
+//		macd.getAttribute("SLOW_EMA_len").setValue("7");	// 
+//		macd.getAttribute("SIGNAL_EMA_alpha").setValue("0.5");	// 
+//		macd.getAttribute("SIGNAL_EMA_len").setValue("3");	// 
+//		macd.getAttribute("OP_ENABLE_MASK").setValue("2");	// enable only SIGNAL OP
 		
 		// configure element connections
 //		ema.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
@@ -78,7 +79,7 @@ public class MatAdx8 extends MatSystem {
 //		lgr.getInputs().get(0).connectTo(atr.getOutputs().get(0));
 		//		lgr.getInputs().get(1).connectTo(macd.getOutputs().get(0));
 		//		lgr.getInputs().get(2).connectTo(macd.getOutputs().get(2));
-		lgr.getInputs().get(3).connectTo(atr.getOutputs().get(0));
+		lgr.getInputs().get(3).connectTo(adx.getOutputs().get(0));
 //		lgr.getInputs().get(2).connectTo(macd.getOutput("hist"));
 		logger.info("mat is: " + mat);
 
@@ -101,7 +102,7 @@ public class MatAdx8 extends MatSystem {
 	}
 
 	public static void main(String[] args) {
-		MatAdx8 sys = new MatAdx8();
+		MatAdx32ema3_27 sys = new MatAdx32ema3_27();
 		sys.boot();
 	}
 

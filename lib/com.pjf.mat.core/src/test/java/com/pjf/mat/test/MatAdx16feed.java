@@ -5,11 +5,11 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
 
-public class MatAdx16 extends MatSystem {
+public class MatAdx16feed extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat_adx.properties.16");
+		init("resources/mat_adx.properties.16feed");
 	}
 	
 	@Override
@@ -37,12 +37,12 @@ public class MatAdx16 extends MatSystem {
 		mfd.getAttribute("mdtype").setValue("1");
 		ema_p.getAttribute("len").setValue("7");
 		ema_p.getAttribute("alpha").setValue("0.25");
-//		ema_q.getAttribute("len").setValue("3");
-//		ema_q.getAttribute("alpha").setValue("0.5");
-//		ema_s.getAttribute("len").setValue("5");
-//		ema_s.getAttribute("alpha").setValue("0.333333");
-//		a4ip_macd.getAttribute("oper").setValue("3000");	// Z = A - B
-//		a4ip_hist.getAttribute("oper").setValue("3000");	// Z = A - B
+		ema_q.getAttribute("len").setValue("3");
+		ema_q.getAttribute("alpha").setValue("0.5");
+		ema_s.getAttribute("len").setValue("5");
+		ema_s.getAttribute("alpha").setValue("0.333333");
+		a4ip_macd.getAttribute("oper").setValue("3000");	// Z = A - B
+		a4ip_hist.getAttribute("oper").setValue("3000");	// Z = A - B
 		tg1.getAttribute("len").setValue("100");
 		tg1.getAttribute("gap").setValue("2");
 		tg1.getAttribute("initial_value").setValue("50");
@@ -98,7 +98,7 @@ public class MatAdx16 extends MatSystem {
 	}
 
 	public static void main(String[] args) {
-		MatAdx16 sys = new MatAdx16();
+		MatAdx16feed sys = new MatAdx16feed();
 		sys.boot();
 	}
 

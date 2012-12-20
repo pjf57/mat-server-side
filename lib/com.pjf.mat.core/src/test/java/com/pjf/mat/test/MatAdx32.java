@@ -5,11 +5,11 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
 
-public class MatAdx8 extends MatSystem {
+public class MatAdx32 extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat_adx.properties.8");
+		init("resources/mat.properties.32");
 	}
 	
 	@Override
@@ -19,13 +19,13 @@ public class MatAdx8 extends MatSystem {
 //		loader.initialize(mat);
 		
 		Element sys = mat.getModel().getElement(0);
-		Element mfd = mat.getModel().getElement(7);
+		Element mfd = mat.getModel().getElement(30);
 		Element tg1 = mat.getModel().getElement(2);
-		Element macd = mat.getModel().getElement(3);
+		Element macd = mat.getModel().getElement(10);
 		Element lgr = mat.getModel().getElement(1);
-		Element hloc = mat.getModel().getElement(4);
-		Element atr = mat.getModel().getElement(5);
-		Element adx = mat.getModel().getElement(6);
+		Element hloc = mat.getModel().getElement(27);
+		Element atr = mat.getModel().getElement(28);
+		Element adx = mat.getModel().getElement(29);
 
 		// configure system attributes
 		sys.getAttribute("lookup_audit_autosend").setValue("4");
@@ -37,7 +37,7 @@ public class MatAdx8 extends MatSystem {
 		mfd.getAttribute("mdtype").setValue("1");
 //		ema.getAttribute("len").setValue("7");
 //		ema.getAttribute("alpha").setValue("0.25");
-		tg1.getAttribute("len").setValue("1000");
+		tg1.getAttribute("len").setValue("10000");
 		tg1.getAttribute("gap").setValue("100");
 		tg1.getAttribute("initial_value").setValue("50");
 		tg1.getAttribute("p1").setValue("0.25");
@@ -54,7 +54,7 @@ public class MatAdx8 extends MatSystem {
 		adx.getAttribute("NDN_EMA_alpha").setValue("0.5");	// 
 		adx.getAttribute("ADX_EMA_len").setValue("3");	// 
 		adx.getAttribute("ADX_EMA_alpha").setValue("0.5");	// 
-		adx.getAttribute("LKU_TARGET_ATR").setValue("5");	// 
+		adx.getAttribute("LKU_TARGET_ATR").setValue("28");	// 
 		
 		// Configure MACD
 		macd.getAttribute("FAST_EMA_alpha").setValue("0.5");	// 
@@ -101,7 +101,7 @@ public class MatAdx8 extends MatSystem {
 	}
 
 	public static void main(String[] args) {
-		MatAdx8 sys = new MatAdx8();
+		MatAdx32 sys = new MatAdx32();
 		sys.boot();
 	}
 
