@@ -48,7 +48,8 @@ public class EMA extends BaseElement implements SimElement {
 	protected void processEvent(int input, Event evt) {
 		FloatValue output = ema.processEvent(evt.getInstrument_id(),evt.getFloatData());
 		if (output.isValid()) {
-			Event evtOut = new Event(host.getCurrentSimTime(),elementId,evt.getInstrument_id(),output.getValue());
+			Event evtOut = new Event(host.getCurrentSimTime(),elementId,evt.getInstrument_id(),
+					evt.getTickref(), output.getValue());
 			host.publishEvent(evtOut,LATENCY);
 		}
 	}

@@ -56,6 +56,7 @@ public class LkuAuditLogger {
 	 * @param startTime
 	 * @param requester
 	 * @param instrumentId
+	 * @param tickref
 	 * @param lookupKey
 	 * @param responder
 	 * @param resultCode
@@ -63,11 +64,11 @@ public class LkuAuditLogger {
 	 * @param lookupTime
 	 */
 	public void addLog(Timestamp startTime, Element requester, int instrumentId,
-			int lookupKey, Element responder, LkuResult resultCode,
+			int tickref, int lookupKey, Element responder, LkuResult resultCode,
 			float data, int lookupTime) {
 		
-		LkuAuditLog log = new LkuAuditLog(startTime, requester, instrumentId, lookupKey, 
-				responder, lookupTime, resultCode, data);
+		LkuAuditLog log = new LkuAuditLog(startTime, requester, instrumentId, tickref,
+				lookupKey, responder, lookupTime, resultCode, data);
 		addLog(log);		
 	}
 

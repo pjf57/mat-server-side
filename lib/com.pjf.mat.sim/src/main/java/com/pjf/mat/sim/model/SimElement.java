@@ -11,6 +11,6 @@ public interface SimElement {
 	public void processTick(ClockTick tick);
 	public void getStatus();
 	public void shutdown();
-	public LookupResult handleLookup(int instrumentId, int lookupKey, int target) throws Exception;
+	public LookupResult handleLookup(int instrumentId, int tickref, int lookupKey, int target) throws Exception;
 	public int getId();
 }

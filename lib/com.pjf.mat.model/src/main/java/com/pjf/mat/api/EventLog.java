@@ -6,8 +6,8 @@ public class EventLog extends BaseLog {
 	private final String dispValue;
 	
 	public EventLog(Timestamp timestamp, Element src, OutputPort op, int instrumentId,
-			int rawValue, String dispValue) {
-		super(timestamp,instrumentId,src);
+			int tickref, int rawValue, String dispValue) {
+		super(timestamp,instrumentId,tickref,src);
 		this.output = op;
 		this.rawValue = rawValue;
 		this.dispValue = dispValue;
@@ -40,6 +40,8 @@ public class EventLog extends BaseLog {
 		}
 		buf.append(" InstrId=");
 		buf.append(getInstrumentId());
+		buf.append(" tickref=");
+		buf.append(getTickref());
 		buf.append(" val=");
 		buf.append(dispValue);
 		return buf.toString();

@@ -217,11 +217,12 @@ public abstract class BaseComms implements Comms {
 			int src = msg[upto++];
 			int port = msg[upto++];
 			int instrId = msg[upto++];
+			int tickref = msg[upto++];
 			long timestamp = Conversion.getLongFromBytes(msg,upto,6);
 			upto+=6;
 			int data = Conversion.getIntFromBytes(msg,upto,4);
 			upto +=4;
-			notifyEvent(new Timestamp(timestamp),src, port, instrId, data);
+			notifyEvent(new Timestamp(timestamp),src, port, instrId, tickref, data);
 		}		
 	}
 
@@ -239,6 +240,7 @@ public abstract class BaseComms implements Comms {
 			upto+=6;
 			int requesterId = msg[upto++];
 			int instrId = msg[upto++];
+			int tickref = msg[upto++];
 			int op = msg[upto++];
 			int responderId = msg[upto++];
 			int rspTime = msg[upto++];
@@ -257,7 +259,7 @@ public abstract class BaseComms implements Comms {
 			case 3:	rslt = LkuResult.TIMEOUT;	break;
 			}
 			LkuAuditLog log = new LkuAuditLog(new Timestamp(timestamp),requester,instrId,
-					op,responder,rspTime,rslt,fdata);
+					tickref,op,responder,rspTime,rslt,fdata);
 			logs.add(log);
 		}
 		notifyLkuAuditLogsReceipt(logs);
@@ -280,6 +282,7 @@ public abstract class BaseComms implements Comms {
 			int takerBitmap = Conversion.getIntFromBytes(msg,upto,4);
 			upto += 4;
 			int instrId = msg[upto++];
+			int tickref = msg[upto++];
 			int data = Conversion.getIntFromBytes(msg,upto,4);
 			float fdata = Float.intBitsToFloat(data);
 			upto +=4;
@@ -289,7 +292,7 @@ public abstract class BaseComms implements Comms {
 			Element source = mat.getModel().getElement(sourceId);
 			Set<Element> takers = ConvertBitmapToElementSet(takerBitmap);
 			RtrAuditLog log = new RtrAuditLog(new Timestamp(timestamp),source,sourcePort,takers,
-					instrId,qTime,delTime,fdata);
+					instrId,tickref,qTime,delTime,fdata);
 			logs.add(log);
 		}
 		notifyRtrAuditLogsReceipt(logs);
@@ -344,13 +347,14 @@ public abstract class BaseComms implements Comms {
 	/**
 	 * Notify subscribers of new event
 	 * 
-	 * @param ts 
-	 * @param src
-	 * @param instrId
-	 * @param data
-	 * @param data2 
+	 * @param ts 		- timestamp of the event
+	 * @param src		- id of element that generated the event
+	 * @param port		- id of the port on the element that generated the event
+	 * @param instrId	- instrument id
+	 * @param tickref	- tick reference
+	 * @param data		- data of the event 
 	 */
-	protected void notifyEvent(Timestamp ts, int src, int port, int instrId, int data) {
+	protected void notifyEvent(Timestamp ts, int src, int port, int instrId, int tickref, int data) {
 		OutputPort op = null;
 		if (src > 0  &&  mat != null) {
 			Element el = mat.getModel().getElement(src);
@@ -368,7 +372,7 @@ public abstract class BaseComms implements Comms {
 			value = Float.toString(fval);
 		}
 		Element srcElement = mat.getModel().getElement(src);
-		EventLog evt = new EventLog(ts,srcElement,op,instrId, data, value);
+		EventLog evt = new EventLog(ts,srcElement,op,instrId, tickref, data, value);
 		logger.debug("Event from element=" + evt);
 		for (NotificationCallback subscriber : notificationSubscribers) {
 			subscriber.notifyEventLog(evt);

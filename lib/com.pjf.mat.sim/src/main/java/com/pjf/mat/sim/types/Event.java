@@ -14,6 +14,7 @@ public class Event implements Comparable<Event> {
 	private final int src;		// element ID
 	private final int srcPort;
 	private final int instrument_id;
+	private final int tickref;
 	private final boolean isFloat;
 	private Timestamp timestamp;
 	private int tag;
@@ -24,13 +25,15 @@ public class Event implements Comparable<Event> {
 	 * @param timestamp
 	 * @param src
 	 * @param instrument_id
+	 * @param tickref
 	 * @param rawData
 	 */
-	public Event(Timestamp timestamp, int src, int instrument_id, int rawData) {
+	public Event(Timestamp timestamp, int src, int instrument_id, int tickref, int rawData) {
 		this.rawData = rawData;
 		this.src = src;
 		this.srcPort = 0;
 		this.instrument_id = instrument_id;
+		this.tickref = tickref;
 		this.isFloat = false;
 		this.timestamp = timestamp;
 		tag = -1;
@@ -42,13 +45,15 @@ public class Event implements Comparable<Event> {
 	 * @param timestamp
 	 * @param src
 	 * @param instrument_id
+	 * @param tickref
 	 * @param data
 	 */
-	public Event(Timestamp timestamp, int src, int instrument_id, float data) {
+	public Event(Timestamp timestamp, int src, int instrument_id, int tickref, float data) {
 		this.rawData = Float.floatToIntBits(data);
 		this.src = src;
 		this.srcPort = 0;
 		this.instrument_id = instrument_id;
+		this.tickref = tickref;
 		this.isFloat = true;
 		this.timestamp = timestamp;
 		tag = -1;
@@ -61,13 +66,15 @@ public class Event implements Comparable<Event> {
 	 * @param src
 	 * @param port
 	 * @param instrument_id
+	 * @param tickref
 	 * @param data
 	 */
-	public Event(Timestamp timestamp, int src, int port, int instrument_id, float data) {
+	public Event(Timestamp timestamp, int src, int port, int instrument_id, int tickref, float data) {
 		this.rawData = Float.floatToIntBits(data);
 		this.src = src;
 		this.srcPort = port;
 		this.instrument_id = instrument_id;
+		this.tickref = tickref;
 		this.isFloat = true;
 		this.timestamp = timestamp;
 		tag = -1;
@@ -101,12 +108,17 @@ public class Event implements Comparable<Event> {
 		return instrument_id;
 	}
 	
+	public int getTickref() {
+		return tickref;
+	}
+	
 	@Override
 	public String toString() {
 		return "[tag=" + tag +
 		" ts=" + timestamp + 
 		" src" + src + ":" + srcPort +
 		",InstrId=" + instrument_id + 
+		",tickref=" + tickref + 
 		",data=" + ((isFloat) ? getFloatData() : "") + " " + Conversion.toHexIntString(rawData) + "]";
 	}
 

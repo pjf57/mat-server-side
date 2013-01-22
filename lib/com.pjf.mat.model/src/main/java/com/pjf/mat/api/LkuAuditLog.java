@@ -16,9 +16,9 @@ public class LkuAuditLog extends BaseLog {
 	private static final int CLK_TIME_NS = 8;	// microtick time
 
 	public LkuAuditLog(Timestamp timestamp, Element requester,
-			int instrumentId, int operation, Element responder, int rspTimeMicroticks,
+			int instrumentId, int tickref, int operation, Element responder, int rspTimeMicroticks,
 			LkuResult result, float data) {
-		super(timestamp,instrumentId,requester);
+		super(timestamp,instrumentId,tickref,requester);
 		this.operation = operation;
 		this.responder = responder;
 		this.rspTimeMicroticks = rspTimeMicroticks;
@@ -57,6 +57,7 @@ public class LkuAuditLog extends BaseLog {
 		buf.append(getTimestamp());
 		buf.append(": req:"); buf.append(getShortName(getRequester()));
 		buf.append(",instr="); buf.append(getInstrumentId());
+		buf.append(",tickref="); buf.append(getTickref());
 		buf.append(",op="); buf.append(MatElementDefs.LkuOpToString(operation));
 		if (result.equals(LkuResult.TIMEOUT)) {
 			buf.append(" TIMEOUT after "); buf.append(rspTimeMicroticks*CLK_TIME_NS); buf.append("ns"); 

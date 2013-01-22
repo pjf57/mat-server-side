@@ -42,6 +42,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	private Clock clk;
 	private final Router router;
 	private boolean stopOnError;
+	private int nextTickref;
 	
 	public MatSim(MatLogger logger) {
 		stopOnError = true;
@@ -50,6 +51,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		router = new Router(this);
 		lkuAuditLogger = new LkuAuditLogger();
 		rtrAuditLogger = new RtrAuditLogger();
+		nextTickref = 1;
 	}
 
 	public void setClock(Clock clock) {
@@ -171,9 +173,10 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public void publishEventLog(Timestamp ts, int srcId, int srcPort, int intrumentId, int rawValue) {
+	public void publishEventLog(Timestamp ts, int srcId, int srcPort, int intrumentId, 
+			int tickref, int rawValue) {
 		logger.debug("publishEventLog()");
-		notifyEvent(ts,srcId,srcPort,intrumentId,rawValue);
+		notifyEvent(ts,srcId,srcPort,intrumentId,tickref,rawValue);
 	}
 
 	@Override
@@ -204,7 +207,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public LookupResult lookup(int source, int instrumentId, int lookupKey, int target)
+	public LookupResult lookup(int source, int instrumentId, int tickref, int lookupKey, int target)
 			throws Exception {
 		LookupResult result = null;
 		Timestamp startTime = clk.getSimTime();
@@ -212,7 +215,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 				",key=" + lookupKey + "): ";
 		Element responder = null;
 		for (SimElement se : simElements) {
-			result = se.handleLookup(instrumentId, lookupKey, target);
+			result = se.handleLookup(instrumentId, tickref, lookupKey, target);
 			if (!result.getValidity().equals(LookupValidity.TIMEOUT)) {
 				// this element handled the request - so break out of the loop
 				responder = mat.getModel().getElement(se.getId());
@@ -223,7 +226,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		int lookupTime = (int) (endTime.getMicroticks() - startTime.getMicroticks());
 		LkuResult resultCode = result.getLkuResult();
 		Element sourceEl = mat.getModel().getElement(source);
-		lkuAuditLogger.addLog(startTime,sourceEl,instrumentId,lookupKey,
+		lkuAuditLogger.addLog(startTime,sourceEl,instrumentId,tickref,lookupKey,
 				responder,resultCode,result.getFloatData(),lookupTime);
 		logger.debug(logstr + " returned " + result);
 		return result;
@@ -257,7 +260,8 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 			long deltime = endDelivery.getMicroticks() - startDelivery.getMicroticks();
 			Element source = mat.getModel().getElement(evt.getSrc());
 			rtrAuditLogger.addLog(evt.getTimestamp(),source,evt.getSrcPort(),takers,
-					evt.getInstrument_id(),(int) qtime, (int) deltime, evt.getFloatData());
+					evt.getInstrument_id(),evt.getTickref(), (int) qtime, (int) deltime, 
+					evt.getFloatData());
 		}
 	}
 
@@ -321,6 +325,19 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		logger.info("requestRtrAuditLogs()");
 		Collection<RtrAuditLog> logs = rtrAuditLogger.getLogs(80);
 		notifyRtrAuditLogsReceipt(logs);
+	}
+
+	@Override
+	public int getTickref() {
+		int ret = 0;
+		synchronized(this) {
+			ret = nextTickref;
+			nextTickref++;
+			if (nextTickref == 256) {
+				nextTickref = 1;
+			}
+		}
+		return ret;
 	}
 
 }

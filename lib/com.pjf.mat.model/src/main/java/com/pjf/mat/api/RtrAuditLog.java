@@ -28,10 +28,11 @@ public class RtrAuditLog extends BaseLog {
 	 * @param qTime
 	 * @param deltime
 	 * @param data
+	 * @param fdata 
 	 */
 	public RtrAuditLog(Timestamp timestamp, Element source, int sourcePort, Set<Element> takers, 
-			int instrumentId, int qTime, int deltime, float data) {
-		super(timestamp,instrumentId,source);
+			int instrumentId, int tickref, int qTime, int deltime, float data) {
+		super(timestamp,instrumentId,tickref,source);
 		this.sourcePort = sourcePort;
 		this.qTimeMicroticks = qTime;
 		this.delTimeMicroticks = deltime;
@@ -68,6 +69,7 @@ public class RtrAuditLog extends BaseLog {
 		buf.append(": src:"); buf.append(getShortName(getSrcElement())); buf.append(":"); 
 		buf.append(getSrcElement().getOutputs().get(sourcePort).getName());
 		buf.append(",instr="); buf.append(getInstrumentId());
+		buf.append(",tickref="); buf.append(getTickref());
 		buf.append(" Data="); buf.append(data);
 		buf.append(" Takers:[ ");
 		for (Element el : takers) {

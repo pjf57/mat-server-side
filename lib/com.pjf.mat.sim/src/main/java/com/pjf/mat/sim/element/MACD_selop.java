@@ -90,7 +90,8 @@ public class MACD_selop extends BaseElement implements SimElement {
 		default: output = macd;		break;
 		}
 		if (output.isValid()) {
-			Event evtOut = new Event(host.getCurrentSimTime(),elementId,evt.getInstrument_id(),output.getValue());
+			Event evtOut = new Event(host.getCurrentSimTime(),
+					elementId,evt.getInstrument_id(), evt.getTickref(), output.getValue());
 			host.publishEvent(evtOut,LATENCY);
 		}
 	}

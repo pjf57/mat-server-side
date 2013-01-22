@@ -26,7 +26,7 @@ public class SimTestCase extends TestCase implements SimHost {
 
 	@Override
 	public void publishEventLog(Timestamp ts, int srcId, int srcPort, int intrumentId,
-			int rawValue) {
+			int tickref, int rawValue) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -44,12 +44,12 @@ public class SimTestCase extends TestCase implements SimHost {
 	}
 
 	@Override
-	public LookupResult lookup(int id, int instrumentId, int lookupKey, int target)
+	public LookupResult lookup(int id, int instrumentId, int tickref, int lookupKey, int target)
 			throws Exception {
-		return lookupBehaviour(id,instrumentId,lookupKey);
+		return lookupBehaviour(id,instrumentId,tickref,lookupKey);
 	}
 		
-	protected LookupResult lookupBehaviour(int id, int instrumentId, int lookupKey) throws Exception {
+	protected LookupResult lookupBehaviour(int id, int instrumentId, int tickref, int lookupKey) throws Exception {
 		throw new Exception ("Lookup used, but not implemented");
 	}
 
@@ -57,6 +57,11 @@ public class SimTestCase extends TestCase implements SimHost {
 	public Timestamp getCurrentSimTime() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int getTickref() {
+		return 0;
 	}
 
 }

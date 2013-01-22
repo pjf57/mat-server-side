@@ -25,9 +25,10 @@ public interface SimHost {
 	 * @param srcId			The id of the element sending the event
 	 * @param srcPort		The source output port number
 	 * @param intrumentId	The ID of the instrument
+	 * @param tickref		The tick reference for this event
 	 * @param rawValue		The raw value of the event data
 	 */
-	public void publishEventLog(Timestamp ts, int srcId, int srcPort, int intrumentId, int rawValue);
+	public void publishEventLog(Timestamp ts, int srcId, int srcPort, int intrumentId, int tickref, int rawValue);
 
 	/**
 	 * publish a change in an element's status
@@ -54,16 +55,22 @@ public interface SimHost {
 	 * 
 	 * @param id 			- id of element doing the lookup
 	 * @param instrumentId - instrument to look up data for
+	 * @param tickref		- tick reference to look up data for (may be zero)
 	 * @param lookupKey		- type of data to find
 	 * @param target		- element to target (or EL_ID_ALL)
 	 * @return				- lookup result including validity
 	 * @throws Exception	- if an element had a problem replying
 	 */
-	public LookupResult lookup(int id, int instrumentId, int lookupKey, int target) throws Exception;
+	public LookupResult lookup(int id, int instrumentId, int tickref, int lookupKey, int target) throws Exception;
 
 	/**
 	 * @return current simulation time in clks
 	 */
-	Timestamp getCurrentSimTime();
-
+	public Timestamp getCurrentSimTime();
+	
+	/**
+	 * @return unique tickref value
+	 * 
+	 */
+	public int getTickref();
 }

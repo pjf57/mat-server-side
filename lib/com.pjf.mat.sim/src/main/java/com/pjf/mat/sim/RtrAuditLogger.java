@@ -56,6 +56,7 @@ public class RtrAuditLogger {
 	 * @param startTime
 	 * @param requester
 	 * @param instrumentId
+	 * @param tickref
 	 * @param lookupKey
 	 * @param responder
 	 * @param resultCode
@@ -63,10 +64,10 @@ public class RtrAuditLogger {
 	 * @param lookupTime
 	 */
 	public void addLog(Timestamp timestamp, Element source, int srcPort, Set<Element> takers, 
-			int instrument_id, int qTime, int deltime, float data) {
+			int instrument_id, int tickref, int qTime, int deltime, float data) {
 		
 		RtrAuditLog log = new RtrAuditLog(timestamp, source, srcPort, takers, 
-				instrument_id, qTime, deltime, data);
+				instrument_id, tickref, qTime, deltime, data);
 		addLog(log);		
 	}
 

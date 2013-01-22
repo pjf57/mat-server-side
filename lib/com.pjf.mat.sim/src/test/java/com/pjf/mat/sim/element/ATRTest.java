@@ -22,17 +22,17 @@ public class ATRTest extends SimTestCase {
 		el.putConfig(new ConfigItem(6, AttrSysType.SYSTEM, MatElementDefs.EL_C_CFG_DONE,0));
 		
 		lkuData = new float[]{3f,2f,0.5f}; // T3: C(n-1)=3, H(n)=2, L(n)=0.5
-		el.putEvent(new Event(new Timestamp(1L), 2, 12, 2f));
+		el.putEvent(new Event(new Timestamp(1L), 2, 12, 2, 2f));
 		
 		lkuData = new float[]{1f,2f,0.5f}; // T4: C(n-1)=1, H(n)=2, L(n)=0.5)
-		el.putEvent(new Event(new Timestamp(2L), 2, 12, 2f));
+		el.putEvent(new Event(new Timestamp(2L), 2, 12, 2, 2f));
 
 		lkuData = new float[]{0.1f,2f,0.5f}; // T5: C(n-1)=0.1, H(n)=2, L(n)=0.5)
-		el.putEvent(new Event(new Timestamp(3L), 2, 12, 2f));
+		el.putEvent(new Event(new Timestamp(3L), 2, 12, 2, 2f));
 	}
 
 	@Override
-	public LookupResult lookupBehaviour(int id, int instrumentId, int lookupKey)
+	public LookupResult lookupBehaviour(int id, int instrumentId, int tickref, int lookupKey)
 			throws Exception {
 		int idx;
 		switch(lookupKey) {

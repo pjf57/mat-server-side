@@ -71,12 +71,13 @@ public class ADX extends BaseElement implements SimElement {
 	@Override
 	protected void processEvent(int input, Event evt) throws Exception {
 		int instr = evt.getInstrument_id();
+		int tr = evt.getTickref();
 		// get high(n), high(n-1), low(n), low(n-1)
-		FloatValue highN  = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PREV_H).getFloatValue();
-		FloatValue highN1 = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PRVM1_H).getFloatValue();
-		FloatValue lowN   = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PREV_L).getFloatValue();
-		FloatValue lowN1  = HlocLookup(instr, MatElementDefs.EL_HLOC_L_PRVM1_L).getFloatValue();
-		FloatValue atr    = AtrLookup(instr, MatElementDefs.EL_ATR_L_ATR).getFloatValue();
+		FloatValue highN  = HlocLookup(instr, tr, MatElementDefs.EL_HLOC_L_PREV_H).getFloatValue();
+		FloatValue highN1 = HlocLookup(instr, tr, MatElementDefs.EL_HLOC_L_PRVM1_H).getFloatValue();
+		FloatValue lowN   = HlocLookup(instr, tr, MatElementDefs.EL_HLOC_L_PREV_L).getFloatValue();
+		FloatValue lowN1  = HlocLookup(instr, tr, MatElementDefs.EL_HLOC_L_PRVM1_L).getFloatValue();
+		FloatValue atr    = AtrLookup(instr, tr, MatElementDefs.EL_ATR_L_ATR).getFloatValue();
 		logger.debug("processEvent(" + show(evt.getFloatData()) + "): highH=" + highN + ", highN1=" + highN1 +
 				", lowN=" + lowN + ", lowN1=" + lowN1 +
 				", atr=" + atr);
@@ -109,7 +110,7 @@ public class ADX extends BaseElement implements SimElement {
 				if (aEma.isValid()) {
 					float adx = 100 * aEma.getValue();
 					adxStore.put(adx, instr);
-					Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,adx);
+					Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,0,adx);
 					host.publishEvent(evtOut,LATENCY);
 				}
 			}
@@ -117,19 +118,19 @@ public class ADX extends BaseElement implements SimElement {
 	}
 	
 
-	private LookupResult HlocLookup(int instr, int key) throws Exception {
-		LookupResult rslt = lookup(instr, key, getLookupTarget(0));
+	private LookupResult HlocLookup(int instr, int tickref, int key) throws Exception {
+		LookupResult rslt = lookup(instr, tickref, key, getLookupTarget(0));
 		return rslt;
 	}
 
-	private LookupResult AtrLookup(int instr, int key) throws Exception {
-		LookupResult rslt = lookup(instr, key, getLookupTarget(1));
+	private LookupResult AtrLookup(int instr, int tickref, int key) throws Exception {
+		LookupResult rslt = lookup(instr, tickref, key, getLookupTarget(1));
 		return rslt;
 	}
 
 
 	@Override
-	public LookupResult lookupBehaviour(int instrumentId, int lookupKey) throws Exception {
+	public LookupResult lookupBehaviour(int instrumentId, int tickref, int lookupKey) throws Exception {
 		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		switch (lookupKey) {
 		case MatElementDefs.EL_ADX_L_ADX:

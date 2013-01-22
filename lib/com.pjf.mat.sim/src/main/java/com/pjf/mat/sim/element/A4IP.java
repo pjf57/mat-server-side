@@ -88,8 +88,9 @@ public class A4IP extends BaseElement implements SimElement {
 		FloatValue q = fn(c_cf2,lastValue[instr][2],y);
 		FloatValue z = lop(c_lop,p,q);
 		if (z.isValid()){ 
-			Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,z.getRawData());
-			// TODO change to take into account cascaded ops, and make longer latency for divide
+			Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,
+					evt.getTickref(), z.getRawData());
+			// TODO change timing to take into account cascaded ops, and make longer latency for divide
 			host.publishEvent(evtOut,LATENCY);
 		}
 	}

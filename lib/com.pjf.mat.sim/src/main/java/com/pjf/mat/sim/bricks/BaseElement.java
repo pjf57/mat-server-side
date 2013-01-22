@@ -190,13 +190,14 @@ public abstract class BaseElement implements SimElement {
 	 * Lookup a value from the lookup bus
 	 * 
 	 * @param instrumentId
+	 * @param tickref
 	 * @param lookupKey
 	 * @param target - element to target for lookup
 	 * @return lookup result
 	 * @throws Exception if an error occurred
 	 */
-	protected LookupResult lookup(int instrumentId, int lookupKey, int target) throws Exception {
-		LookupResult result = host.lookup(elementId, instrumentId, lookupKey, target);
+	protected LookupResult lookup(int instrumentId, int tickref, int lookupKey, int target) throws Exception {
+		LookupResult result = host.lookup(elementId, instrumentId, tickref, lookupKey, target);
 		return result;
 	}
 
@@ -299,11 +300,11 @@ public abstract class BaseElement implements SimElement {
 
 	
 	@Override
-	public LookupResult handleLookup(int instrumentId, int lookupKey, int target) throws Exception {
+	public LookupResult handleLookup(int instrumentId, int tickref, int lookupKey, int target) throws Exception {
 		// default behaviour is timeout
 		LookupResult rslt = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		if ((target == elementId) || (target == MatElementDefs.EL_ID_ALL)) {
-			rslt = lookupBehaviour(instrumentId,lookupKey);
+			rslt = lookupBehaviour(instrumentId,tickref,lookupKey);
 		}
 		return rslt;
 	}
@@ -313,11 +314,12 @@ public abstract class BaseElement implements SimElement {
 	 * Template method for lookup behaviour
 	 * 
 	 * @param instrumentId
-	 * @param lookupKey
+	 * @param tickref
+	 * @param lookupKey 
 	 * @return the lookup result (validity = timeout if none)
 	 * @throws Exception 
 	 */
-	protected LookupResult lookupBehaviour(int instrumentId, int lookupKey) throws Exception {
+	protected LookupResult lookupBehaviour(int instrumentId, int tickref, int lookupKey) throws Exception {
 		return new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 	}
 }

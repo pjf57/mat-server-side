@@ -11,11 +11,13 @@ package com.pjf.mat.api;
 public class BaseLog implements TimeOrdered {
 	private final Timestamp timestamp;
 	private final int instrumentId;
+	private final int tickref;
 	private final Element srcElement;
 	
-	public BaseLog(Timestamp timestamp, int instrumentId, Element srcElement) {
+	public BaseLog(Timestamp timestamp, int instrumentId, int tickref, Element srcElement) {
 		this.timestamp = timestamp;
 		this.instrumentId = instrumentId;
+		this.tickref = tickref;
 		this.srcElement = srcElement;
 	}
 
@@ -32,6 +34,10 @@ public class BaseLog implements TimeOrdered {
 		return srcElement;
 	}
 	
+	public int getTickref() {
+		return tickref;
+	}
+	
 	@Override
 	public int compareTo(TimeOrdered o) {
 		return timestamp.compareTo(o.getTimestamp());
@@ -39,7 +45,8 @@ public class BaseLog implements TimeOrdered {
 
 	@Override
 	public String toString() {
-		return getTimestamp() + ":" + srcElement.getShortName() + ":" + getInstrumentId();
+		return getTimestamp() + ":" + srcElement.getShortName() + ":" + getInstrumentId() +
+			"/" + getTickref();
 	}
 
 
@@ -48,6 +55,7 @@ public class BaseLog implements TimeOrdered {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + instrumentId;
+		result = prime * result + tickref;
 		result = prime * result
 				+ ((srcElement == null) ? 0 : srcElement.hashCode());
 		result = prime * result
@@ -66,6 +74,8 @@ public class BaseLog implements TimeOrdered {
 			return false;
 		BaseLog other = (BaseLog) obj;
 		if (instrumentId != other.instrumentId)
+			return false;
+		if (tickref != other.tickref)
 			return false;
 		if (srcElement == null) {
 			if (other.srcElement != null)

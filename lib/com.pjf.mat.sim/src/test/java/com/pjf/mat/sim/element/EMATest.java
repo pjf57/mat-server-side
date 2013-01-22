@@ -20,7 +20,7 @@ public class EMATest extends SimTestCase {
 
 		float data = 50.0f;
 		for (int i=1; i<10; i++) {
-			el.putEvent(new Event(new Timestamp(1L), 2, 12, data));
+			el.putEvent(new Event(new Timestamp(1L), 2, 12, 2, data));
 			data += 0.25;
 		}
 	}

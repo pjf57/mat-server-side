@@ -22,15 +22,15 @@ public class MACDTest extends SimTestCase {
 		el.putConfig(new ConfigItem(6, MatElementDefs.EL_C_SRC_ROUTE,2,1));
 		el.putConfig(new ConfigItem(6, AttrSysType.SYSTEM, MatElementDefs.EL_C_CFG_DONE,0));
 		
-		el.putEvent(new Event(new Timestamp(1L), 2, 12, 1f));
-		el.putEvent(new Event(new Timestamp(2L), 2, 12, 2f));
-		el.putEvent(new Event(new Timestamp(3L), 2, 12, 3f));
-		el.putEvent(new Event(new Timestamp(4L), 2, 12, 4f));
-		el.putEvent(new Event(new Timestamp(5L), 2, 12, 5f));
-		el.putEvent(new Event(new Timestamp(6L), 2, 12, 6f));
-		el.putEvent(new Event(new Timestamp(7L), 2, 12, 7f));
-		el.putEvent(new Event(new Timestamp(8L), 2, 12, 8f));
-		el.putEvent(new Event(new Timestamp(9L), 2, 12, 9f));
+		el.putEvent(new Event(new Timestamp(1L), 2, 12, 1, 1f));
+		el.putEvent(new Event(new Timestamp(2L), 2, 12, 2, 2f));
+		el.putEvent(new Event(new Timestamp(3L), 2, 12, 3, 3f));
+		el.putEvent(new Event(new Timestamp(4L), 2, 12, 4, 4f));
+		el.putEvent(new Event(new Timestamp(5L), 2, 12, 5, 5f));
+		el.putEvent(new Event(new Timestamp(6L), 2, 12, 6, 6f));
+		el.putEvent(new Event(new Timestamp(7L), 2, 12, 7, 7f));
+		el.putEvent(new Event(new Timestamp(8L), 2, 12, 8, 8f));
+		el.putEvent(new Event(new Timestamp(9L), 2, 12, 9, 9f));
 	}
 
 }
