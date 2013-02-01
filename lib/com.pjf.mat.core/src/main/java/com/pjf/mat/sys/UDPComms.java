@@ -15,6 +15,7 @@ import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.impl.element.SystemCmd;
 import com.pjf.mat.util.comms.BaseComms;
+import com.pjf.mat.util.comms.RxPkt;
 import com.pjf.mat.util.comms.UDPCxn;
 
 public class UDPComms extends BaseComms implements Comms {
@@ -43,10 +44,10 @@ public class UDPComms extends BaseComms implements Comms {
 			logger.info("Receiver starting");
 			try {
 				while (keepGoing) {
-					byte[] rep = cxn.rcv();
+					RxPkt pkt = cxn.rcv();
 					if (keepGoing) {
 						rspCnt++;
-						processIncomingMsg(rep);
+						processIncomingMsg(pkt.getPort(),pkt.getData());
 					}
 				}
 			} catch (IOException e) {

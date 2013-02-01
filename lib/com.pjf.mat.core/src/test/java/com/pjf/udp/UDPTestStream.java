@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.pjf.mat.util.comms.RxPkt;
 import com.pjf.mat.util.comms.UDPCxn;
 
 
@@ -18,12 +19,11 @@ public class UDPTestStream {
 		
 		@Override
 		public void run() {
-			byte[] rep;
 			while (true) {
 				try {
-					rep = cxn.rcv();
-					String reply = new String(rep);
-					System.out.println("Got [" + reply + "]");
+					RxPkt pkt = cxn.rcv();
+					String reply = new String(pkt.getData());
+					System.out.println("Got [" + reply + "] on port " + pkt.getPort());
 					received++;
 				} catch (IOException e) {
 					e.printStackTrace();

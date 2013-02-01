@@ -1,6 +1,8 @@
 package com.pjf.mat.sys;
 
 import java.io.FileInputStream;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -23,6 +25,7 @@ import com.pjf.mat.impl.MatInterfaceModel;
 import com.pjf.mat.impl.element.BasicCmd;
 import com.pjf.mat.sim.MatSim;
 import com.pjf.mat.util.comms.BaseComms;
+import com.pjf.mat.util.comms.UDPCxn;
 
 
 public abstract class MatSystem {
@@ -142,15 +145,13 @@ public abstract class MatSystem {
 		MatInterfaceModel model = new MatInterfaceModel(props);
 		mat = new MatInterface(comms,model);
 		comms.setMat(mat);
-		if (sim != null) {
+		if (sim == null) {
+			feed = new EventFeed(comms.getCxn(),15000);
+		} else {
 			// transfer config data into simulator
 			sim.init(mat.getModel().getElements());
 		}
 		mat.checkHWSignature();
-// FIXME
-//		if (feed == null) {
-//			feed = new EventFeed(comms.getCxn(),15000);
-//		}
 	}
 
 	protected void run() throws Exception {
@@ -165,9 +166,8 @@ public abstract class MatSystem {
 		Thread.sleep(500);
 		sendTradeBurst(mat,feed);
 		
-		logger.info("-----");	
-		reqAuditLogs(); 
-		reqStatus(); 
+		logger.info("-----");
+		getFinalStatus();
 		Thread.sleep(500);
 		Thread.sleep(1000);
 		
@@ -175,6 +175,19 @@ public abstract class MatSystem {
 		ueLogger.flush();
 		logger.info("----------------------------------------");
 	}
+
+	/**
+	 * Template method
+	 * 
+	 * can be overwritten to change behaviour of collection of final status from the HW
+	 * 
+	 * @throws Exception
+	 */
+	protected void getFinalStatus() throws Exception {
+		reqAuditLogs(); 
+		reqStatus(); 
+	}
+
 
 	protected void boot() {
 		try {
@@ -207,7 +220,7 @@ public abstract class MatSystem {
 		}
 	}
 	
-	private void reqStatus() {
+	protected void reqStatus() {
 		mat.getHWStatus();		
 	}
 	
@@ -251,7 +264,7 @@ public abstract class MatSystem {
 		logger.info("Ready to config ...");
 	}
 	
-	private void reqAuditLogs() throws Exception {
+	protected void reqAuditLogs() throws Exception {
 		mat.reqLkuAuditLogs();		
 		mat.reqRtrAuditLogs();		
 	}

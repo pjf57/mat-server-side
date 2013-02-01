@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import com.pjf.mat.util.comms.RxPkt;
 import com.pjf.mat.util.comms.UDPCxn;
 
 
@@ -18,7 +19,8 @@ public class UDPTest {
 	public void go() throws IOException {
 		String fix1 = "P=45~34=201~18=23~";
 		cxn.fixSend(fix1, 2000, true);
-		byte[] rep = cxn.rcv();
+		RxPkt pkt = cxn.rcv();
+		byte[] rep = pkt.getData();
 		String reply = new String(rep);
 		System.out.println("Got [" + reply + "]");
 	}

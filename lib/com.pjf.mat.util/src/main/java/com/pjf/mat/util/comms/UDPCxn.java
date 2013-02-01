@@ -76,11 +76,12 @@ public class UDPCxn {
     	 * @return
     	 * @throws IOException
     	 */
-    	public byte[] rcv() throws IOException {
+    	public RxPkt rcv() throws IOException {
   	      	byte[] buf = new byte[1500];
 	  	    DatagramPacket pkt = new DatagramPacket(buf, buf.length);
 	  	    boolean gotPkt = false;
-			byte[] data = new byte[0];;
+			byte[] data = new byte[0];
+			int port = 0;
 			logger.debug("Waiting to receive ...");
 			sktInUse = true;
 			while (!gotPkt  &&  !shutdown) {
@@ -89,6 +90,7 @@ public class UDPCxn {
 					gotPkt = true;
 				    int len = pkt.getLength();
 				    byte[] rd = pkt.getData();
+				    port = pkt.getPort();
 		  	      	data = new byte[len];
 				    for (int i=0; i<len; i++) {
 				    	data[i] = rd[i];
@@ -102,7 +104,7 @@ public class UDPCxn {
 				logger.info("Shutting down.");
 			}
 			sktInUse = false;
-		    return data;
+		    return new RxPkt(port,data);
     	}
     	
     	public void close() {

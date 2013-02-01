@@ -20,6 +20,7 @@ public class MatElementDefs {
 	public static final int EL_TYP_HLOC			= 0x60;
 	public static final int EL_TYP_ATR			= 0x61;
 	public static final int EL_TYP_ADX			= 0x62;
+	public static final int EL_TYP_RMO			= 0x70;
 
 
 //	------------------------------
@@ -158,6 +159,17 @@ public class MatElementDefs {
 	public static final int EL_ADX_C_ADX_LEN 		= 0x08; // set EMA length parameter for ADX EMA
 
 	public static final int EL_ADX_L_ADX			= 0x11; // lookup current ADX value
+
+//	------------------------------
+//	-- RMO
+//	------------------------------
+	public static final int EL_RMO_C_UDPIP	 		= 0x03; // set market order IP address
+	public static final int EL_RMO_C_UDPPORT	 	= 0x04; // set market order IP port
+	public static final int EL_RMO_C_MIN_VOL	 	= 0x05; // set min order volume
+	public static final int EL_RMO_C_MAX_VOL	 	= 0x06; // set max order volume
+	
+
+// ---------------------- utilities ----------------------------------------
 	
 	public static String LkuOpToString(int op) {
 		String str = "";
@@ -195,6 +207,7 @@ public class MatElementDefs {
 		case MatElementDefs.EL_TYP_LOGIC_4IP	: typeStr = "Logic_4IP";	break;
 		case MatElementDefs.EL_TYP_ARITH_4IP	: typeStr = "Arith_4IP";	break;
 		case MatElementDefs.EL_TYP_UDP_RAW_MKT	: typeStr = "UDPrawMKT";	break;
+		case MatElementDefs.EL_TYP_RMO			: typeStr = "RMO";			break;
 		default					: typeStr = "unknown(" + type + ")";		break;
 		}
 		return typeStr;

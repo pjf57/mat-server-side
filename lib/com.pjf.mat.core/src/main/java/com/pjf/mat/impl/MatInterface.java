@@ -87,8 +87,9 @@ public class MatInterface implements MatApi {
 	 */
 	@Override
 	public void checkHWSignature() throws Exception {
-		long signatureHW = comms.getHWSignature();
 		long signatureSW = getSWSignature();
+		logger.info("SW Signature is " + Conversion.toHexLongString(signatureSW));
+		long signatureHW = comms.getHWSignature();
 		logger.info("Signatures HW=" + Conversion.toHexLongString(signatureHW) + 
 										" SW=" + Conversion.toHexLongString(signatureSW));
 		if (signatureHW != signatureSW) {

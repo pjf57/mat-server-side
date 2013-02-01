@@ -5,19 +5,15 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
 
-public class MatAdx32 extends MatSystem {
+public class MatRmo32 extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat.properties.32");
+		init("resources/mat.properties.32.rmo");
 	}
 	
 	@Override
 	protected void configure(MatApi mat) throws Exception {
-//		MatProperties p = loadProperties("resources/matAdx16.matdef");
-//		MatSystemLoader loader = new MatSystemLoader(p);
-//		loader.initialize(mat);
-		
 		Element sys = mat.getModel().getElement(0);
 		Element mfd = mat.getModel().getElement(30);
 		Element tg1 = mat.getModel().getElement(2);
@@ -26,14 +22,16 @@ public class MatAdx32 extends MatSystem {
 		Element hloc = mat.getModel().getElement(27);
 		Element atr = mat.getModel().getElement(28);
 		Element adx = mat.getModel().getElement(29);
+		Element rmo = mat.getModel().getElement(31);
+		Element logic1 = mat.getModel().getElement(15);
 
 		// configure system attributes
 //		sys.getAttribute("lookup_audit_autosend").setValue("4");
 		sys.getAttribute("router_audit_autosend").setValue("4");
 		// configure element attributes
 		mfd.getAttribute("udp_listen_port").setValue("15000");
-		mfd.getAttribute("price_op").setValue("0");
-		mfd.getAttribute("volume_op").setValue("f");
+		mfd.getAttribute("price_op").setValue("f");
+		mfd.getAttribute("volume_op").setValue("0");
 		mfd.getAttribute("mdtype").setValue("1");
 //		ema.getAttribute("len").setValue("7");
 //		ema.getAttribute("alpha").setValue("0.25");
@@ -63,23 +61,35 @@ public class MatAdx32 extends MatSystem {
 		macd.getAttribute("SLOW_EMA_len").setValue("7");	// 
 		macd.getAttribute("SIGNAL_EMA_alpha").setValue("0.5");	// 
 		macd.getAttribute("SIGNAL_EMA_len").setValue("3");	// 
-		macd.getAttribute("OP_ENABLE_MASK").setValue("1");	// enable only MACD OP
+		macd.getAttribute("OP_ENABLE_MASK").setValue("4");	// enable hist op
+
+		// Configure logic 1
+		logic1.getAttribute("oper").setValue("3044");	// 	Z = A > k1
+		logic1.getAttribute("k1").setValue("0");	// 
 		
+		// Configure RMO
+		rmo.getAttribute("udp_ip").setValue("0C0A80006");	// 
+		rmo.getAttribute("udp_port").setValue("8100");	// 
+		rmo.getAttribute("min_vol").setValue("100");	// 
+		rmo.getAttribute("max_vol").setValue("500");	// 
+
 		// configure element connections
 //		ema.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
-		hloc.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
-		atr.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
-		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
-		macd.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
+//		hloc.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
+//		atr.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
+//		adx.getInputs().get(0).connectTo(hloc.getOutputs().get(0));
+		macd.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
+		logic1.getInputs().get(0).connectTo(macd.getOutputs().get(2));
+		rmo.getInputs().get(0).connectTo(logic1.getOutputs().get(0));
 		
 		// logger connections
-		lgr.getInputs().get(0).connectTo(tg1.getOutputs().get(0));
+		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
 //		lgr.getInputs().get(1).connectTo(hloc.getOutputs().get(0));
 //		lgr.getInputs().get(0).connectTo(atr.getOutputs().get(0));
 		//		lgr.getInputs().get(1).connectTo(macd.getOutputs().get(0));
 		//		lgr.getInputs().get(2).connectTo(macd.getOutputs().get(2));
-		lgr.getInputs().get(3).connectTo(adx.getOutputs().get(0));
-		lgr.getInputs().get(2).connectTo(macd.getOutput("macd"));
+//		lgr.getInputs().get(3).connectTo(adx.getOutputs().get(0));
+//		lgr.getInputs().get(2).connectTo(macd.getOutput("macd"));
 		logger.info("mat is: " + mat);
 
 		mat.configureHW();
@@ -93,10 +103,10 @@ public class MatAdx32 extends MatSystem {
 	 */
 	@Override
 	protected void sendTradeBurst(MatApi mat, EventFeed feed) throws Exception {
-		sendCmd(2,"start");
-//		if (feed != null) {
-//			feed.sendTradeBurst("resources/GLP_27667_1.csv",3,5,1);
-//		}
+//		sendCmd(2,"start");
+		if (feed != null) {
+			feed.sendTradeBurst("resources/GLP_27667_1.csv",3,5,1);
+		}
 		Thread.sleep(5000);
 	}
 
@@ -108,7 +118,7 @@ public class MatAdx32 extends MatSystem {
 
 
 	public static void main(String[] args) {
-		MatAdx32 sys = new MatAdx32();
+		MatRmo32 sys = new MatRmo32();
 		sys.boot();
 	}
 

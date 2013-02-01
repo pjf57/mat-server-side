@@ -27,6 +27,8 @@ import com.pjf.mat.util.ElementStatus;
 
 public abstract class BaseComms implements Comms {
 	private final static Logger logger = Logger.getLogger(BaseComms.class);
+
+	private static final int ORDER_PORT = 8100;
 	
 	protected MatApi mat;
 	protected Collection<NotificationCallback> notificationSubscribers;
@@ -120,21 +122,25 @@ public abstract class BaseComms implements Comms {
 
 	/**
 	 * Process a message that has been received from the MAT
-	 * 
-	 * @param msg
+	 * @param port - UDP port on which data was received
+	 * @param msg - the raw message
 	 */
-	protected void processIncomingMsg(byte[] msg) {
-		byte cmd = msg[0];
-		switch (cmd) {
-		case MatElementDefs.ST_TX_HWSIG: processHWSigMsg(msg); break;
-		case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg);	break;
-		case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg); break;
-		case MatElementDefs.ST_TX_LKUAUDIT: processLkuAuditLogMsg(msg); break;
-		case MatElementDefs.ST_TX_RTRAUDIT: processRtrAuditLogMsg(msg); break;
-		default: logger.error("Unkown status message received: [" + Conversion.toHexString(msg)); break;
+	protected void processIncomingMsg(int port, byte[] msg) {
+		if (port == ORDER_PORT) {
+			processIncomingOrder(msg);
+		}
+		else {
+			byte cmd = msg[0];
+			switch (cmd) {
+			case MatElementDefs.ST_TX_HWSIG: processHWSigMsg(msg); break;
+			case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg);	break;
+			case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg); break;
+			case MatElementDefs.ST_TX_LKUAUDIT: processLkuAuditLogMsg(msg); break;
+			case MatElementDefs.ST_TX_RTRAUDIT: processRtrAuditLogMsg(msg); break;
+			default: logger.error("Unkown status message received: [" + Conversion.toHexString(msg)); break;
+			}
 		}
 	}
-
 
 
 	/**
@@ -217,7 +223,7 @@ public abstract class BaseComms implements Comms {
 			int src = msg[upto++];
 			int port = msg[upto++];
 			int instrId = msg[upto++];
-			int tickref = msg[upto++];
+			int tickref = msg[upto++] & 0xFF;
 			long timestamp = Conversion.getLongFromBytes(msg,upto,6);
 			upto+=6;
 			int data = Conversion.getIntFromBytes(msg,upto,4);
@@ -240,7 +246,7 @@ public abstract class BaseComms implements Comms {
 			upto+=6;
 			int requesterId = msg[upto++];
 			int instrId = msg[upto++];
-			int tickref = msg[upto++];
+			int tickref = msg[upto++] & 0xFF;
 			int op = msg[upto++];
 			int responderId = msg[upto++];
 			int rspTime = msg[upto++];
@@ -282,7 +288,7 @@ public abstract class BaseComms implements Comms {
 			int takerBitmap = Conversion.getIntFromBytes(msg,upto,4);
 			upto += 4;
 			int instrId = msg[upto++];
-			int tickref = msg[upto++];
+			int tickref = msg[upto++] & 0xFF;
 			int data = Conversion.getIntFromBytes(msg,upto,4);
 			float fdata = Float.intBitsToFloat(data);
 			upto +=4;
@@ -425,6 +431,28 @@ public abstract class BaseComms implements Comms {
 		cfg.putSystemItem(el.getId(), MatElementDefs.EL_C_CFG_DONE, 0, 0);
 	}
 
+	/**
+	 * Decode incoming order
+	 * 
+	 * 	|Size|B/S|instr_id|price fp(4)|volume uint32|
+	 *
+	 * @param msg
+	 */
+	private void processIncomingOrder(byte[] msg) {
+		int upto= 0;
+		int len = msg[upto++];
+		if (len == 10) {
+			char side = (char) msg[upto++];
+			int instrId =  msg[upto++];
+			int priceData = Conversion.getIntFromBytes(msg,upto,4);
+			float price = Float.intBitsToFloat(priceData);
+			int volume = Conversion.getIntFromBytes(msg,upto,4);	
+			logger.info("---- Order: side=" + side + ", instrId=" + instrId + 
+					", price=" + price + ", vol=" + volume);
+		} else {
+			logger.error("Order with incorrect len received. Len=" + len);
+		}
+	}
 
 	
 	protected String toHexString(byte[] data, int start, int end) {

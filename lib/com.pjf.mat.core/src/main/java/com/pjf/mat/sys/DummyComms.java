@@ -62,7 +62,7 @@ public class DummyComms extends BaseComms implements Comms {
 					rep[9] = (byte) (cnt & 0xff);
 					
 					if (keepGoing) {
-						processIncomingMsg(rep);
+						processIncomingMsg(1,rep);
 					}
 				}
 			} catch (Exception e) {
@@ -116,7 +116,7 @@ public class DummyComms extends BaseComms implements Comms {
 					rep[9] = (byte) (data & 0xff);
 					
 					if (keepGoing) {
-						processIncomingMsg(rep);
+						processIncomingMsg(1,rep);
 					}
 				}
 			} catch (Exception e) {

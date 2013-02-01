@@ -23,7 +23,7 @@ public class HexAttribute extends IntegerAttribute {
 
 	@Override
 	public void setValue(String value) {
-		this.value = Integer.parseInt(value,16);
+		this.value = (int) (Long.parseLong(value,16) & 0xffffffff);
 	}
 
 	@Override
