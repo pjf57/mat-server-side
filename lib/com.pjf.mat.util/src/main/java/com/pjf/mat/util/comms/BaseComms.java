@@ -28,7 +28,7 @@ import com.pjf.mat.util.ElementStatus;
 public abstract class BaseComms implements Comms {
 	private final static Logger logger = Logger.getLogger(BaseComms.class);
 
-	private static final int ORDER_PORT = 8100;
+	private static final int ORDER_PORT = 5000;
 	
 	protected MatApi mat;
 	protected Collection<NotificationCallback> notificationSubscribers;
@@ -126,6 +126,7 @@ public abstract class BaseComms implements Comms {
 	 * @param msg - the raw message
 	 */
 	protected void processIncomingMsg(int port, byte[] msg) {
+		logger.debug("--> RX MSG (port=" + port + ") " + toHexString(msg,0,msg.length-1));
 		if (port == ORDER_PORT) {
 			processIncomingOrder(msg);
 		}
@@ -445,6 +446,7 @@ public abstract class BaseComms implements Comms {
 			char side = (char) msg[upto++];
 			int instrId =  msg[upto++];
 			int priceData = Conversion.getIntFromBytes(msg,upto,4);
+			upto += 4;
 			float price = Float.intBitsToFloat(priceData);
 			int volume = Conversion.getIntFromBytes(msg,upto,4);	
 			logger.info("---- Order: side=" + side + ", instrId=" + instrId + 
