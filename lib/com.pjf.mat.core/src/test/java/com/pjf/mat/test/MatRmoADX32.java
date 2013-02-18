@@ -22,7 +22,8 @@ public class MatRmoADX32 extends MatSystem {
 		Element atr = mat.getModel().getElement(28);
 		Element adx = mat.getModel().getElement(29);
 		Element rmo = mat.getModel().getElement(31);
-		Element logic1 = mat.getModel().getElement(15);
+		Element logicBuy = mat.getModel().getElement(15);
+		Element logicSell = mat.getModel().getElement(16);
 
 		// configure system attributes
 		sys.getAttribute("lookup_audit_autosend").setValue("4");
@@ -64,18 +65,22 @@ public class MatRmoADX32 extends MatSystem {
 		macd.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
 
 		// Configure logic 1
-		logic1.getAttribute("oper").setValue("3350");	// 	Z = A > k1 and C > K2
-		logic1.getAttribute("k1").setValue("0");
-		logic1.getAttribute("k2").setValue("40"); 
-		logic1.getInputs().get(0).connectTo(macd.getOutputs().get(2));	// A <- MACD.HIST
-		logic1.getInputs().get(2).connectTo(adx.getOutputs().get(0));	// C <- ADX		
+		logicBuy.getAttribute("oper").setValue("3350");	// 	Z = A > k1 and C > K2
+		logicBuy.getAttribute("k1").setValue("0");	// 	
+		logicBuy.getAttribute("k2").setValue("40"); 
+		logicBuy.getInputs().get(0).connectTo(macd.getOutputs().get(2));
+		logicSell.getAttribute("oper").setValue("1350");	// 	Z = A < k1 and C > K2
+		logicSell.getAttribute("k1").setValue("0");	// 	
+		logicSell.getAttribute("k2").setValue("40"); 
+		logicSell.getInputs().get(0).connectTo(macd.getOutputs().get(2));
 		
 		// Configure RMO
 		rmo.getAttribute("udp_ip").setValue("0C0A80006");	// 
 		rmo.getAttribute("udp_port").setValue("3500");	// 
 		rmo.getAttribute("min_vol").setValue("100");	// 
 		rmo.getAttribute("max_vol").setValue("500");	// 
-		rmo.getInputs().get(0).connectTo(logic1.getOutputs().get(0));
+		rmo.getInputs().get(0).connectTo(logicBuy.getOutputs().get(0));
+		rmo.getInputs().get(1).connectTo(logicSell.getOutputs().get(0));
 		
 		// logger connections
 		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
