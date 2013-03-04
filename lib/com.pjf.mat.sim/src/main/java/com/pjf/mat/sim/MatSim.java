@@ -27,6 +27,7 @@ import com.pjf.mat.sim.model.LookupValidity;
 import com.pjf.mat.sim.model.SimAccess;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
+import com.pjf.mat.sim.model.TickdataResult;
 import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.comms.BaseComms;
@@ -231,6 +232,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		logger.debug(logstr + " returned " + result);
 		return result;
 	}
+	
 
 	@Override
 	public void postEventToElements(Event evt) throws ElementException {
@@ -339,5 +341,27 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		}
 		return ret;
 	}
+
+	@Override
+	public TickdataResult tickdata(int source, int tickref, int tickdataKey) {
+		TickdataResult result = null;
+		Timestamp startTime = clk.getSimTime();
+		String logstr = "tickdata(src=" + source + ",tickref=" + tickref +
+				",key=" + tickdataKey + "): ";
+		Element responder = null;
+		for (SimElement se : simElements) {
+			result = se.handleTickdata(tickref, tickdataKey);
+			if (result.isValid()) {
+				// this element handled the request - so break out of the loop
+				responder = mat.getModel().getElement(se.getId());
+				break;
+			}
+		}
+		Timestamp endTime = clk.getSimTime();
+		int lookupTime = (int) (endTime.getMicroticks() - startTime.getMicroticks());
+		logger.debug(logstr + " returned " + result);
+		return result;
+	}
+	
 
 }

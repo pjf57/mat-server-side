@@ -9,6 +9,7 @@ import com.pjf.mat.sim.model.BaseState;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
+import com.pjf.mat.sim.model.TickdataResult;
 import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 
@@ -86,6 +87,14 @@ public class TG1 extends BaseElement implements SimElement {
 				gapCntr--;
 			}
 		}		
+	}
+
+	@Override
+	public TickdataResult handleTickdata(int tickref, int tickdataKey) {
+		TickdataResult rslt = new TickdataResult(TICKDATA_TIMEOUT_DLY);
+		switch (tickdataKey) {
+		}
+		return rslt;
 	}
 
 

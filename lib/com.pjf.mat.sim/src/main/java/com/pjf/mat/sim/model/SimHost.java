@@ -4,7 +4,7 @@ import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.types.Event;
 
 /**
- * Interface for providing sim services to elemtns
+ * Interface for providing sim services to elements
  * 
  * @author pjf
  *
@@ -73,4 +73,14 @@ public interface SimHost {
 	 * 
 	 */
 	public int getTickref();
+
+	/**
+	 * Lookup tickdata
+	 * 
+	 * @param elementId - id of requesting element
+	 * @param tickref	- tick reference
+	 * @param tickdataKey - selector
+	 * @return - the result
+	 */
+	public TickdataResult tickdata(int elementId, int tickref, int tickdataKey);
 }

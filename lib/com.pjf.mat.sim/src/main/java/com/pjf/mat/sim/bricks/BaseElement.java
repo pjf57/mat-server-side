@@ -11,6 +11,7 @@ import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.LookupValidity;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
+import com.pjf.mat.sim.model.TickdataResult;
 import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.Conversion;
@@ -29,6 +30,7 @@ import com.pjf.mat.util.Conversion;
 public abstract class BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(BaseElement.class);
 	protected static final int LOOKUP_TIMEOUT_DLY = 5;	// microtick delay on lookup tmo
+	protected static final int TICKDATA_TIMEOUT_DLY = 5;	// microtick delay on tickdata tmo
 	private static final int MAX_LKU_TARGETS = 4;
 	protected final int elementId;
 	protected final int elementHWType;
@@ -201,6 +203,19 @@ public abstract class BaseElement implements SimElement {
 		return result;
 	}
 
+	/**
+	 * Lookup a value from the tickdata bus
+	 * 
+	 * @param tickref
+	 * @param tickdata Key
+	 * @return tickdata result
+	 * @throws Exception if an error occurred
+	 */
+	protected TickdataResult tickdata(int tickref, int tickdataKey) throws Exception {
+		TickdataResult result = host.tickdata(elementId,tickref, tickdataKey);
+		return result;
+	}
+
 
 	protected void processReset() {
 		// default behaviour is to move to the cfg phase
@@ -322,4 +337,12 @@ public abstract class BaseElement implements SimElement {
 	protected LookupResult lookupBehaviour(int instrumentId, int tickref, int lookupKey) throws Exception {
 		return new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 	}
+	
+	@Override
+	public TickdataResult handleTickdata(int tickref, int tickdataKey) {
+		// default behaviour is invalid result
+		TickdataResult rslt = new TickdataResult(TICKDATA_TIMEOUT_DLY);
+		return rslt;
+	}
+
 }

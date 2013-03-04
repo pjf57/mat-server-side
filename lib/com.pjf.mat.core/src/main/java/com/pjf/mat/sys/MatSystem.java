@@ -1,8 +1,6 @@
 package com.pjf.mat.sys;
 
 import java.io.FileInputStream;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -25,7 +23,6 @@ import com.pjf.mat.impl.MatInterfaceModel;
 import com.pjf.mat.impl.element.BasicCmd;
 import com.pjf.mat.sim.MatSim;
 import com.pjf.mat.util.comms.BaseComms;
-import com.pjf.mat.util.comms.UDPCxn;
 
 
 public abstract class MatSystem {

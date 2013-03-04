@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.SimHost;
+import com.pjf.mat.sim.model.TickdataResult;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.Conversion;
 
@@ -62,6 +63,12 @@ public class SimTestCase extends TestCase implements SimHost {
 	@Override
 	public int getTickref() {
 		return 0;
+	}
+
+	@Override
+	public TickdataResult tickdata(int elementId, int tickref, int tickdataKey) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -13,4 +13,5 @@ public interface SimElement {
 	public void shutdown();
 	public LookupResult handleLookup(int instrumentId, int tickref, int lookupKey, int target) throws Exception;
 	public int getId();
+	public TickdataResult handleTickdata(int tickref, int tickdataKey);
 }
