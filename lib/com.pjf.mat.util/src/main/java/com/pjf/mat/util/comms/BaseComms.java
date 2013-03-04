@@ -435,22 +435,27 @@ public abstract class BaseComms implements Comms {
 	/**
 	 * Decode incoming order
 	 * 
-	 * 	|Size|B/S|instr_id|price fp(4)|volume uint32|
+	 * 	|Size|B/S|symbol(8)|price fp(4)|volume uint32|
 	 *
 	 * @param msg
 	 */
 	private void processIncomingOrder(byte[] msg) {
 		int upto= 0;
+		StringBuffer symbolBuf = new StringBuffer();
+		String symbol;
 		int len = msg[upto++];
-		if (len == 10) {
+		if (len == 17) {
 			char side = (char) msg[upto++];
-			int instrId =  msg[upto++];
+			for (int i=0; i<8; i++) {
+				symbolBuf.append((char) msg[upto++]);
+			}
+			symbol = symbolBuf.toString();
 			int priceData = Conversion.getIntFromBytes(msg,upto,4);
 			upto += 4;
 			float price = Float.intBitsToFloat(priceData);
 			int volume = Conversion.getIntFromBytes(msg,upto,4);	
-			logger.info("---- Order: side=" + side + ", instrId=" + instrId + 
-					", price=" + price + ", vol=" + volume);
+			logger.info("---- Order: side=" + side + ", symbol=[" + symbol + 
+					"], price=" + price + ", vol=" + volume);
 		} else {
 			logger.error("Order with incorrect len received. Len=" + len);
 		}

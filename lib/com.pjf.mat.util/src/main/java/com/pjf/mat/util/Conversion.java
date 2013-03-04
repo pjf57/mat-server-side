@@ -102,6 +102,30 @@ public class Conversion {
 		return toHexIntString(Float.floatToIntBits(val));
 	}
 
+	/**
+	 * Convert float value into a whole integer comprising all the precision.
+	 * (ie: 5.21 becomes 521)
+	 * 
+	 * @param val - float value
+	 * @return whole int
+	 */
+	public static int floatToIntWhole(float val) {
+		// Note: initial solution is fixed to work with 2dp		
+		return (int) (val * 100);
+	}
+
+	/**
+	 * Return the number of decimal places in a float
+	 * eg: 5.21 becomes 2
+	 * 
+	 * @param val - float value
+	 * @return number of dps
+	 */
+	public static int floatToNdp(float val) {
+		// Note: initial solution is fixed to work with 2dp
+		return 2;
+	}
+
 
 
 }

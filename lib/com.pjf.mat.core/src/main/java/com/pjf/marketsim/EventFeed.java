@@ -7,6 +7,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
 
+import com.pjf.mat.util.Conversion;
 import com.pjf.mat.util.comms.UDPCxn;
 
 
@@ -28,14 +29,18 @@ public class EventFeed {
 		}
 
 		public void put(TickData tick) {
-			int intPrice = Float.floatToIntBits(tick.price);
-			int intVol = Float.floatToIntBits(tick.volume);
+			int intPrice = Conversion.floatToIntWhole(tick.price);
+			int ndp = Conversion.floatToNdp(tick.price);
+			int intVol = (int) tick.volume;
 			data[upto++] = (byte) tick.type;
-			data[upto++] = (byte) tick.instr_id;
+			for (int i=0; i<8; i++) {
+				data[upto++] = (byte) tick.symbol.charAt(i);
+			}
 			data[upto++] = (byte) ((intPrice >> 24) & 0xff);
 			data[upto++] = (byte) ((intPrice >> 16) & 0xff);
 			data[upto++] = (byte) ((intPrice >> 8) & 0xff);
 			data[upto++] = (byte) (intPrice & 0xff);
+			data[upto++] = (byte) (ndp & 0xff);
 			data[upto++] = (byte) ((intVol >> 24) & 0xff);
 			data[upto++] = (byte) ((intVol >> 16) & 0xff);
 			data[upto++] = (byte) ((intVol >> 8) & 0xff);

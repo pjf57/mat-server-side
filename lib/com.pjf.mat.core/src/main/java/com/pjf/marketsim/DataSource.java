@@ -34,10 +34,10 @@ public class DataSource {
 			throw new Exception("End of file");
 		}
 		String[] cols = line.split(";");
-		int instr_id = Integer.parseInt(cols[2]);
+		String sym = cols[2];
 		float price = Float.parseFloat(cols[3]);
 		float vol = Float.parseFloat(cols[4]);
-		TickData data = new TickData(1,instr_id,price,vol);
+		TickData data = new TickData(1,sym,price,vol);
 		return data;
 	}
 
