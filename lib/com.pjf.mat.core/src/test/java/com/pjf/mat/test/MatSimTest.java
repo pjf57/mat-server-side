@@ -40,6 +40,7 @@ public class MatSimTest extends MatSystem {
 		mfd.getAttribute("symbols").setValue("IBM:5,APPL:18");
 		mfd.getAttribute("market_ID").setValue("23");
 		
+		
 		// Configure BUY MACD
 		macdBuy.getAttribute("FAST_EMA_alpha").setValue("0.5");	// 
 		macdBuy.getAttribute("FAST_EMA_len").setValue("3");	// 
@@ -87,7 +88,7 @@ public class MatSimTest extends MatSystem {
 
 	@Override
 	protected void sendTradeBurst(MatApi mat, EventFeed feed) throws Exception {
-		sendCmd(2,"start");
+		sendCmd(30,"start");
 		Thread.sleep(5000);
 	}
 

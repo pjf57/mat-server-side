@@ -13,8 +13,9 @@ public class ElementFactory {
 	 * @param hwType	hwType code indicates which type of element to create
 	 * @param host		reference to the host for callback
 	 * @return			element or null
+	 * @throws Exception 
 	 */
-	public static SimElement create(int id, int hwType, SimHost host) {
+	public static SimElement create(int id, int hwType, SimHost host) throws Exception {
 		SimElement el = null;
 		switch (hwType) {
 		case MatElementDefs.EL_TYP_ROUTER: break;	// dont need to instantiate the router

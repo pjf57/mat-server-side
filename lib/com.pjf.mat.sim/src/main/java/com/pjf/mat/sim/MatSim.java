@@ -2,8 +2,10 @@ package com.pjf.mat.sim;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -37,7 +39,7 @@ import com.pjf.mat.api.LkuResult;
 
 public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	private final static Logger logger = Logger.getLogger(MatSim.class);
-	private final List<SimElement> simElements;
+	private final Map<Integer,SimElement> simElements; // keyed on el id
 	private final LkuAuditLogger lkuAuditLogger;
 	private final RtrAuditLogger rtrAuditLogger;
 	private Clock clk;
@@ -47,7 +49,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	
 	public MatSim(MatLogger logger) {
 		stopOnError = true;
-		simElements = new ArrayList<SimElement>();
+		simElements = new HashMap<Integer,SimElement>();
 		clk = new Clock(this,10,logger);
 		router = new Router(this);
 		lkuAuditLogger = new LkuAuditLogger();
@@ -71,7 +73,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 			if (el.getId() != 0) {
 				SimElement se = ElementFactory.create(el.getId(),el.getHWType(),this);
 				if (se != null) {
-					simElements.add(se);
+					simElements.put(new Integer(el.getId()),se);
 				} else {
 					String msg = "cant create simulation element for type " + 
 						el.getHWType() + " at el_id=" + el.getId();
@@ -92,7 +94,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 			for (Attribute attr : el.getAttributes()) {
 				List<ConfigItem> configs = attr.getConfigList();
 				for (ConfigItem cfg : configs) {
-					for (SimElement se : simElements) {
+					for (SimElement se : simElements.values()) {
 						se.putConfig(cfg);
 					}
 					lkuAuditLogger.putConfig(cfg);
@@ -104,7 +106,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 				if (ip.getConnectedSrc() != null) {
 					ConfigItem cfg = new ConfigItem(el.getId(), MatElementDefs.EL_C_SRC_ROUTE,
 							ip.getConnectedSrc(),ip.getId());
-					for (SimElement se : simElements) {
+					for (SimElement se : simElements.values()) {
 						se.putConfig(cfg);
 					}
 				}
@@ -119,7 +121,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 
 	@Override
 	public Status requestStatus() throws Exception {
-		for (SimElement se : simElements) {
+		for (SimElement se : simElements.values()) {
 			se.getStatus();
 		}
 		return null;
@@ -136,7 +138,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 
 	@Override
 	public void sendCmd(Cmd cmd) throws Exception {
-		for (SimElement se : simElements) {
+		for (SimElement se : simElements.values()) {
 			se.putCmd(cmd);
 		}
 	}
@@ -154,7 +156,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	@Override
 	public void shutdown() {
 		logger.info("shutdown(): shutting down ...");
-		for (SimElement se : simElements) {
+		for (SimElement se : simElements.values()) {
 			se.shutdown();
 		}
 		router.shutdown();
@@ -195,7 +197,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		if (id == 0) {
 			return null;
 		}
-		return simElements.get(id-1);
+		return simElements.get(new Integer(id));
 	}
 
 	@Override
@@ -214,7 +216,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		String logstr = "lookup(src=" + source + ",instr=" + instrumentId +
 				",key=" + lookupKey + "): ";
 		Element responder = null;
-		for (SimElement se : simElements) {
+		for (SimElement se : simElements.values()) {
 			result = se.handleLookup(instrumentId, tickref, lookupKey, target);
 			if (!result.getValidity().equals(LookupValidity.TIMEOUT)) {
 				// this element handled the request - so break out of the loop
@@ -238,7 +240,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		if (evt.getSrc() != 0) {
 			Timestamp startDelivery = clk.getSimTime();
 			Set<Element> takers = new HashSet<Element>();
-			for (SimElement se : simElements) {
+			for (SimElement se : simElements.values()) {
 				try {
 					boolean taken = se.putEvent(evt);
 					if (taken) {
@@ -294,7 +296,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 
 	@Override
 	public void publishClockTick(ClockTick tick) {
-		for (SimElement se : simElements) {
+		for (SimElement se : simElements.values()) {
 			se.processTick(tick);
 		}
 	}
@@ -348,7 +350,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		String logstr = "tickdata(src=" + source + ",tickref=" + tickref +
 				",key=" + tickdataKey + "): ";
 		Element responder = null;
-		for (SimElement se : simElements) {
+		for (SimElement se : simElements.values()) {
 			result = se.handleTickdata(tickref, tickdataKey);
 			if (result.isValid()) {
 				// this element handled the request - so break out of the loop

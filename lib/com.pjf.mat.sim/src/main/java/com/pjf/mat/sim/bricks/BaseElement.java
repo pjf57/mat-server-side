@@ -160,9 +160,10 @@ public abstract class BaseElement implements SimElement {
 
 	@Override
 	public void putConfig(ConfigItem cfg) throws Exception {
-		logger.debug(getIdStr() + "received Norm CFG request: " + cfg);
 		if ((cfg.getElementId() == elementId) || (cfg.getElementId() == MatElementDefs.EL_ID_ALL)) {
-			// config item is for us - check if we can process generically
+			// config item is for us
+			logger.debug(getIdStr() + "received CFG request: " + cfg);
+			// check if we can process generically
 			switch (cfg.getSysType()) {
 			case SYSTEM: doSysConfig(cfg);	break;
 	
@@ -186,7 +187,6 @@ public abstract class BaseElement implements SimElement {
 	}
 		
 	private void doSysConfig(ConfigItem cfg) throws Exception {
-		logger.debug(getIdStr() + "received Sys CFG request: " + cfg);
 		switch (cfg.getItemId()) {
 		case MatElementDefs.EL_C_SRC_ROUTE: 
 			int input = (cfg.getRawData() >> 16) & 3;	// 0..3
