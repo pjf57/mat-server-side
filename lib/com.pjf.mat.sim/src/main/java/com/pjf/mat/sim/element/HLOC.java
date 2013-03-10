@@ -15,9 +15,9 @@ import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.LookupValidity;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
-import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.sim.types.FloatValue;
+import com.pjf.mat.api.util.ConfigItem;
 
 /**
  *--		processes price events on input and maintains

@@ -11,7 +11,7 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.RtrAuditLog;
 import com.pjf.mat.api.Timestamp;
-import com.pjf.mat.sim.types.ConfigItem;
+import com.pjf.mat.api.util.ConfigItem;
 
 /**
  * Manages the repository of LKU audit logs

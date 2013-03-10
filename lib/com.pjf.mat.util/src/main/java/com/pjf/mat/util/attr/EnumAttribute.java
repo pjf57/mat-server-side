@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.AttributeType;
+import com.pjf.mat.api.Element;
 import com.pjf.mat.api.EnumValue;
 
 /**
@@ -18,8 +19,8 @@ public class EnumAttribute extends IntegerAttribute {
 	private final static Logger logger = Logger.getLogger(EnumAttribute.class);
 	private SortedSet<EnumValue> values;
 
-	public EnumAttribute(String name, int configId, AttrSysType sysType) throws Exception {
-		super(name, configId, sysType);
+	public EnumAttribute(Element el, String name, int configId, AttrSysType sysType) throws Exception {
+		super(el, name, configId, sysType);
 		values = new TreeSet<EnumValue>();
 	}
 	
@@ -77,10 +78,10 @@ public class EnumAttribute extends IntegerAttribute {
 
 
 	@Override
-	public EnumAttribute clone() {
+	public EnumAttribute clone(Element newParent) {
 		EnumAttribute attr = null;
 		try {
-			attr = new EnumAttribute(getName(),getConfigId(),getSysType());
+			attr = new EnumAttribute(newParent,getName(),getConfigId(),getSysType());
 			attr.value = value;
 			attr.values = values;
 		} catch (Exception e) {

@@ -27,6 +27,7 @@ import com.pjf.mat.util.attr.FloatAttribute;
 import com.pjf.mat.util.attr.HexAttribute;
 import com.pjf.mat.util.attr.IntegerAttribute;
 import com.pjf.mat.util.attr.StringAttribute;
+import com.pjf.mat.util.attr.UserDefAttribute;
 
 
 public class MatInterfaceModel implements MatModel {
@@ -152,22 +153,27 @@ public class MatInterfaceModel implements MatModel {
 				}
 				int configId = Integer.parseInt(attrConfigS);
 				if (attrType.equals("int")) {
-					attr = new IntegerAttribute(attrName,configId,sysType,defaultS);
+					attr = new IntegerAttribute(type,attrName,configId,sysType,defaultS);
 					type.addAttribute(attr);
 				} else if (attrType.equals("hex")) {
-					attr = new HexAttribute(attrName,configId,sysType,defaultS);
+					attr = new HexAttribute(type,attrName,configId,sysType,defaultS);
 					type.addAttribute(attr);
 				} else if (attrType.equals("string")) {
-					attr = new StringAttribute(attrName,configId,sysType,defaultS);
+					attr = new StringAttribute(type,attrName,configId,sysType,defaultS);
 					type.addAttribute(attr);
 				} else if (attrType.equals("float")) {
-					attr = new FloatAttribute(attrName,configId,sysType,defaultS);
+					attr = new FloatAttribute(type,attrName,configId,sysType,defaultS);
 					type.addAttribute(attr);
 				} else if (attrType.equals("enum")) {
-					attr = loadEnumAttribute(a,attrName,configId,sysType,defaultS);			
+					attr = loadEnumAttribute(type,a,attrName,configId,sysType,defaultS);			
+					type.addAttribute(attr);
+				} else if (attrType.startsWith("string:")) {
+					String converter = attrType.split(":")[1];
+					attr = new UserDefAttribute(type,attrName,configId,converter,sysType,defaultS);
 					type.addAttribute(attr);
 				} else {
 					logger.error("Unrecognized attribute type: " + attrType);
+					throw new Exception("Unrecognized attribute type: " + attrType);
 				}
 				an++;
 			}			
@@ -237,6 +243,7 @@ public class MatInterfaceModel implements MatModel {
 		return type;
 	}
 
+
 	/**
 	 * Create an enum attribute and load its values list from the properties file
 	 * 
@@ -251,9 +258,9 @@ public class MatInterfaceModel implements MatModel {
 	 * The values list is defined in the properties in the form:
 	 * 	type1.attr2.enum1=name:value:description
 	 */
-	private Attribute loadEnumAttribute(String prefix, String attrName, 
+	private Attribute loadEnumAttribute(Element type, String prefix, String attrName, 
 			int configId, AttrSysType sysType, String defaultStr) throws Exception {
-		EnumAttribute attr = new EnumAttribute(attrName,configId,sysType);
+		EnumAttribute attr = new EnumAttribute(type,attrName,configId,sysType);
 		int en = 1;
 		boolean keepReading = true;
 		while (keepReading) {

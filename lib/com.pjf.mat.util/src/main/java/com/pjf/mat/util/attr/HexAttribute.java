@@ -4,13 +4,14 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.AttributeType;
+import com.pjf.mat.api.Element;
 import com.pjf.mat.util.Conversion;
 
 public class HexAttribute extends IntegerAttribute {
 	private final static Logger logger = Logger.getLogger(HexAttribute.class);
 
-	public HexAttribute(String name, int configId, AttrSysType sysType, String defaultStr) throws Exception {
-		super(name, configId, sysType);
+	public HexAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr) throws Exception {
+		super(el, name, configId, sysType);
 		if (defaultStr != null) {
 			setValue(defaultStr);
 		}
@@ -27,10 +28,10 @@ public class HexAttribute extends IntegerAttribute {
 	}
 
 	@Override
-	public IntegerAttribute clone() {
+	public IntegerAttribute clone(Element newParent) {
 		HexAttribute attr = null;
 		try {
-			attr = new HexAttribute(getName(),getConfigId(),getSysType(),getValue());
+			attr = new HexAttribute(newParent,getName(),getConfigId(),getSysType(),getValue());
 		} catch (Exception e) {
 			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
 		}

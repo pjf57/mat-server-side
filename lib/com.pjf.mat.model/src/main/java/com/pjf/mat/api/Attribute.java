@@ -1,6 +1,9 @@
 package com.pjf.mat.api;
 
+import java.util.List;
 import java.util.SortedSet;
+
+import com.pjf.mat.api.util.ConfigItem;
 
 /** @model */
 public interface Attribute extends Cloneable {
@@ -16,6 +19,8 @@ public interface Attribute extends Cloneable {
 	
 	public AttrSysType getSysType();
 	
+	public Element getParentt();
+	
 	public void setValue(String value) throws Exception;
 	
 	/**
@@ -23,8 +28,13 @@ public interface Attribute extends Cloneable {
 	 */
 	public SortedSet<EnumValue> getEnumValues();
 	
-	/** @model */
-	public Attribute clone();	
+	/** @param el 
+	 * @model */
+	public Attribute clone(Element newParent);	
 	/** @model changeable="false" volatile="true" */
 	public int getEncodedData() throws Exception;	// return data as 32 bit int
+
+	/** get list of config items to configure this attribute */
+	public List<ConfigItem> getConfigList() throws Exception;
+
 }

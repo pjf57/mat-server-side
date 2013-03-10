@@ -4,8 +4,8 @@ import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
-import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
+import com.pjf.mat.api.util.ConfigItem;
 
 /**
  * The logger element takes events on any of its four inputs and

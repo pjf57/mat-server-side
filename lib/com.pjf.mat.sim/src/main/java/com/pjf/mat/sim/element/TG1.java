@@ -10,8 +10,8 @@ import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.model.TickdataResult;
-import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
+import com.pjf.mat.api.util.ConfigItem;
 
 /**
  * TG1 creates events with a known data pattern

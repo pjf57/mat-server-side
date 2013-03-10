@@ -3,6 +3,7 @@ package com.pjf.mat.sim.element;
 
 import org.apache.log4j.Logger;
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.bricks.EmaCore;
 import com.pjf.mat.sim.bricks.InstrumentStore;
@@ -10,9 +11,9 @@ import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.LookupValidity;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
-import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.sim.types.FloatValue;
+
 
 /**
  *--		Implements ADX indicator

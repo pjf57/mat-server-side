@@ -126,6 +126,24 @@ public class Conversion {
 		return 2;
 	}
 
+	/**
+	 * Convert an 8 char string to a long
+	 * 
+	 * @param str - the string
+	 * @return long
+	 * @throws Exception
+	 */
+	public static long stringToRaw(String str) throws Exception {
+		long ret = 0;
+		if (str.length() != 8) {
+			throw new Exception("stringToRaw() - illegal strlen: [" + str + "]");
+		}
+		for (int i=0; i<8; i++) {
+			ret |= (byte) str.charAt(i);
+			ret <<= 8;
+		}
+		return ret;
+	}
 
 
 }

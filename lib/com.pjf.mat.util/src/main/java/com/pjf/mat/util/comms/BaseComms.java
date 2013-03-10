@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Comms;
+import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.EventLog;
 import com.pjf.mat.api.InputPort;
@@ -87,6 +88,18 @@ public abstract class BaseComms implements Comms {
 			putRaw(id,configId | 0xc0,arg,value);
 		}
 
+		public void putConfigList(List<ConfigItem> configs) {
+			for (ConfigItem cfg : configs) {
+				int mask;
+				switch (cfg.getSysType()) {
+				case NORMAL :	mask = 0x80;	break;
+				case SYSTEM :	mask = 0x40;	break;
+				default 	:	mask = 0x00;	break;
+				}
+				putRaw(cfg.getElementId(),cfg.getItemId() | mask,cfg.getArg(),cfg.getRawData());
+			}
+			
+		}
 
 		public byte[] getData() {
 			data[0] = (byte) itemCount;
@@ -112,6 +125,7 @@ public abstract class BaseComms implements Comms {
 			buf.append("]");
 			return buf.toString();
 		}
+
 	}
 
 
@@ -404,7 +418,8 @@ public abstract class BaseComms implements Comms {
 			switch (attr.getSysType()) {
 			
 			case NORMAL:
-				cfg.putConfigItem(el.getId(),attr.getConfigId(),0,attr.getEncodedData());
+				List<ConfigItem> configs = attr.getConfigList();
+				cfg.putConfigList(configs);
 				break;
 				
 			case SYSTEM:

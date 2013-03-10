@@ -17,6 +17,7 @@ public class MatElementDefs {
 	public static final int EL_TYP_LOGIC_4IP	= 0x40;
 	public static final int EL_TYP_ARITH_4IP	= 0x41;
 	public static final int EL_TYP_UDP_RAW_MKT	= 0x50;
+	public static final int EL_TYP_UDP_MFD_SYM	= 0x51;
 	public static final int EL_TYP_HLOC			= 0x60;
 	public static final int EL_TYP_ATR			= 0x61;
 	public static final int EL_TYP_ADX			= 0x62;
@@ -42,6 +43,14 @@ public class MatElementDefs {
 	public static final int MKT_TYP_BID 		= 2;
 	public static final int MKT_TYP_ASK 		= 3;
 	
+//	------------------------------
+//	-- TICKDATA SELECTOR VALUES
+//	------------------------------
+
+	public static final int TDS_BASIC			= 0;	// basic data 	- type.8/mktref.8/instr.8/tickref.8/volume.u32
+	public static final int TDS_VOL_PRICE_SP	= 1;	// vol/price 	- vol-sp32/price.sp32
+	public static final int TDS_SYMBOL			= 2;	// symbol 		- symbol.64 (rt padded with spaces)
+	public static final int TDS_EVT_REF			= 3;	// mkt evt ref - reference.64
 	
 	
 //	------------------------------
@@ -53,7 +62,9 @@ public class MatElementDefs {
 	public static final int EL_C_SRC_ROUTE 		= 0x01;	// xxxx xxxx xxxI xxSS (for source SS on input I)
 	public static final int EL_C_CFG_DONE 		= 0x02;	// config is done
 	public static final int EL_C_CFG_LKU_TRG	= 0x03;	// xxxx xxxx xxxx xNTT (entry N with target TT)
+	public static final int EL_C_CFG_OP_ENA		= 0x04;	// xxxx xxxx xxxx xxxE (set op enable bitmask)
 
+	
 //	------------------------------
 //	-- EL IDS for SYSTEM CONTROL
 //	------------------------------
@@ -113,11 +124,21 @@ public class MatElementDefs {
 //	------------------------------
 //	-- MARKET FEED
 //	------------------------------
-	public static final int EL_MDF_C_PRICE	 		= 0x03; // enable price events on op xxxx xxxO (F=off)
-	public static final int EL_MDF_C_VOL			= 0x04; // enable volume events on op xxxx xxxO (F=off)
-	public static final int EL_MDF_C_UDPPORT		= 0x05; // UDP port to listen on xxxx PPPP 
-	public static final int EL_MDF_C_MDTYPE			= 0x06; // market data type xxxx xxTT 
 	
+	public static final int EL_MDF_C_TRADE			= 0x03; // trade evts o/p=O data=V xxxx xxVO (V=1,vol V=0,price O=F,off)
+	public static final int EL_MDF_C_BID			= 0x04; // trade evts o/p=O data=V xxxx xxVO (V=1,vol V=0,price O=F,off)
+	public static final int EL_MDF_C_ASK			= 0x05; // trade evts o/p=O data=V xxxx xxVO (V=1,vol V=0,price O=F,off)
+	public static final int EL_MDF_C_ISYM_L			= 0x06; // instrument symbol (left chars)
+	public static final int EL_MDF_C_ISYM_R			= 0x07; // instrument symbol (right chars) (config L first)
+	public static final int EL_MDF_C_ISYM_ID		= 0x08; // instrument symbol (ID) (config R first) xxID
+	public static final int EL_MDF_C_UDPPORT		= 0x09; // UDP port to listen on xxxx PPPP 
+	public static final int EL_MDF_C_MKTID			= 0x0a; // ID of this market xxxx xxID 
+
+	public static final int EL_MFD_C_START			= 0x40; // Start the feeder
+
+	public static final int EL_MDF_L_SYML			= 0x12; // lookup left 4 chars of symbol
+	public static final int EL_MDF_L_SYMR			= 0x13; // lookup right 4 chars of symbol
+
 //	------------------------------
 //	-- HLOC
 //	------------------------------

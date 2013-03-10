@@ -81,6 +81,7 @@ public interface SimHost {
 	 * @param tickref	- tick reference
 	 * @param tickdataKey - selector
 	 * @return - the result
+	 * @throws Exception 
 	 */
-	public TickdataResult tickdata(int elementId, int tickref, int tickdataKey);
+	public TickdataResult tickdata(int elementId, int tickref, int tickdataKey) throws Exception;
 }

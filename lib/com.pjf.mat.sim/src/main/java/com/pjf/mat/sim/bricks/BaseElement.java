@@ -1,19 +1,27 @@
 package com.pjf.mat.sim.bricks;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.sim.model.BaseState;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.LookupValidity;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
+import com.pjf.mat.sim.model.TickDataBasicResult;
+import com.pjf.mat.sim.model.TickDataMktRefResult;
+import com.pjf.mat.sim.model.TickDataSymbolResult;
+import com.pjf.mat.sim.model.TickDataVolPriceResult;
 import com.pjf.mat.sim.model.TickdataResult;
-import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
+import com.pjf.mat.sim.types.TickRefData;
 import com.pjf.mat.util.Conversion;
 
 /**
@@ -31,6 +39,7 @@ public abstract class BaseElement implements SimElement {
 	private final static Logger logger = Logger.getLogger(BaseElement.class);
 	protected static final int LOOKUP_TIMEOUT_DLY = 5;	// microtick delay on lookup tmo
 	protected static final int TICKDATA_TIMEOUT_DLY = 5;	// microtick delay on tickdata tmo
+	protected static final int TICKDATA_DLY = 2;	// tickdata lookup delay, microticks
 	private static final int MAX_LKU_TARGETS = 4;
 	protected final int elementId;
 	protected final int elementHWType;
@@ -40,6 +49,8 @@ public abstract class BaseElement implements SimElement {
 	protected BaseState baseState;
 	protected int evtCount;
 	private int[] lkuTargets;	
+	private Map<Integer,TickRefData> tickrefData; // index by tickref
+	private boolean[] opEnable;
 
 	/**
 	 * Class to hold a source route specification for one input
@@ -97,6 +108,11 @@ public abstract class BaseElement implements SimElement {
 		for (int i=0; i<=MAX_LKU_TARGETS; i++) {
 			lkuTargets[i] = MatElementDefs.EL_ID_ALL;
 		}
+		tickrefData = new HashMap<Integer,TickRefData>();
+		opEnable = new boolean[256];
+		for (int i=0; i<256; i++) {
+			opEnable[i] = true;
+		}
 	}
 	
 
@@ -144,6 +160,7 @@ public abstract class BaseElement implements SimElement {
 
 	@Override
 	public void putConfig(ConfigItem cfg) throws Exception {
+		logger.debug(getIdStr() + "received Norm CFG request: " + cfg);
 		if ((cfg.getElementId() == elementId) || (cfg.getElementId() == MatElementDefs.EL_ID_ALL)) {
 			// config item is for us - check if we can process generically
 			switch (cfg.getSysType()) {
@@ -169,12 +186,27 @@ public abstract class BaseElement implements SimElement {
 	}
 		
 	private void doSysConfig(ConfigItem cfg) throws Exception {
+		logger.debug(getIdStr() + "received Sys CFG request: " + cfg);
 		switch (cfg.getItemId()) {
 		case MatElementDefs.EL_C_SRC_ROUTE: 
 			int input = (cfg.getRawData() >> 16) & 3;	// 0..3
 			int port = (cfg.getRawData() >> 8) & 3;	// 0..3
 			int source = cfg.getRawData() & 0x3f;
 			srcRouting[input].set(source,port);
+			break;
+		case MatElementDefs.EL_C_CFG_OP_ENA:
+			if ((cfg.getRawData() & 0x01) == 0) {
+				opEnable[0] = false;
+			}
+			if ((cfg.getRawData() & 0x02) == 0) {
+				opEnable[1] = false;
+			}
+			if ((cfg.getRawData() & 0x04) == 0) {
+				opEnable[2] = false;
+			}
+			if ((cfg.getRawData() & 0x08) == 0) {
+				opEnable[3] = false;
+			}
 			break;
 		case MatElementDefs.EL_C_RESET: 
 			setBaseState(BaseState.RST);
@@ -338,11 +370,69 @@ public abstract class BaseElement implements SimElement {
 		return new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 	}
 	
+	/**
+	 * Add tickref data to the tickref data map
+	 * 
+	 * @param tickref - tickref to use as index
+	 * @param trd - the tickref data
+	 */
+	protected void putTickrefData(int tickref, TickRefData trd) {
+		logger.debug(getIdStr() + "Adding tickref data [" + trd + "] at tickref=" + tickref);
+		tickrefData.put(new Integer(tickref), trd);
+	}
+
+	
 	@Override
-	public TickdataResult handleTickdata(int tickref, int tickdataKey) {
-		// default behaviour is invalid result
+	public TickdataResult handleTickdata(int tickref, int tickdataKey) throws Exception {
+		// default behaviour is to lookup via local tickrefData map
+		TickRefData trd = tickrefData.get(new Integer(tickref));
 		TickdataResult rslt = new TickdataResult(TICKDATA_TIMEOUT_DLY);
+		if (trd != null) {
+			switch (tickdataKey){
+				case MatElementDefs.TDS_BASIC :
+					rslt = new TickDataBasicResult(trd,TICKDATA_DLY); 
+					break;
+					
+				case MatElementDefs.TDS_VOL_PRICE_SP :
+					rslt = new TickDataVolPriceResult(trd,TICKDATA_DLY); 
+					break; 
+				
+				case MatElementDefs.TDS_SYMBOL :
+					rslt = new TickDataSymbolResult(trd,TICKDATA_DLY); 
+					break;
+				
+				case MatElementDefs.TDS_EVT_REF :
+					rslt = new TickDataMktRefResult(trd,TICKDATA_DLY); 
+					break;
+				
+				default : throw new Exception("unhandled tickdata key = " + tickdataKey);
+			}
+		}
 		return rslt;
+	}
+
+	/**
+	 * Inject an event into the system
+	 * 
+	 * This call filters according to the output enable configuration
+	 * 
+	 * @param evt
+	 * @param latency - # microticks model time from input to this event
+	 */
+	public void publishEvent(Event evt, int latency) {
+		int port = evt.getSrcPort();
+		if (opEnable[port]) {
+			host.publishEvent(evt,latency);			
+		}
+	}
+
+
+	
+	/**
+	 * @return an ID that can be used to identify the element for logging.
+	 */
+	public String getLogId() {
+		return "EL:" + elementId + "/" + getTypeName() + " :";
 	}
 
 }

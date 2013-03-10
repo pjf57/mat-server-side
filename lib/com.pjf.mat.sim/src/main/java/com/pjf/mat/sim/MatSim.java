@@ -28,9 +28,9 @@ import com.pjf.mat.sim.model.SimAccess;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.model.TickdataResult;
-import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.comms.BaseComms;
+import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.sim.router.Router;
 import com.pjf.mat.api.LkuResult;
 
@@ -90,15 +90,14 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 		for (Element el : collection) {
 			// set attributes
 			for (Attribute attr : el.getAttributes()) {
-				ConfigItem cfg = new ConfigItem(el.getId(),
-						attr.getSysType(),
-						attr.getConfigId(),
-						attr.getEncodedData());
-				for (SimElement se : simElements) {
-					se.putConfig(cfg);
+				List<ConfigItem> configs = attr.getConfigList();
+				for (ConfigItem cfg : configs) {
+					for (SimElement se : simElements) {
+						se.putConfig(cfg);
+					}
+					lkuAuditLogger.putConfig(cfg);
+					rtrAuditLogger.putConfig(cfg);
 				}
-				lkuAuditLogger.putConfig(cfg);
-				rtrAuditLogger.putConfig(cfg);
 			}
 			// set connections
 			for (InputPort ip : el.getInputs()) {
@@ -343,7 +342,7 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public TickdataResult tickdata(int source, int tickref, int tickdataKey) {
+	public TickdataResult tickdata(int source, int tickref, int tickdataKey) throws Exception {
 		TickdataResult result = null;
 		Timestamp startTime = clk.getSimTime();
 		String logstr = "tickdata(src=" + source + ",tickref=" + tickref +

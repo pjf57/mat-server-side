@@ -1,16 +1,25 @@
-package com.pjf.marketsim;
+package com.pjf.mat.util.data;
 
 public class TickData {
-	public int type;
+	public MarketEventType evt;
 	public String symbol;
 	public float price;
 	public float volume;
-	
-	public TickData(int type, String symbol, float price, float volume) {
-		this.type = type;
+	public String mktRef;
+
+	public TickData(MarketEventType evt, String symbol, float price, float volume) {
+		this.evt = evt;
 		this.symbol = format(symbol);
 		this.price = price;
 		this.volume = volume;
+	}
+
+	public TickData(int type, String symbol, float price, float volume) throws Exception {
+		evt = new MarketEventType(type);
+		this.symbol = format(symbol);
+		this.price = price;
+		this.volume = volume;
+		this.mktRef = "        ";
 	}
 
 	/**
@@ -34,10 +43,11 @@ public class TickData {
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append('[');
-		buf.append(type); buf.append(",[");
+		buf.append(evt); buf.append(",[");
 		buf.append(symbol); buf.append("],");
 		buf.append(price); buf.append(',');
-		buf.append(volume); buf.append(']');
+		buf.append(volume);buf.append(',');
+		buf.append(mktRef);  buf.append(']');
 		return buf.toString();
 	}
 }

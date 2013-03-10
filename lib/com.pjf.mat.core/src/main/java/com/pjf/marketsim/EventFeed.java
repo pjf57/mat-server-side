@@ -5,10 +5,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import org.apache.log4j.Logger;
+import org.apache.log4j.Logger; 
 
 import com.pjf.mat.util.Conversion;
+import com.pjf.mat.util.data.DataSource;
 import com.pjf.mat.util.comms.UDPCxn;
+import com.pjf.mat.util.data.TickData;
 
 
 public class EventFeed {
@@ -32,7 +34,7 @@ public class EventFeed {
 			int intPrice = Conversion.floatToIntWhole(tick.price);
 			int ndp = Conversion.floatToNdp(tick.price);
 			int intVol = (int) tick.volume;
-			data[upto++] = (byte) tick.type;
+			data[upto++] = (byte) tick.evt.getIntCode();
 			for (int i=0; i<8; i++) {
 				data[upto++] = (byte) tick.symbol.charAt(i);
 			}

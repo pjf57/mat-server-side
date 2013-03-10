@@ -60,15 +60,15 @@ public class BasicElement implements Element {
 		this.hwType = type.getHWType();
 		this.inputs = cloneInputsFromType(type);
 		this.outputs = cloneOutputsFromType(type);
-		this.attributes = cloneAttributesFromType(type);
+		this.attributes = cloneAttributesFromType(this,type);
 		this.cmds = cloneCmdsFromType(type);
 		this.status = new ElementStatus();
 	}
 
-	private Map<String,Attribute> cloneAttributesFromType(Element type) throws Exception {
+	private Map<String,Attribute> cloneAttributesFromType(Element newParent, Element type) throws Exception {
 		Map<String,Attribute> attrs = new HashMap<String,Attribute>();
 		for (Attribute att : type.getAttributes()) {
-			Attribute a = att.clone();
+			Attribute a = att.clone(newParent);
 			if (a.getSysType() == AttrSysType.LKU_TARGET) {
 				// default value of LKU Targets is "ALL"
 				a.setValue("63");

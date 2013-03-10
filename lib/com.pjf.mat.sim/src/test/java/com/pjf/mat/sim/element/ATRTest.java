@@ -4,10 +4,10 @@ import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.model.LookupResult;
-import com.pjf.mat.sim.types.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.sim.types.FloatValue;
 import com.pjf.mat.test.util.SimTestCase;
+import com.pjf.mat.api.util.ConfigItem;
 
 
 public class ATRTest extends SimTestCase {

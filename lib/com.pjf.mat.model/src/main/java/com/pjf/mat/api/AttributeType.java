@@ -11,6 +11,8 @@ public enum AttributeType {
 	FLOAT, 
 	/** @model name="hex" */
 	HEX,
+	/** @model name="userder" */
+	USERDEF,
 	/** @model name="enum" */
 	ENUM;
 }

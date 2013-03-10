@@ -4,14 +4,15 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.AttributeType;
+import com.pjf.mat.api.Element;
 
 
 public class FloatAttribute extends StringAttribute {
 	private final static Logger logger = Logger.getLogger(FloatAttribute.class);
 	private float value;
 
-	public FloatAttribute(String name, int configId, AttrSysType sysType, String defaultStr) throws Exception {
-		super(name,configId,sysType);
+	public FloatAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr) throws Exception {
+		super(el,name,configId,sysType);
 		value = 0;
 		if (defaultStr != null) {
 			setValue(defaultStr);
@@ -29,10 +30,10 @@ public class FloatAttribute extends StringAttribute {
 	}
 
 	@Override
-	public FloatAttribute clone() {
+	public FloatAttribute clone(Element newParent) {
 		FloatAttribute attr = null;
 		try {
-			attr = new FloatAttribute(getName(),getConfigId(),getSysType(),getValue());
+			attr = new FloatAttribute(newParent,getName(),getConfigId(),getSysType(),getValue());
 		} catch (Exception e) {
 			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
 		}

@@ -1,7 +1,7 @@
 package com.pjf.mat.sim.model;
 
 import com.pjf.mat.api.Cmd;
-import com.pjf.mat.sim.types.ConfigItem;
+import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.sim.types.Event;
 
 public interface SimElement {
@@ -13,5 +13,5 @@ public interface SimElement {
 	public void shutdown();
 	public LookupResult handleLookup(int instrumentId, int tickref, int lookupKey, int target) throws Exception;
 	public int getId();
-	public TickdataResult handleTickdata(int tickref, int tickdataKey);
+	public TickdataResult handleTickdata(int tickref, int tickdataKey) throws Exception;
 }
