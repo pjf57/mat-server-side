@@ -85,7 +85,7 @@ public class FileMfdSym extends BaseElement implements SimElement {
 	public FileMfdSym(int id, SimHost host) throws Exception {
 		super(id, MatElementDefs.EL_TYP_TG1,host);
 		started = false;
-		filepath = "resources/GLP_27667_1.csv";
+		filepath = "resources/GLP_27667_1a.csv";
 		ds = new DataSource(new FileInputStream(filepath));
 		gap = 100;
 		burst = 1;

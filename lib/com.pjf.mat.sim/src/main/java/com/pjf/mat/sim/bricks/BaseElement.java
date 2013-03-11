@@ -109,8 +109,8 @@ public abstract class BaseElement implements SimElement {
 			lkuTargets[i] = MatElementDefs.EL_ID_ALL;
 		}
 		tickrefData = new HashMap<Integer,TickRefData>();
-		opEnable = new boolean[256];
-		for (int i=0; i<256; i++) {
+		opEnable = new boolean[4];
+		for (int i=0; i<4; i++) {
 			opEnable[i] = true;
 		}
 	}

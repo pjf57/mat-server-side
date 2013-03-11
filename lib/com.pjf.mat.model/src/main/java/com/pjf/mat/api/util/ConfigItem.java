@@ -83,7 +83,7 @@ public class ConfigItem {
 		this.elementId = elementId;
 		this.sysType = AttrSysType.SYSTEM;
 		this.itemId = itemId;
-		this.rawData = ((input-1) << 16) | out.getId() << 8 | out.getParent().getId();
+		this.rawData = ((input-1) << 16) | (out.getId()-1) << 8 | out.getParent().getId();
 		this.arg = 0;
 	}
 

@@ -87,16 +87,16 @@ public class MACD extends BaseElement implements SimElement {
 		}
 		// make outputs
 		if (macd.isValid()) {
-			Event evtOut = new Event(host.getCurrentSimTime(),elementId,MACD_PORT,evt.getInstrument_id(),macd.getValue());
-			host.publishEvent(evtOut,LATENCY_MACD);	
+			Event evtOut = new Event(host.getCurrentSimTime(),elementId,MACD_PORT,evt.getInstrument_id(),evt.getTickref(), macd.getValue());
+			publishEvent(evtOut,LATENCY_MACD);	
 		}
 		if (signal.isValid()) {
-			Event evtOut = new Event(host.getCurrentSimTime(),elementId,SIGNAL_PORT,evt.getInstrument_id(),signal.getValue());
-			host.publishEvent(evtOut,LATENCY_SIGNAL);	
+			Event evtOut = new Event(host.getCurrentSimTime(),elementId,SIGNAL_PORT,evt.getInstrument_id(),evt.getTickref(), signal.getValue());
+			publishEvent(evtOut,LATENCY_SIGNAL);	
 		}
 		if (hist.isValid()) {
-			Event evtOut = new Event(host.getCurrentSimTime(),elementId,HIST_PORT,evt.getInstrument_id(),hist.getValue());
-			host.publishEvent(evtOut,LATENCY_HIST);	
+			Event evtOut = new Event(host.getCurrentSimTime(),elementId,HIST_PORT,evt.getInstrument_id(),evt.getTickref(), hist.getValue());
+			publishEvent(evtOut,LATENCY_HIST);	
 		}
 	}
 

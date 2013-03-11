@@ -63,7 +63,7 @@ public class MatSimTest extends MatSystem {
 		macdSell.getAttribute("SIGNAL_EMA_alpha").setValue("0.5");	// 
 		macdSell.getAttribute("SIGNAL_EMA_len").setValue("3");	// 
 		macdSell.getAttribute("OP_ENABLE_MASK").setValue("4");	// enable only HIST OP
-		macdSell.getInputs().get(0).connectTo(mfd.getOutputs().get(2));	// bid events generate sells
+		macdSell.getInputs().get(0).connectTo(mfd.getOutputs().get(0));	// bid events generate sells
 		// configure Logic Sell
 		logicSell.getAttribute("oper").setValue("3044");	// 	Z = A > k1
 		logicSell.getAttribute("k1").setValue("0");	// 	

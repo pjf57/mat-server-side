@@ -88,5 +88,13 @@ public class TickRefData {
 		return mktRef;
 	}
 
+	@Override
+	public String toString() {
+		return "TickRefData [tickref=" + tickref + ", instrumentId="
+				+ instrumentId + ", Symbol=" + Symbol + ", mktId=" + mktId
+				+ ", price=" + price + ", volume=" + volume + ", evt=" + evt
+				+ ", mktRef=" + mktRef + "]";
+	}
+
 	
 }

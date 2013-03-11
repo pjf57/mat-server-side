@@ -37,7 +37,8 @@ public class DataSource {
 		String sym = cols[2];
 		float price = Float.parseFloat(cols[3]);
 		float vol = Float.parseFloat(cols[4]);
-		TickData data = new TickData(1,sym,price,vol);
+		MarketEventType evt = new MarketEventType(cols[5]);
+		TickData data = new TickData(evt,sym,price,vol);
 		return data;
 	}
 
