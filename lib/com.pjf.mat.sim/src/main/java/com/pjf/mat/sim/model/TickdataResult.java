@@ -49,8 +49,8 @@ public class TickdataResult {
 		StringBuffer buf = new StringBuffer();
 		buf.append("validity=" + valid + " ");
 		if (valid) {
-			buf.append(Conversion.toHexIntString((int)(rawData&0xffffffff)));
 			buf.append(Conversion.toHexIntString((int)((rawData/4294967296L)&0xffffffff)));
+			buf.append(Conversion.toHexIntString((int)(rawData&0xffffffff)));
 		}
 		return buf.toString();
 	}

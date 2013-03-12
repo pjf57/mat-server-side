@@ -21,11 +21,11 @@ public class TickDataBasicResult extends TickdataResult {
 	 * @param microtickDelay
 	 */
 	public TickDataBasicResult(TickRefData data, int microtickDelay) {
-		super(	((data.getEvt().getIntCode())<<56) |
-				((data.getMktId()<<48) & 0x00ff000000000000L) |
-				((data.getInstrumentId()<<40) & 0x0000ff0000000000L) |
-				((data.getTickref()<<32) & 0x000000ff00000000L) |
-				((int) data.getVolume()),
+		super(	(((long)(data.getEvt().getIntCode()))<<56) |
+				(((long)(data.getMktId())<<48) & 0x00ff000000000000L) |
+				(((long)(data.getInstrumentId())<<40) & 0x0000ff0000000000L) |
+				(((long)(data.getTickref())<<32) & 0x000000ff00000000L) |
+				(((long)data.getVolume())),
 				microtickDelay);
 	}
 
@@ -43,5 +43,15 @@ public class TickDataBasicResult extends TickdataResult {
 
 	public int getVolumeInt() {
 		return (int) getRawData() & 0xffffffff;
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer buf = new StringBuffer(super.toString());
+		buf.append(" Evt=" + getEvt());
+		buf.append(" MktId=" + getMktId());
+		buf.append(" instr=" + getInstrumentId());
+		buf.append(" vol=" + getVolumeInt());
+		return buf.toString();
 	}
 }

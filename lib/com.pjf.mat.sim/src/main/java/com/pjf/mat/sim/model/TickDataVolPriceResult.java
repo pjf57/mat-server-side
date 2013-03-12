@@ -20,8 +20,8 @@ public class TickDataVolPriceResult extends TickdataResult {
 	 * @param microtickDelay
 	 */
 	public TickDataVolPriceResult(TickRefData data, int microtickDelay) {
-		super(	(((Float.floatToRawIntBits(data.getVolume()))<<32) & 0xffffffff00000000L) |
-				(Float.floatToRawIntBits(data.getPrice())),
+		super(	(((long)((Float.floatToRawIntBits(data.getVolume())))<<32) & 0xffffffff00000000L) |
+				(((long)Float.floatToRawIntBits(data.getPrice()))),
 				microtickDelay);
 	}
 
@@ -31,6 +31,14 @@ public class TickDataVolPriceResult extends TickdataResult {
 
 	public float getVolume() {
 		return Float.intBitsToFloat((int) ((getRawData()>>32) & 0xffffffff)) ;
+	}
+
+	@Override
+	public String toString() {
+		StringBuffer buf = new StringBuffer(super.toString());
+		buf.append(" price=" + getPrice());
+		buf.append(" volume=" + getVolume());
+		return buf.toString();
 	}
 
 }

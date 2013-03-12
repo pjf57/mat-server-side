@@ -37,6 +37,13 @@ public class TickDataMktRefResult extends TickdataResult {
 		return buf.toString();
 	}
 	
+	@Override
+	public String toString() {
+		StringBuffer buf = new StringBuffer(super.toString());
+		buf.append(" mktRef=" + getMktRef());
+		return buf.toString();
+	}
+
 	
 
 }

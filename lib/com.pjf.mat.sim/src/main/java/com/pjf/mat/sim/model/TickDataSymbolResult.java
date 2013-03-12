@@ -37,5 +37,11 @@ public class TickDataSymbolResult extends TickdataResult {
 		return buf.toString();
 	}
 		
+	@Override
+	public String toString() {
+		StringBuffer buf = new StringBuffer(super.toString());
+		buf.append(" symbol=[" + getSymbol() + "]");
+		return buf.toString();
+	}
 
 }

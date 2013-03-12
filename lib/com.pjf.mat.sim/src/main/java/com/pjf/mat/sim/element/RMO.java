@@ -53,34 +53,38 @@ public class RMO extends BaseElement implements SimElement {
 		logger.debug("processEvent() - " + evt);
 		boolean buy = false;
 		boolean sell = false;
-		if (input == 0) {
-			buy = true;
-		}
-		if (input == 1) {
-			sell = true;
-		}
-		if (buy || sell) {
-			// get tick data
-			try {
-				TickDataBasicResult basicRslt = (TickDataBasicResult) host.tickdata(elementId, evt.getTickref(), MatElementDefs.TDS_BASIC);
-				TickDataSymbolResult symRslt = (TickDataSymbolResult) host.tickdata(elementId, evt.getTickref(), MatElementDefs.TDS_SYMBOL);
-				TickDataVolPriceResult pvRslt = (TickDataVolPriceResult) host.tickdata(elementId, evt.getTickref(), MatElementDefs.TDS_VOL_PRICE_SP);
-				if (basicRslt.isValid() &&  symRslt.isValid() && pvRslt.isValid()) {
-					// determine volume
-					if (basicRslt.getVolumeInt() >= c_minVol) {
-						int orderVol = Math.min(basicRslt.getVolumeInt(), c_maxVol);
-						String symbol = symRslt.getSymbol();
-						float price = pvRslt.getPrice();
-						String dir = "Buy";
-						if (sell) {
-							dir = "Sell";
+		if ((evt.getRawData() & 0x00000001) == 0x00000001) {
+			if (input == 0) {
+				buy = true;
+			}
+			if (input == 1) {
+				sell = true;
+			}
+			if (buy || sell) {
+				// get tick data
+				try {
+					TickDataBasicResult basicRslt = (TickDataBasicResult) host.tickdata(elementId, evt.getTickref(), MatElementDefs.TDS_BASIC);
+					TickDataSymbolResult symRslt = (TickDataSymbolResult) host.tickdata(elementId, evt.getTickref(), MatElementDefs.TDS_SYMBOL);
+					TickDataVolPriceResult pvRslt = (TickDataVolPriceResult) host.tickdata(elementId, evt.getTickref(), MatElementDefs.TDS_VOL_PRICE_SP);
+					if (basicRslt.isValid() &&  symRslt.isValid() && pvRslt.isValid()) {
+						// determine volume
+						if (basicRslt.getVolumeInt() >= c_minVol) {
+							int orderVol = Math.min(basicRslt.getVolumeInt(), c_maxVol);
+							String symbol = symRslt.getSymbol();
+							float price = pvRslt.getPrice();
+							String dir = "Buy";
+							if (sell) {
+								dir = "Sell";
+							}
+							logger.info(getLogId() + "--- Place ORDER: " + dir + " " + orderVol +
+									" " + symbol + " at " + price);
+							Event evtOut = new Event(host.getCurrentSimTime(),elementId,0,evt.getInstrument_id(),evt.getTickref(), price);
+							publishEvent(evtOut,1);	
 						}
-						logger.info(getLogId() + "--- Place ORDER: " + dir + " " + orderVol +
-								" " + symbol + " at " + price);
-						}
+					}
+				} catch (Exception e) {
+					logger.error("Error getting tickdata - " + e.getMessage());
 				}
-			} catch (Exception e) {
-				logger.error("Error getting tickdata - " + e.getMessage());
 			}
 		}
 	}
