@@ -29,8 +29,8 @@ public class MatSimTest extends MatSystem {
 		Element rmo = mat.getModel().getElement(31);
 
 		// configure system attributes
-//		sys.getAttribute("lookup_audit_autosend").setValue("4");
-//		sys.getAttribute("router_audit_autosend").setValue("4");
+		sys.getAttribute("lookup_audit_autosend").setValue("4");
+		sys.getAttribute("router_audit_autosend").setValue("4");
 
 		// configure element attributes
 		mfd.getAttribute("udp_listen_port").setValue("15000");
@@ -52,7 +52,7 @@ public class MatSimTest extends MatSystem {
 		macdBuy.getInputs().get(0).connectTo(mfd.getOutputs().get(1));	// ask events generate buys
 		// configure Logic BUY
 		logicBuy.getAttribute("oper").setValue("3044");	// 	Z = A > k1
-		logicBuy.getAttribute("k1").setValue("0");	// 	
+		logicBuy.getAttribute("k1").setValue("0.01");	// 	
 		logicBuy.getInputs().get(0).connectTo(macdBuy.getOutputs().get(2));
 
 		// Configure SELL MACD
@@ -66,7 +66,7 @@ public class MatSimTest extends MatSystem {
 		macdSell.getInputs().get(0).connectTo(mfd.getOutputs().get(0));	// bid events generate sells
 		// configure Logic Sell
 		logicSell.getAttribute("oper").setValue("1044");	// 	Z = A < k1
-		logicSell.getAttribute("k1").setValue("0");	// 	
+		logicSell.getAttribute("k1").setValue("-0.01");	// 	
 		logicSell.getInputs().get(0).connectTo(macdSell.getOutputs().get(2));
 		
 		// Configure RMO

@@ -31,8 +31,6 @@ public class RMO extends BaseElement implements SimElement {
 	private int c_minVol;
 	private int c_maxVol;
 	private int c_maxPosn;
-	private int c_port;
-	private int c_udpip;
 	private int[] posn;
 	private float[] pnl;
 	
@@ -52,8 +50,8 @@ public class RMO extends BaseElement implements SimElement {
 		case MatElementDefs.EL_RMO_C_MIN_VOL: 	c_minVol = cfg.getRawData();	break;
 		case MatElementDefs.EL_RMO_C_MAX_VOL: 	c_maxVol = cfg.getRawData();	break;
 		case MatElementDefs.EL_RMO_C_MAX_POSN: 	c_maxPosn = cfg.getRawData();	break;
-		case MatElementDefs.EL_RMO_C_UDPPORT: 	c_port = cfg.getRawData();		break;
-		case MatElementDefs.EL_RMO_C_UDPIP: 	c_udpip = cfg.getRawData();		break;
+		case MatElementDefs.EL_RMO_C_UDPPORT: 	/* ignore */					break;
+		case MatElementDefs.EL_RMO_C_UDPIP: 	/* ignore */					break;
 		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
 		}
 	}
@@ -96,14 +94,15 @@ public class RMO extends BaseElement implements SimElement {
 								}
 								posn[instr] -= orderVol;
 							} else {
+								// buy
 								posn[instr] += orderVol;
+								if (posn[instr] > c_maxPosn) {
+									// kill order
+									posn[instr] = posnRollback;
+									orderVol = 0;
+								}
 							}
 							
-							if (posn[instr] > c_maxPosn) {
-								// kill order
-								posn[instr] = posnRollback;
-								orderVol = 0;
-							}
 							float logPrice = price;
 							if (orderVol > 0) {
 								if (buy) {
