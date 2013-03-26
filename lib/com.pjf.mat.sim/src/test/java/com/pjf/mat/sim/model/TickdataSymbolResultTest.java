@@ -5,10 +5,10 @@ import com.pjf.mat.util.data.TickData;
 
 import junit.framework.TestCase;
 
-public class TickdataBasicResultTest extends TestCase {
+public class TickdataSymbolResultTest extends TestCase {
 	
 	public void testInvalid() {
-		TickDataBasicResult trd = new TickDataBasicResult(5);
+		TickDataSymbolResult trd = new TickDataSymbolResult(5);
 		assertFalse (trd.isValid());
 	}
 
@@ -22,10 +22,9 @@ public class TickdataBasicResultTest extends TestCase {
 		int instrID = 0x12;
 		TickData d = new TickData(evt,sym,price,vol);
 		TickRefData td = new TickRefData(tickref,mktId,instrID,d);
-		TickDataBasicResult trd = new TickDataBasicResult(td,4);
+		TickDataSymbolResult trd = new TickDataSymbolResult(td,4);
 		assertTrue(trd.isValid());
 		assertEquals(trd.getMicrotickDelay(),4);
-		assertEquals(trd.getRawData(),0x030712150000012cL);
 	}
 
 	public void testValues() throws Exception {
@@ -38,13 +37,9 @@ public class TickdataBasicResultTest extends TestCase {
 		int instrID = 0x12;
 		TickData d = new TickData(evt,sym,price,vol);
 		TickRefData td = new TickRefData(tickref,mktId,instrID,d);
-		TickDataBasicResult trd = new TickDataBasicResult(td,4);
+		TickDataSymbolResult trd = new TickDataSymbolResult(td,4);
 		assertTrue(trd.isValid());
-		assertEquals(trd.getInstrumentId(),0x12);
-		assertEquals(trd.getMktId(),7);
-		assertEquals(trd.getVolumeInt(),300);
-		assertEquals(trd.getEvt().getIntCode(),3);
-		assertEquals(trd.getInstrumentId(),0x12);
+		assertEquals("IBM     ",trd.getSymbol());
 	}
 
 }

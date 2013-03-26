@@ -188,6 +188,7 @@ public class MatElementDefs {
 	public static final int EL_RMO_C_UDPPORT	 	= 0x04; // set market order IP port
 	public static final int EL_RMO_C_MIN_VOL	 	= 0x05; // set min order volume
 	public static final int EL_RMO_C_MAX_VOL	 	= 0x06; // set max order volume
+	public static final int EL_RMO_C_MAX_POSN	 	= 0x07; // set max position
 	
 
 // ---------------------- utilities ----------------------------------------

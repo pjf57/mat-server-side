@@ -42,12 +42,12 @@ public class MatSimTest extends MatSystem {
 		
 		
 		// Configure BUY MACD
-		macdBuy.getAttribute("FAST_EMA_alpha").setValue("0.5");	// 
-		macdBuy.getAttribute("FAST_EMA_len").setValue("3");	// 
-		macdBuy.getAttribute("SLOW_EMA_alpha").setValue("0.25");	// 
-		macdBuy.getAttribute("SLOW_EMA_len").setValue("7");	// 
-		macdBuy.getAttribute("SIGNAL_EMA_alpha").setValue("0.5");	// 
-		macdBuy.getAttribute("SIGNAL_EMA_len").setValue("3");	// 
+		macdBuy.getAttribute("FAST_EMA_alpha").setValue("0.33333");	// 
+		macdBuy.getAttribute("FAST_EMA_len").setValue("5");	// 
+		macdBuy.getAttribute("SLOW_EMA_alpha").setValue("0.166667");	// 
+		macdBuy.getAttribute("SLOW_EMA_len").setValue("11");	// 
+		macdBuy.getAttribute("SIGNAL_EMA_alpha").setValue("0.4");	// 
+		macdBuy.getAttribute("SIGNAL_EMA_len").setValue("4");	// 
 		macdBuy.getAttribute("OP_ENABLE_MASK").setValue("4");	// enable only HIST OP
 		macdBuy.getInputs().get(0).connectTo(mfd.getOutputs().get(1));	// ask events generate buys
 		// configure Logic BUY
@@ -56,16 +56,16 @@ public class MatSimTest extends MatSystem {
 		logicBuy.getInputs().get(0).connectTo(macdBuy.getOutputs().get(2));
 
 		// Configure SELL MACD
-		macdSell.getAttribute("FAST_EMA_alpha").setValue("0.5");	// 
-		macdSell.getAttribute("FAST_EMA_len").setValue("3");	// 
-		macdSell.getAttribute("SLOW_EMA_alpha").setValue("0.25");	// 
-		macdSell.getAttribute("SLOW_EMA_len").setValue("7");	// 
-		macdSell.getAttribute("SIGNAL_EMA_alpha").setValue("0.5");	// 
-		macdSell.getAttribute("SIGNAL_EMA_len").setValue("3");	// 
+		macdSell.getAttribute("FAST_EMA_alpha").setValue("0.333333");	// 
+		macdSell.getAttribute("FAST_EMA_len").setValue("5");	// 
+		macdSell.getAttribute("SLOW_EMA_alpha").setValue("0.166667");	// 
+		macdSell.getAttribute("SLOW_EMA_len").setValue("11");	// 
+		macdSell.getAttribute("SIGNAL_EMA_alpha").setValue("0.4");	// 
+		macdSell.getAttribute("SIGNAL_EMA_len").setValue("4");	// 
 		macdSell.getAttribute("OP_ENABLE_MASK").setValue("4");	// enable only HIST OP
 		macdSell.getInputs().get(0).connectTo(mfd.getOutputs().get(0));	// bid events generate sells
 		// configure Logic Sell
-		logicSell.getAttribute("oper").setValue("3044");	// 	Z = A > k1
+		logicSell.getAttribute("oper").setValue("1044");	// 	Z = A < k1
 		logicSell.getAttribute("k1").setValue("0");	// 	
 		logicSell.getInputs().get(0).connectTo(macdSell.getOutputs().get(2));
 		
@@ -74,11 +74,14 @@ public class MatSimTest extends MatSystem {
 		rmo.getAttribute("udp_port").setValue("3500");	// 
 		rmo.getAttribute("min_vol").setValue("100");	// 
 		rmo.getAttribute("max_vol").setValue("500");	// 
+		rmo.getAttribute("max_posn").setValue("1000");	// 
 		rmo.getInputs().get(0).connectTo(logicBuy.getOutputs().get(0));
 		rmo.getInputs().get(1).connectTo(logicSell.getOutputs().get(0));
 
 		// logger connections
 		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
+		lgr.getInputs().get(1).connectTo(macdBuy.getOutputs().get(2));
+		lgr.getInputs().get(2).connectTo(macdSell.getOutputs().get(2));
 
 		logger.info("mat is: " + mat);
 

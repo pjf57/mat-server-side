@@ -306,7 +306,7 @@ public abstract class BaseElement implements SimElement {
 	/**
 	 * Template method to process an event
 	 * 
-	 * @param input - which input the event arrived on
+	 * @param input - which input the event arrived on (1..4)
 	 * @param evt
 	 * @throws Exception
 	 */

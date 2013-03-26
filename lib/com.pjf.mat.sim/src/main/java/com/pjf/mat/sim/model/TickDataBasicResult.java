@@ -34,7 +34,7 @@ public class TickDataBasicResult extends TickdataResult {
 	}
 	
 	public int getMktId() {
-		return (int) (getRawData()>>40) & 0xff;
+		return (int) (getRawData()>>48) & 0xff;
 	}
 
 	public int getInstrumentId() {

@@ -139,8 +139,8 @@ public class Conversion {
 			throw new Exception("stringToRaw() - illegal strlen: [" + str + "]");
 		}
 		for (int i=0; i<8; i++) {
-			ret |= (byte) str.charAt(i);
 			ret <<= 8;
+			ret |= (byte) str.charAt(i);
 		}
 		return ret;
 	}
