@@ -1,11 +1,13 @@
 package com.pjf.mat.test;
 
 import com.pjf.marketsim.EventFeedInt;
+import com.pjf.marketsim.SymbolEventFeed;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
+import com.pjf.mat.util.comms.UDPCxn;
 
-public class MatSimTest extends MatSystem {
+public class MatRmoMfdSym extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
@@ -79,24 +81,40 @@ public class MatSimTest extends MatSystem {
 		rmo.getInputs().get(1).connectTo(logicSell.getOutputs().get(0));
 
 		// logger connections
-		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
+		lgr.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
 		lgr.getInputs().get(1).connectTo(macdBuy.getOutputs().get(2));
 		lgr.getInputs().get(2).connectTo(macdSell.getOutputs().get(2));
+		lgr.getInputs().get(3).connectTo(rmo.getOutputs().get(0));
 
 		logger.info("mat is: " + mat);
 
 		mat.configureHW();
 	}
 
+	@Override
+	protected EventFeedInt createEventFeeder(UDPCxn cxn) throws Exception {
+		EventFeedInt fd = new SymbolEventFeed(cxn,15000);
+		return fd;
+	}
 
+
+	/** 
+	 * send mkt data to the HW
+	 * 
+	 * @param feed
+	 * @throws Exception
+	 */
 	@Override
 	protected void sendTradeBurst(MatApi mat, EventFeedInt feed) throws Exception {
-		sendCmd(30,"start");
+//		sendCmd(2,"start");
+		if (feed != null) {
+			feed.sendTradeBurst("resources/GLP_27667_1a.csv",100,5,3);
+		}
 		Thread.sleep(5000);
 	}
 
 	public static void main(String[] args) {
-		MatSimTest sys = new MatSimTest();
+		MatRmoMfdSym sys = new MatRmoMfdSym();
 		sys.boot();
 	}
 

@@ -17,6 +17,8 @@ import com.pjf.mat.api.util.ConfigItem;
  * 		port 0: MACD   		= Fast_EMA(Price) - Slow_EMA(price) 
  *		port 1: Signal 		= EMA(MACD)
  *		port 2: Histogram: 	= MACD Line - Signal
+ *
+ *		alpha = 2 / (L + 1)
  * 
  * @author pjf
  *
@@ -103,6 +105,10 @@ public class MACD extends BaseElement implements SimElement {
 	@Override
 	protected String getTypeName() {
 		return "MACD";
+	}
+	
+	public static float alpha(int len) {
+		return 2.0f / (len + 1);
 	}
 
 }

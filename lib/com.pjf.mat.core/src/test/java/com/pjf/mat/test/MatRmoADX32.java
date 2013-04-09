@@ -1,6 +1,6 @@
 package com.pjf.mat.test;
 
-import com.pjf.marketsim.EventFeed;
+import com.pjf.marketsim.EventFeedInt;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
@@ -83,7 +83,8 @@ public class MatRmoADX32 extends MatSystem {
 		rmo.getInputs().get(1).connectTo(logicSell.getOutputs().get(0));
 		
 		// logger connections
-		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
+		lgr.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
+		lgr.getInputs().get(1).connectTo(rmo.getOutputs().get(0));
 //		lgr.getInputs().get(1).connectTo(hloc.getOutputs().get(0));
 //		lgr.getInputs().get(0).connectTo(atr.getOutputs().get(0));
 		//		lgr.getInputs().get(1).connectTo(macd.getOutputs().get(0));
@@ -102,7 +103,7 @@ public class MatRmoADX32 extends MatSystem {
 	 * @throws Exception
 	 */
 	@Override
-	protected void sendTradeBurst(MatApi mat, EventFeed feed) throws Exception {
+	protected void sendTradeBurst(MatApi mat, EventFeedInt feed) throws Exception {
 //		sendCmd(2,"start");
 		if (feed != null) {
 			feed.sendTradeBurst("resources/GLP_27667_1.csv",100,5,3);

@@ -1,6 +1,6 @@
 package com.pjf.mat.test;
 
-import com.pjf.marketsim.EventFeed;
+import com.pjf.marketsim.EventFeedInt;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
@@ -92,7 +92,7 @@ public class MatAdx8 extends MatSystem {
 	 * @throws Exception
 	 */
 	@Override
-	protected void sendTradeBurst(MatApi mat, EventFeed feed) throws Exception {
+	protected void sendTradeBurst(MatApi mat, EventFeedInt feed) throws Exception {
 		sendCmd(2,"start");
 //		if (feed != null) {
 //			feed.sendTradeBurst("resources/GLP_27667_1.csv",3,5,1);

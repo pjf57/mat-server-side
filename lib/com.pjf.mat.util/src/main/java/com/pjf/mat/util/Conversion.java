@@ -145,5 +145,20 @@ public class Conversion {
 		return ret;
 	}
 
+	/**
+	 * Convert a float to a 4 byte representation in a buffer
+	 * 
+	 * @param val - value to convert
+	 * @param buf - buffer to store into
+	 * @param idx - index in buffer to start at
+	 */
+	public static void floatToBytes(float val, byte[] buf, int idx) {
+		int intval = Float.floatToIntBits(val);
+		buf[idx++] = (byte) ((intval >> 24) & 0xff);
+		buf[idx++] = (byte) ((intval >> 16) & 0xff);
+		buf[idx++] = (byte) ((intval >> 8) & 0xff);
+		buf[idx++] = (byte) (intval & 0xff);
+	}
+
 
 }

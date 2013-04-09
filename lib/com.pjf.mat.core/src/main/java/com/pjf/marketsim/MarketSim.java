@@ -8,10 +8,10 @@ import org.apache.log4j.Logger;
 
 public class MarketSim {
 	private final static Logger logger = Logger.getLogger(MarketSim.class);
-	private final EventFeed feed;
+	private final EventFeedInt feed;
 	
 	public MarketSim() throws SocketException, UnknownHostException {
-		feed = new EventFeed("192.168.0.9",15000);
+		feed = new BasicEventFeed("192.168.0.9",15000);
 	}
 
 	public void send() throws Exception {

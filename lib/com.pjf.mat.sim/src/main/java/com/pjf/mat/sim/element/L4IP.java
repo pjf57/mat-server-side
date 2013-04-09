@@ -23,21 +23,21 @@ import com.pjf.mat.util.Conversion;
  *--		output z generates an event 1 on transition to true, and an event 0 on transition to false.
  *--
  *--		config is 
- *--					 15 12 11  8 7  6 5  4 3 0
- *--		  			---------------------------
- *--		C_OPS		| cf1 | cf2 |xsel|ysel|lop|
- *--		  			---------------------------
+ *--					 16   15 12 11  8 7  6 5  4 3 0
+ *--		  			--------------------------------
+ *--		C_OPS		|1sht| cf1 | cf2 |xsel|ysel|lop|
+ *--		  			--------------------------------
  *--
- *--						cf         sel       lop 
- *--						--		   ---		 ---
- *--					  0000 EQ     00 IP		0000 p and q
- *--					  0001 LT     01 K		0001 p or q
- *--					  0010 LE				0010 p nand q
- *--				      0011 GT				0011 p nor q
- *--					  0100 GE				0100 p
- *--					  0101 NE				0101 q
- *--											0110 not p
- *--											0111 not q
+ *--					1sht	   cf          sel       lop
+ *--					---        --	       ---		 ---
+ *--					0 Follow  0000 EQ     00 IP		0000 p and q
+ *--					1 1sht    0001 LT     01 K	   	0001 p or q
+ *--				  			  0010 LE				0010 p nand q
+ *--			     			  0011 GT				0011 p nor q
+ *--				  			  0100 GE				0100 p
+ *--				  			  0101 NE				0101 q
+ *--													0110 not p
+ *--													0111 not q
  *--
  *--		C_K1, C_K2
  *
@@ -52,9 +52,11 @@ public class L4IP extends BaseElement implements SimElement {
 	private int c_xsel;			// x = b or K1
 	private int c_ysel;			// y = d or K2
 	private int c_lop;			// Z = fn(p,q)
+	private boolean c_oneShot;	// event output only if Z changes
 	private FloatValue c_k1;
 	private FloatValue c_k2;
 	private FloatValue[][] lastValue;	// last value on each input [instr][ip 1..4]
+	private BooleanValue lastZ;
 		
 	public L4IP(int id, SimHost host) {
 		super(id, MatElementDefs.EL_TYP_LOGIC_4IP,host);
@@ -64,6 +66,7 @@ public class L4IP extends BaseElement implements SimElement {
 				lastValue[instr][ip] = new FloatValue();
 			}
 		}
+		lastZ = new BooleanValue();
 		c_k1 = new FloatValue();
 		c_k2 = new FloatValue();
 	}
@@ -79,6 +82,11 @@ public class L4IP extends BaseElement implements SimElement {
 			c_xsel = (cfg.getRawData() >> 6) & 0x3;
 			c_cf2 = (cfg.getRawData() >> 8) & 0xf;
 			c_cf1 = (cfg.getRawData() >> 12) & 0xf;
+			if ((cfg.getRawData() & 0x10000) == 0) {
+				c_oneShot = false;
+			} else {
+				c_oneShot = true;
+			}
 			break;
 		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
 		}
@@ -93,11 +101,14 @@ public class L4IP extends BaseElement implements SimElement {
 		BooleanValue p = fn(c_cf1,lastValue[instr][0],x);
 		BooleanValue q = fn(c_cf2,lastValue[instr][2],y);
 		BooleanValue z = lop(c_lop,p,q);
-		if (z.isValid()){ 
-			Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,
-					evt.getTickref(), z.getRawData());
-			host.publishEvent(evtOut,LATENCY);
+		if (z.isValid()){
+			if (!c_oneShot || !lastZ.isValid() ||  (lastZ.getValue() != z.getValue())) {
+				Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,
+						evt.getTickref(), z.getRawData());
+				host.publishEvent(evtOut,LATENCY);
+			}
 		}
+		lastZ = z;
 	}
 
 	private BooleanValue lop(int op, BooleanValue p, BooleanValue q) {

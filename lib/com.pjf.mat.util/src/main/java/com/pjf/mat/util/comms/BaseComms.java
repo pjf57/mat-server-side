@@ -462,7 +462,7 @@ public abstract class BaseComms implements Comms {
 		if (len == 17) {
 			char side = (char) msg[upto++];
 			for (int i=0; i<8; i++) {
-				symbolBuf.append((char) msg[upto++]);
+				symbolBuf.append(cvtChar(msg[upto++]));
 			}
 			symbol = symbolBuf.toString();
 			int priceData = Conversion.getIntFromBytes(msg,upto,4);
@@ -477,6 +477,19 @@ public abstract class BaseComms implements Comms {
 	}
 
 	
+	/**
+	 * Convert byte to char, substituting _ for unprintables
+	 * @param b - byte in
+	 * @return converted char
+	 */
+	private char cvtChar(byte b) {
+		char c = (char) b;
+		if (b < 0x20) {
+			c = '_';
+		};
+		return c;
+	}
+
 	protected String toHexString(byte[] data, int start, int end) {
 		byte[] buf = new byte[end-start+1];
 		System.arraycopy(data, start, buf, 0, end-start+1);

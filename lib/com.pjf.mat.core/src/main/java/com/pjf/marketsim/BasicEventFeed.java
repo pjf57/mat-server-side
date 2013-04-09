@@ -12,9 +12,27 @@ import com.pjf.mat.util.data.DataSource;
 import com.pjf.mat.util.comms.UDPCxn;
 import com.pjf.mat.util.data.TickData;
 
-
-public class EventFeed {
-	private final static Logger logger = Logger.getLogger(EventFeed.class);
+/**
+ * --						       1		   n         n              n
+ * --						-----------------------------------------------
+ * --						|# events | event 1 | event 2 | ... | event N |
+ * --						-----------------------------------------------
+ * --
+ * --						Each event is:
+ * --						   1      1        4         4
+ * --						-----------------------------------
+ * --						|type|instr_id|  price  | volume  |
+ * --						-----------------------------------
+ * --
+ * --						type: 1=trade, 2=bid, 3=ask
+ * --						instr_id is internal instr id index
+ * --						price and volume are sp floats
+ * 
+ * @author pjf
+ *
+ */
+public class BasicEventFeed implements EventFeedInt {
+	private final static Logger logger = Logger.getLogger(BasicEventFeed.class);
 	private UDPCxn cxn;
 	private final String ip;
 	private int port;
@@ -31,22 +49,12 @@ public class EventFeed {
 		}
 
 		public void put(TickData tick) {
-			int intPrice = Conversion.floatToIntWhole(tick.price);
-			int ndp = Conversion.floatToNdp(tick.price);
-			int intVol = (int) tick.volume;
 			data[upto++] = (byte) tick.evt.getIntCode();
-			for (int i=0; i<8; i++) {
-				data[upto++] = (byte) tick.symbol.charAt(i);
-			}
-			data[upto++] = (byte) ((intPrice >> 24) & 0xff);
-			data[upto++] = (byte) ((intPrice >> 16) & 0xff);
-			data[upto++] = (byte) ((intPrice >> 8) & 0xff);
-			data[upto++] = (byte) (intPrice & 0xff);
-			data[upto++] = (byte) (ndp & 0xff);
-			data[upto++] = (byte) ((intVol >> 24) & 0xff);
-			data[upto++] = (byte) ((intVol >> 16) & 0xff);
-			data[upto++] = (byte) ((intVol >> 8) & 0xff);
-			data[upto++] = (byte) (intVol & 0xff);
+			data[upto++] = (byte) tick.symbol.charAt(0);
+			Conversion.floatToBytes(tick.price,data,upto);
+			upto += 4;
+			Conversion.floatToBytes(tick.volume,data,upto);
+			upto += 4;
 			itemCount++;
 		}
 		
@@ -67,13 +75,13 @@ public class EventFeed {
 		}
 	}
 
-	public EventFeed(String ip, int port) throws SocketException, UnknownHostException {
+	public BasicEventFeed(String ip, int port) throws SocketException, UnknownHostException {
 		this.ip = ip;
 		this.port = port;
 		this.cxn = new UDPCxn(ip);
 	}
 
-	public EventFeed(UDPCxn cxn, int port) throws SocketException, UnknownHostException {
+	public BasicEventFeed(UDPCxn cxn, int port) throws SocketException, UnknownHostException {
 		this.ip = cxn.getIp();
 		this.port = port;
 		this.cxn = cxn;
@@ -105,6 +113,10 @@ public class EventFeed {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.pjf.marketsim.EventFeedInt#sendTradeBurst(java.lang.String, int, int, int)
+	 */
+	@Override
 	public void sendTradeBurst(String resource, int bursts, int ticksPerPkt, int gapMs) throws Exception {
 		sendTradeBurst(new FileInputStream(resource), bursts, ticksPerPkt, gapMs);
 	}
@@ -122,7 +134,7 @@ public class EventFeed {
 
 	@Override
 	public String toString() {
-		return "EventFeed:" + ip + ":" + port;
+		return "BasicEventFeed:" + ip + ":" + port;
 	}
 
 }

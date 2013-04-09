@@ -1,12 +1,15 @@
 package com.pjf.mat.sys;
 
 import java.io.FileInputStream;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import com.pjf.marketsim.EventFeed;
+import com.pjf.marketsim.BasicEventFeed;
+import com.pjf.marketsim.EventFeedInt;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.EventLog;
@@ -23,13 +26,14 @@ import com.pjf.mat.impl.MatInterfaceModel;
 import com.pjf.mat.impl.element.BasicCmd;
 import com.pjf.mat.sim.MatSim;
 import com.pjf.mat.util.comms.BaseComms;
+import com.pjf.mat.util.comms.UDPCxn;
 
 
 public abstract class MatSystem {
 	protected final static Logger logger = Logger.getLogger(MatSystem.class);
 	private MatInterface mat = null;
 	private MatSim sim = null;
-	private EventFeed feed;
+	private EventFeedInt feed;
 	private final UnifiedEventLogger ueLogger;
 	private final NotificationHandler notificationHandler;
 
@@ -101,7 +105,7 @@ public abstract class MatSystem {
 	 * @param feed
 	 * @throws Exception
 	 */
-	protected void sendTradeBurst(MatApi mat, EventFeed feed) throws Exception {
+	protected void sendTradeBurst(MatApi mat, EventFeedInt feed) throws Exception {
 		if (feed != null) {
 			feed.sendTradeBurst("resources/GLP_27667_1.csv",20,10,1);
 		}
@@ -143,12 +147,25 @@ public abstract class MatSystem {
 		mat = new MatInterface(comms,model);
 		comms.setMat(mat);
 		if (sim == null) {
-			feed = new EventFeed(comms.getCxn(),15000);
+			feed = createEventFeeder(comms.getCxn());
 		} else {
 			// transfer config data into simulator
 			sim.init(mat.getModel().getElements());
 		}
 		mat.checkHWSignature();
+	}
+
+	/**
+	 * Template method to create an event feeder
+	 * 
+	 * @param cxn UDP cxn opened to HW
+	 * @return event feeder
+	 * @throws UnknownHostException 
+	 * @throws SocketException 
+	 */
+	protected EventFeedInt createEventFeeder(UDPCxn cxn) throws Exception {
+		EventFeedInt fd = new BasicEventFeed(cxn,15000);
+		return fd;
 	}
 
 	protected void run() throws Exception {
