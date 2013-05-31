@@ -4,9 +4,9 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 import org.apache.log4j.Logger;
 
+import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.TimeOrdered;
 import com.pjf.mat.api.Timestamp;
-import com.pjf.mat.sys.MatSystem.NotificationHandler;
 
 /**
  * Maintains a pipe of all received logs in time order. 
@@ -23,7 +23,7 @@ public class UnifiedEventLogger {
 	private final static Logger logger = Logger.getLogger(UnifiedEventLogger.class);
 	private final PriorityBlockingQueue<TimeOrdered> store;
 	private final PumpWorker pumper;
-	private NotificationHandler notificationHandler;
+	private NotificationCallback notificationHandler;
 	private Timestamp lastAddedTs;	// timestamp of event last added
 
 	class PumpWorker extends Thread {
@@ -53,7 +53,7 @@ public class UnifiedEventLogger {
 		}
 	}
 	
-	public UnifiedEventLogger(NotificationHandler notificationHandler) {
+	public UnifiedEventLogger(NotificationCallback notificationHandler) {
 		this.notificationHandler = notificationHandler;
 		this.lastAddedTs = null;
 		store = new PriorityBlockingQueue<TimeOrdered>();

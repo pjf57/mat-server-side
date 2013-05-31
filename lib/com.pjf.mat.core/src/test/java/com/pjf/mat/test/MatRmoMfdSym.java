@@ -72,7 +72,7 @@ public class MatRmoMfdSym extends MatSystem {
 		logicSell.getInputs().get(0).connectTo(macdSell.getOutputs().get(2));
 		
 		// Configure RMO
-		rmo.getAttribute("udp_ip").setValue("0C0A80006");	// 
+		rmo.getAttribute("udp_ip").setValue("0C0A80008");	// 
 		rmo.getAttribute("udp_port").setValue("3500");	// 
 		rmo.getAttribute("min_vol").setValue("100");	// 
 		rmo.getAttribute("max_vol").setValue("500");	// 
