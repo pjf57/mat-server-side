@@ -18,27 +18,32 @@ import com.pjf.mat.api.util.ConfigItem;
 public class SymbolEncode implements AttrConfigGenerator {
 
 	@Override
-	public List<ConfigItem> generate(Attribute attr) {
+	public List<ConfigItem> generate(Attribute attr) throws Exception {
 		List<ConfigItem> configs = new ArrayList<ConfigItem>();
 		String val = attr.getValue();
-		String[] symbols = val.split(",");
-		for (String sym : symbols) {
-			String[] args = sym.split(":");
-			String symName = args[0];
-			String idStr = args[1];
-			symName = symName + "        ";
-			symName = symName.substring(0,8);
-			int symId = Integer.parseInt(idStr);
-			int elId = attr.getParentt().getId();
-			ConfigItem cfg1 = new ConfigItem(elId,AttrSysType.NORMAL,
-					MatElementDefs.EL_MDF_C_ISYM_L,	symName.substring(0,4));
-			ConfigItem cfg2 = new ConfigItem(elId,AttrSysType.NORMAL,
-					MatElementDefs.EL_MDF_C_ISYM_R,	symName.substring(4,8));
-			ConfigItem cfg3 = new ConfigItem(elId,AttrSysType.NORMAL,
-					MatElementDefs.EL_MDF_C_ISYM_ID, symId);
-			configs.add(cfg1);
-			configs.add(cfg2);
-			configs.add(cfg3);	
+		if (!val.isEmpty()) {
+			String[] symbols = val.split(",");
+			for (String sym : symbols) {
+				String[] args = sym.split(":");
+				if (args.length != 2) {				
+					throw new Exception("Bad value for config item: " + attr.getName() + " on CB " + attr.getParentt().getShortName());
+				}
+				String symName = args[0];
+				String idStr = args[1];
+				symName = symName + "        ";
+				symName = symName.substring(0,8);
+				int symId = Integer.parseInt(idStr);
+				int elId = attr.getParentt().getId();
+				ConfigItem cfg1 = new ConfigItem(elId,AttrSysType.NORMAL,
+						MatElementDefs.EL_MDF_C_ISYM_L,	symName.substring(0,4));
+				ConfigItem cfg2 = new ConfigItem(elId,AttrSysType.NORMAL,
+						MatElementDefs.EL_MDF_C_ISYM_R,	symName.substring(4,8));
+				ConfigItem cfg3 = new ConfigItem(elId,AttrSysType.NORMAL,
+						MatElementDefs.EL_MDF_C_ISYM_ID, symId);
+				configs.add(cfg1);
+				configs.add(cfg2);
+				configs.add(cfg3);	
+			}
 		}
 		return configs;
 	}

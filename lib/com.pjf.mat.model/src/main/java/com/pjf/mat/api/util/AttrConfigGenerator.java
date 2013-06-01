@@ -6,6 +6,6 @@ import com.pjf.mat.api.Attribute;
 
 public interface AttrConfigGenerator {
 	
-	List<ConfigItem> generate(Attribute attr);
+	List<ConfigItem> generate(Attribute attr) throws Exception;
 
 }
