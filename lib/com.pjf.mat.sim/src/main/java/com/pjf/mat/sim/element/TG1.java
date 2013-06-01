@@ -76,6 +76,7 @@ public class TG1 extends BaseElement implements SimElement {
 				int tickref = host.getTickref();
 				Event evt = new Event(host.getCurrentSimTime(),elementId, instrumentId, tickref, data);
 				host.publishEvent(evt,LATENCY);
+				countEvent();
 				gapCntr = c_gap;
 				data += c_p1;
 				lenCntr--;

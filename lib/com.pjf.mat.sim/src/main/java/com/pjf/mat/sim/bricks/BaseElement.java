@@ -158,6 +158,10 @@ public abstract class BaseElement implements SimElement {
 		return taken;
 	}
 
+	protected void countEvent() {
+		evtCount++;
+	}
+	
 	@Override
 	public void putConfig(ConfigItem cfg) throws Exception {
 		if ((cfg.getElementId() == elementId) || (cfg.getElementId() == MatElementDefs.EL_ID_ALL)) {
