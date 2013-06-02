@@ -27,7 +27,7 @@ public class BasicCmd extends RawCmd {
 	 * @param data
 	 */
 	public BasicCmd(Element parent, String name, int configId, int data) {
-		super(name,configId,data);
+		super(name,configId,data,0);
 		this.parent = parent;
 	}
 
@@ -52,6 +52,11 @@ public class BasicCmd extends RawCmd {
 		this.parent = cmd.getParent();
 	}		
 	
+	public BasicCmd(Element parent, String name, int cfgId, int data, int arg) {
+		super(name,cfgId,data,arg);
+		this.parent = parent;
+	}
+
 	@Override
 	public Element getParent() {
 		return parent;

@@ -22,7 +22,7 @@ public class SystemCmd extends RawCmd {
 	 * @param data
 	 */
 	public SystemCmd (String name, int cmdId, int data) {
-		super(name,cmdId,data);
+		super(name,cmdId,data,0);
 	}
 	
 	@Override

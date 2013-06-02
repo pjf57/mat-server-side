@@ -28,11 +28,12 @@ public abstract class RawCmd implements Cmd {
 	 * @param name
 	 * @param configId
 	 * @param data
+	 * @param arg 
 	 */
-	public RawCmd(String name, int configId, int data) {
+	public RawCmd(String name, int configId, int data, int arg) {
 		this.name = name;
 		this.configId = configId;
-		this.arg = 0;
+		this.arg = arg;
 		this.data = data;
 	}
 
