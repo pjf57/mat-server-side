@@ -271,8 +271,14 @@ public abstract class BaseElement implements SimElement {
 
 	@Override
 	public void putCmd(Cmd cmd) {
-		if (cmd.getParent().getId() == elementId) {
-			processCmd(cmd);
+		if ((cmd.getParent().getId() == elementId) || (cmd.getParent().getId() == MatElementDefs.EL_ID_ALL)) {
+			if (cmd.getConfigId() == MatElementDefs.EL_C_RESET) {
+				// reset the element
+				setBaseState(BaseState.RST);
+				processReset();
+			} else {
+				processCmd(cmd);
+			}
 		}		
 	}
 
@@ -303,7 +309,7 @@ public abstract class BaseElement implements SimElement {
 	 * @param cmd
 	 */
 	protected void processCmd(Cmd cmd) {
-		// default behaviour is to log a warning
+		// default behaviour is to handle reset cmds, else log a warning
 		logger.warn(getIdStr() + "unexpected cmd:" + cmd);		
 	}
 
