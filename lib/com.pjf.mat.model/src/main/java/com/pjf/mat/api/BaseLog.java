@@ -38,6 +38,13 @@ public class BaseLog implements TimeOrdered {
 		return tickref;
 	}
 	
+	/**
+	 * @return type of log
+	 */
+	public String getType() {
+		return "UNK";
+	}
+	
 	@Override
 	public int compareTo(TimeOrdered o) {
 		return timestamp.compareTo(o.getTimestamp());

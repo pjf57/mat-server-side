@@ -39,7 +39,12 @@ public class RtrAuditLog extends BaseLog {
 		this.data = data;
 		this.takers = takers;
 	}
-		
+
+	@Override
+	public String getType() {
+		return "RTR";
+	}
+
 
 	public OutputPort getSourcePort() {
 		return getSrcElement().getOutputs().get(sourcePort);

@@ -25,6 +25,12 @@ public class LkuAuditLog extends BaseLog {
 		this.result = result;
 		this.data = data;
 	}
+	
+	@Override
+	public String getType() {
+		return "LKU";
+	}
+	
 
 	public Element getRequester() {
 		return getSrcElement();

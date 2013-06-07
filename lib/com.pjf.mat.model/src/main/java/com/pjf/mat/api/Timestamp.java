@@ -33,8 +33,18 @@ public class Timestamp implements Comparable<Timestamp>{
 		microticks = init;
 	}
 
+	/**
+	 * @return timestamp in microticks
+	 */
 	public long getMicroticks() {
 		return microticks;
+	}
+	
+	/**
+	 * @return length of a microtick in ns
+	 */
+	public long getMicrotickSize() {
+		return nsBase;
 	}
 	
 	@Override

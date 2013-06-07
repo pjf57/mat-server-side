@@ -13,6 +13,10 @@ public class EventLog extends BaseLog {
 		this.dispValue = dispValue;
 	}
 
+	@Override
+	public String getType() {
+		return "EVT";
+	}
 
 	
 	public OutputPort getSourcePort() {
