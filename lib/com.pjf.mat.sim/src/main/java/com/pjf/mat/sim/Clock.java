@@ -14,6 +14,7 @@ public class Clock extends Thread implements ClockTick{
 	private int counter;
 	private boolean shutdown;
 	private int timestampOrigin;		// 32 bit origin of timestamp
+	private boolean running;
 	
 	public Clock(SimAccess host, int periodMs, MatLogger logger) {
 		this.logger = logger;
@@ -24,8 +25,16 @@ public class Clock extends Thread implements ClockTick{
 		counter = 0;
 		shutdown = false;
 		timestampOrigin = -1;
+		running = false;
 	}
 	
+	@Override
+	public void start() {
+		if (!running) {
+			super.start();
+			running = true;
+		}
+	}
 	public void reset() {
 		this.timestamp = 0;
 	}
