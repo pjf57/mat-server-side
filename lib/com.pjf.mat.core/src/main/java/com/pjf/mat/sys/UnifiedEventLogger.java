@@ -103,22 +103,8 @@ public class UnifiedEventLogger {
 		List<TimeOrdered> logs = new ArrayList<TimeOrdered>();
 		store.drainTo(logs);
 		notificationHandler.notifyUnifiedEventLog(logs);		
-//		while (!store.isEmpty()) {
-//			try {
-//				TimeOrdered log = store.take();
-//				notifyOne(log);
-//			} catch (InterruptedException e) {
-//				logger.warn("logAndClear() - interrupted - " + e.getMessage());
-//			}
-//		}
 	}
 	
-	private void notifyOne(TimeOrdered log) {
-		List<TimeOrdered> logs = new ArrayList<TimeOrdered>();
-		logs.add(log);
-		notificationHandler.notifyUnifiedEventLog(logs);
-	}
-
 	public void shutdown() {
 		pumper.shutdown();		
 	}
