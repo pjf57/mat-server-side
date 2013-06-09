@@ -1,5 +1,7 @@
 package com.pjf.mat.sys;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import org.apache.log4j.Logger;
@@ -71,35 +73,50 @@ public class UnifiedEventLogger {
 	 */
 	private void pump() {
 		if (lastAddedTs != null) {
+			List<TimeOrdered> logs = new ArrayList<TimeOrdered>();
 			while (true) {
 				TimeOrdered first = store.peek();
 				if (first == null) {
 					break;
 				}
 				long diffNs = lastAddedTs.diffNs(first.getTimestamp());
-				if (diffNs < 1000000L * (long) windowMs) {
+				if (diffNs < 100L * (long) windowMs) {
+					logger.debug("pump() diff is " + diffNs + " - breaking.");
 					break;
 				}
+				logger.debug("pump() diff is " + diffNs + " - logging.");
 				TimeOrdered log;
 				try {
 					log = store.take();
-					notificationHandler.notifyUnifiedEventLog(log);
+					logs.add(log);
 				} catch (InterruptedException e) {
 					logger.warn("pump() - interrupted - " + e.getMessage());
 				}
+			}
+			if (!logs.isEmpty()) {
+				notificationHandler.notifyUnifiedEventLog(logs);				
 			}
 		}
 	}
 	
 	public void flush(){
-		while (!store.isEmpty()) {
-			try {
-				TimeOrdered log = store.take();
-				notificationHandler.notifyUnifiedEventLog(log);
-			} catch (InterruptedException e) {
-				logger.warn("logAndClear() - interrupted - " + e.getMessage());
-			}
-		}
+		List<TimeOrdered> logs = new ArrayList<TimeOrdered>();
+		store.drainTo(logs);
+		notificationHandler.notifyUnifiedEventLog(logs);		
+//		while (!store.isEmpty()) {
+//			try {
+//				TimeOrdered log = store.take();
+//				notifyOne(log);
+//			} catch (InterruptedException e) {
+//				logger.warn("logAndClear() - interrupted - " + e.getMessage());
+//			}
+//		}
+	}
+	
+	private void notifyOne(TimeOrdered log) {
+		List<TimeOrdered> logs = new ArrayList<TimeOrdered>();
+		logs.add(log);
+		notificationHandler.notifyUnifiedEventLog(logs);
 	}
 
 	public void shutdown() {

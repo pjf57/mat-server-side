@@ -117,7 +117,11 @@ public class UDPComms extends BaseComms implements Comms {
 		// now wait till we have response back
 		// TODO add timeout
 		logger.info("getHWSignature() - waiting for signatue from HW ...");
-		hwSigSem.acquire(HWSIG_TIMEOUT_MS);
+		try {
+			hwSigSem.acquire(HWSIG_TIMEOUT_MS);
+		} catch (Exception e) {
+			logger.debug("getHWSignature(): Exception in acquiring semaphore.");
+		}
 		if (hwSigSem.timedOut()) {
 			throw new Exception("Request for HW Signature timed out");
 		}

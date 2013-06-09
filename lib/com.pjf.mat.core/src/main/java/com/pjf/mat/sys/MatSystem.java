@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -72,8 +73,10 @@ public abstract class MatSystem {
 		}
 
 		@Override
-		public void notifyUnifiedEventLog(TimeOrdered log) {
-			logger.info("Unified Event Log: " + log);			
+		public void notifyUnifiedEventLog(List<TimeOrdered> logs) {
+			for (TimeOrdered log : logs) {
+				logger.info("Unified Event Log: " + log);
+			}
 		}
 		
 	}

@@ -1,6 +1,7 @@
 package com.pjf.mat.api;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface NotificationCallback {
 	/**
@@ -38,6 +39,6 @@ public interface NotificationCallback {
 	 * 
 	 * @param log
 	 */
-	public void notifyUnifiedEventLog(TimeOrdered log);
+	public void notifyUnifiedEventLog(List<TimeOrdered> logs);
 
 }
