@@ -21,8 +21,9 @@ public class StringAttribute implements Attribute, Cloneable {
 	private String value;
 	private final AttrSysType sysType;
 	private final int configId;
+	private final int order;
 	
-	public StringAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr) throws Exception {
+	public StringAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr, int order) throws Exception {
 		this.parent = el;
 		this.name = name;
 		this.configId = configId;
@@ -31,14 +32,16 @@ public class StringAttribute implements Attribute, Cloneable {
 		if (defaultStr != null) {
 			setValue(defaultStr);
 		}
+		this.order = 99;
 	}
 
-	public StringAttribute(Element el, String name, int configId, AttrSysType sysType) throws Exception {
+	public StringAttribute(Element el, String name, int configId, AttrSysType sysType, int order) throws Exception {
 		this.parent = el;
 		this.name = name;
 		this.configId = configId;
 		this.sysType = sysType;
 		this.value = "";
+		this.order = order;
 	}
 
 	@Override
@@ -57,10 +60,15 @@ public class StringAttribute implements Attribute, Cloneable {
 	}
 	
 	@Override
+	public int getOrder() {
+		return order;
+	}
+	
+	@Override
 	public StringAttribute clone(Element newParent) {
 		StringAttribute attr = null;
 		try {
-			attr = new StringAttribute(newParent,name,configId,sysType,getValue());
+			attr = new StringAttribute(newParent,name,configId,sysType,getValue(),getOrder());
 		} catch (Exception e) {
 			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
 		}

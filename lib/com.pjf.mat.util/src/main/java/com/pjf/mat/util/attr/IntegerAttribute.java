@@ -11,13 +11,13 @@ public class IntegerAttribute extends StringAttribute {
 	private final static Logger logger = Logger.getLogger(IntegerAttribute.class);
 	protected int value;
 
-	public IntegerAttribute(Element el, String name, int configId, AttrSysType sysType) throws Exception {
-		super(el,name,configId,sysType);
+	public IntegerAttribute(Element el, String name, int configId, AttrSysType sysType, int order) throws Exception {
+		super(el,name,configId,sysType,order);
 		value = 0;
 	}
 
-	public IntegerAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr) throws Exception {
-		super(el,name,configId,sysType);
+	public IntegerAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr, int order) throws Exception {
+		super(el,name,configId,sysType,order);
 		value = 0;
 		if (defaultStr != null) {
 			value = Integer.parseInt(defaultStr);
@@ -38,7 +38,7 @@ public class IntegerAttribute extends StringAttribute {
 	public IntegerAttribute clone(Element newParent) {
 		IntegerAttribute attr = null;
 		try {
-			attr = new IntegerAttribute(newParent, getName(),getConfigId(),getSysType(),getValue());
+			attr = new IntegerAttribute(newParent, getName(),getConfigId(),getSysType(),getValue(),getOrder());
 		} catch (Exception e) {
 			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
 		}

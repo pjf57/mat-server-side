@@ -17,6 +17,8 @@ public interface Attribute extends Cloneable {
 	/** @model */
 	public int getConfigId();
 	
+	public int getOrder();
+	
 	public AttrSysType getSysType();
 	
 	public Element getParent();

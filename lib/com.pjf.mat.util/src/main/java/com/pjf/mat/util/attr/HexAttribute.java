@@ -10,8 +10,8 @@ import com.pjf.mat.util.Conversion;
 public class HexAttribute extends IntegerAttribute {
 	private final static Logger logger = Logger.getLogger(HexAttribute.class);
 
-	public HexAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr) throws Exception {
-		super(el, name, configId, sysType);
+	public HexAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr, int order) throws Exception {
+		super(el, name, configId, sysType,order);
 		if (defaultStr != null) {
 			setValue(defaultStr);
 		}
@@ -31,7 +31,7 @@ public class HexAttribute extends IntegerAttribute {
 	public IntegerAttribute clone(Element newParent) {
 		HexAttribute attr = null;
 		try {
-			attr = new HexAttribute(newParent,getName(),getConfigId(),getSysType(),getValue());
+			attr = new HexAttribute(newParent,getName(),getConfigId(),getSysType(),getValue(),getOrder());
 		} catch (Exception e) {
 			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
 		}

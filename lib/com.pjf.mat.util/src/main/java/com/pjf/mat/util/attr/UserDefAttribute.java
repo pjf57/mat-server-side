@@ -23,25 +23,28 @@ public class UserDefAttribute implements Attribute, Cloneable {
 	private final AttrSysType sysType;
 	private final int configId;
 	private String converter;
+	private final int order;
 	
-	public UserDefAttribute(Element parent, String name, int configId, String converter, AttrSysType sysType, String defaultStr) throws Exception {
+	public UserDefAttribute(Element parent, String name, int configId, String converter, AttrSysType sysType, String defaultStr, int order) throws Exception {
 		this.parent = parent;
 		this.name = name;
 		this.configId = configId;
 		this.sysType = sysType;
 		this.converter = converter;
 		this.value = "";
+		this.order = order;
 		if (defaultStr != null) {
 			setValue(defaultStr);
 		}
 	}
 
-	public UserDefAttribute(Element el, String name, int configId, AttrSysType sysType) throws Exception {
+	public UserDefAttribute(Element el, String name, int configId, AttrSysType sysType, int order) throws Exception {
 		this.parent = el;
 		this.name = name;
 		this.configId = configId;
 		this.sysType = sysType;
 		this.value = "";
+		this.order = order;
 	}
 
 	@Override
@@ -63,7 +66,7 @@ public class UserDefAttribute implements Attribute, Cloneable {
 	public UserDefAttribute clone(Element newParent) {
 		UserDefAttribute attr = null;
 		try {
-			attr = new UserDefAttribute(newParent,name,configId,converter,sysType,getValue());
+			attr = new UserDefAttribute(newParent,name,configId,converter,sysType,getValue(),getOrder());
 		} catch (Exception e) {
 			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
 		}
@@ -114,6 +117,11 @@ public class UserDefAttribute implements Attribute, Cloneable {
 	@Override
 	public Element getParent() {
 		return parent;
+	}
+
+	@Override
+	public int getOrder() {
+		return order;
 	}
 
 }

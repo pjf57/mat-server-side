@@ -19,8 +19,8 @@ public class EnumAttribute extends IntegerAttribute {
 	private final static Logger logger = Logger.getLogger(EnumAttribute.class);
 	private SortedSet<EnumValue> values;
 
-	public EnumAttribute(Element el, String name, int configId, AttrSysType sysType) throws Exception {
-		super(el, name, configId, sysType);
+	public EnumAttribute(Element el, String name, int configId, AttrSysType sysType, int order) throws Exception {
+		super(el, name, configId, sysType,order);
 		values = new TreeSet<EnumValue>();
 	}
 	
@@ -81,7 +81,7 @@ public class EnumAttribute extends IntegerAttribute {
 	public EnumAttribute clone(Element newParent) {
 		EnumAttribute attr = null;
 		try {
-			attr = new EnumAttribute(newParent,getName(),getConfigId(),getSysType());
+			attr = new EnumAttribute(newParent,getName(),getConfigId(),getSysType(),getOrder());
 			attr.value = value;
 			attr.values = values;
 		} catch (Exception e) {

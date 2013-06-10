@@ -143,6 +143,11 @@ public class MatInterfaceModel implements MatModel {
 				String attrConfigS = props.getProperty(a + ".config");
 				String sysTypeS = props.getProperty(a + ".systype");
 				String defaultS = props.getProperty(a + ".default");
+				String orderS = props.getProperty(a + ".order");
+				int order = 99;
+				if (orderS != null) {
+					order = Integer.parseInt(orderS);
+				}
 				AttrSysType sysType = AttrSysType.NORMAL;
 				if (sysTypeS != null) {
 					sysType = AttrSysType.valueOf(sysTypeS);
@@ -153,23 +158,23 @@ public class MatInterfaceModel implements MatModel {
 				}
 				int configId = Integer.parseInt(attrConfigS);
 				if (attrType.equals("int")) {
-					attr = new IntegerAttribute(type,attrName,configId,sysType,defaultS);
+					attr = new IntegerAttribute(type,attrName,configId,sysType,defaultS,order);
 					type.addAttribute(attr);
 				} else if (attrType.equals("hex")) {
-					attr = new HexAttribute(type,attrName,configId,sysType,defaultS);
+					attr = new HexAttribute(type,attrName,configId,sysType,defaultS,order);
 					type.addAttribute(attr);
 				} else if (attrType.equals("string")) {
-					attr = new StringAttribute(type,attrName,configId,sysType,defaultS);
+					attr = new StringAttribute(type,attrName,configId,sysType,defaultS,order);
 					type.addAttribute(attr);
 				} else if (attrType.equals("float")) {
-					attr = new FloatAttribute(type,attrName,configId,sysType,defaultS);
+					attr = new FloatAttribute(type,attrName,configId,sysType,defaultS,order);
 					type.addAttribute(attr);
 				} else if (attrType.equals("enum")) {
-					attr = loadEnumAttribute(type,a,attrName,configId,sysType,defaultS);			
+					attr = loadEnumAttribute(type,a,attrName,configId,sysType,defaultS,order);			
 					type.addAttribute(attr);
 				} else if (attrType.startsWith("string:")) {
 					String converter = attrType.split(":")[1];
-					attr = new UserDefAttribute(type,attrName,configId,converter,sysType,defaultS);
+					attr = new UserDefAttribute(type,attrName,configId,converter,sysType,defaultS,order);
 					type.addAttribute(attr);
 				} else {
 					logger.error("Unrecognized attribute type: " + attrType);
@@ -252,6 +257,7 @@ public class MatInterfaceModel implements MatModel {
 	 * @param configId
 	 * @param sysType
 	 * @param defaultStr 
+	 * @param order 
 	 * @return the completed attribute
 	 * @throws Exception 
 	 * 
@@ -259,8 +265,8 @@ public class MatInterfaceModel implements MatModel {
 	 * 	type1.attr2.enum1=name:value:description
 	 */
 	private Attribute loadEnumAttribute(Element type, String prefix, String attrName, 
-			int configId, AttrSysType sysType, String defaultStr) throws Exception {
-		EnumAttribute attr = new EnumAttribute(type,attrName,configId,sysType);
+			int configId, AttrSysType sysType, String defaultStr, int order) throws Exception {
+		EnumAttribute attr = new EnumAttribute(type,attrName,configId,sysType,order);
 		int en = 1;
 		boolean keepReading = true;
 		while (keepReading) {
