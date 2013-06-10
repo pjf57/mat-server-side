@@ -119,7 +119,7 @@ public class StringAttribute implements Attribute, Cloneable {
 		return sysType;
 	}
 	
-	public Element getParentt() {
+	public Element getParent() {
 		return parent;
 	}
 	

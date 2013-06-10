@@ -112,7 +112,7 @@ public class UserDefAttribute implements Attribute, Cloneable {
 	}
 
 	@Override
-	public Element getParentt() {
+	public Element getParent() {
 		return parent;
 	}
 

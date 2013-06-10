@@ -26,14 +26,14 @@ public class SymbolEncode implements AttrConfigGenerator {
 			for (String sym : symbols) {
 				String[] args = sym.split(":");
 				if (args.length != 2) {				
-					throw new Exception("Bad value for config item: " + attr.getName() + " on CB " + attr.getParentt().getShortName());
+					throw new Exception("Bad value for config item: " + attr.getName() + " on CB " + attr.getParent().getShortName());
 				}
 				String symName = args[0];
 				String idStr = args[1];
 				symName = symName + "        ";
 				symName = symName.substring(0,8);
 				int symId = Integer.parseInt(idStr);
-				int elId = attr.getParentt().getId();
+				int elId = attr.getParent().getId();
 				ConfigItem cfg1 = new ConfigItem(elId,AttrSysType.NORMAL,
 						MatElementDefs.EL_MDF_C_ISYM_L,	symName.substring(0,4));
 				ConfigItem cfg2 = new ConfigItem(elId,AttrSysType.NORMAL,

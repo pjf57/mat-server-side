@@ -19,7 +19,7 @@ public interface Attribute extends Cloneable {
 	
 	public AttrSysType getSysType();
 	
-	public Element getParentt();
+	public Element getParent();
 	
 	public void setValue(String value) throws Exception;
 	
