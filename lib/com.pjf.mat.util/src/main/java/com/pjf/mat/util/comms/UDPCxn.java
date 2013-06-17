@@ -33,14 +33,17 @@ public class UDPCxn {
 
 		public UDPCxn(String dstIPadr) throws SocketException, UnknownHostException {
     		String[] parts = dstIPadr.split("[.]");
-    		if (parts.length != 4) {
-    			throw new UnknownHostException("ip addr must have 4 parts");
+    		if (parts.length == 4) {
+    			// treat as numeric IP
+    			byte[] target = new byte[4];
+    			for (int i = 0; i<4; i++) {
+    				target[i] = (byte) Integer.parseInt(parts[i]);
+    			}
+    			dstIP = InetAddress.getByAddress(target);
+    		} else {
+    			// treat as named host
+    			dstIP = InetAddress.getByName(dstIPadr);    			
     		}
-			byte[] target = new byte[4];
-			for (int i = 0; i<4; i++) {
-				target[i] = (byte) Integer.parseInt(parts[i]);
-			}
-			dstIP = InetAddress.getByAddress(target);
 			initialise();
     	}
 

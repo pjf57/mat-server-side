@@ -37,6 +37,8 @@ public class SymbolEventFeed implements EventFeedInt {
 	private UDPCxn cxn;
 	private final String ip;
 	private int port;
+	private EventFeedCallbackInt cb;
+	private long totalSent = 0L;
 
 	private class EncodedFeedItemList {
 		private int itemCount;
@@ -90,12 +92,24 @@ public class SymbolEventFeed implements EventFeedInt {
 		this.ip = ip;
 		this.port = port;
 		this.cxn = new UDPCxn(ip);
+		this.cb = null;
 	}
 
 	public SymbolEventFeed(UDPCxn cxn, int port) throws SocketException, UnknownHostException {
 		this.ip = cxn.getIp();
 		this.port = port;
 		this.cxn = cxn;
+		this.cb = null;
+	}
+	
+	
+	/**
+	 * Set callback to receive progress notifications
+	 * 
+	 * @param cb
+	 */
+	public void setCb(EventFeedCallbackInt cb) {
+		this.cb = cb;
 	}
 
 	/**
@@ -118,12 +132,27 @@ public class SymbolEventFeed implements EventFeedInt {
 			}
 			logger.info("Sending stream of " + list.getItemCount() + " ticks with " + list.getLength() + " bytes.");
 			sendData(list);
+			totalSent += list.getItemCount();
+			notifyState("running",totalSent);
 			if (gapMs > 0) {
 				Thread.sleep(gapMs);
 			}
 		}
+		notifyState("stopped",totalSent);
 	}
 	
+	/**
+	 * Notify event feed state to cb if exists
+	 * 
+	 * @param status
+	 * @param totalSent
+	 */
+	private void notifyState(String status, long totalSent) {
+		if (cb != null) {
+			cb.notifyEventFeedState(status, totalSent);
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see com.pjf.marketsim.EventFeedInt#sendTradeBurst(java.lang.String, int, int, int)
 	 */
