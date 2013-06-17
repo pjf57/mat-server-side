@@ -1,5 +1,7 @@
 package com.pjf.mat.sim;
 
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -30,13 +32,13 @@ import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.model.TickdataResult;
 import com.pjf.mat.sim.types.Event;
-import com.pjf.mat.util.comms.BaseComms;
+import com.pjf.mat.util.comms.UDPSktComms;
 import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.sim.router.Router;
 import com.pjf.mat.api.LkuResult;
 
 
-public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
+public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 	private final static Logger logger = Logger.getLogger(MatSim.class);
 	private final Map<Integer,SimElement> simElements; // keyed on el id
 	private final LkuAuditLogger lkuAuditLogger;
@@ -46,7 +48,8 @@ public class MatSim extends BaseComms implements Comms, SimHost, SimAccess {
 	private boolean stopOnError;
 	private int nextTickref;
 	
-	public MatSim(MatLogger logger) {
+	public MatSim(MatLogger logger) throws SocketException, UnknownHostException {
+		super("localhost");
 		stopOnError = true;
 		simElements = new HashMap<Integer,SimElement>();
 		clk = new Clock(this,10,logger);

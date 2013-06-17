@@ -2,8 +2,10 @@ package com.pjf.mat.util.comms;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -13,6 +15,7 @@ import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.EventLog;
+import com.pjf.mat.api.InMsgCallbackInt;
 import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.LkuResult;
@@ -28,11 +31,10 @@ import com.pjf.mat.util.ElementStatus;
 
 public abstract class BaseComms implements Comms {
 	private final static Logger logger = Logger.getLogger(BaseComms.class);
-
 	private static final int ORDER_PORT = 5000;
-	
 	protected MatApi mat;
 	protected Collection<NotificationCallback> notificationSubscribers;
+	protected Map<Integer,InMsgCallbackInt> inMsgSubscribers;
 
 	// basis states
 	protected final byte BS_INIT	= 1;
@@ -42,12 +44,19 @@ public abstract class BaseComms implements Comms {
 
 	public BaseComms() {
 		notificationSubscribers = new ArrayList<NotificationCallback>();
+		inMsgSubscribers = new HashMap<Integer,InMsgCallbackInt>();
 	}
 	
 	public void setMat(MatApi mat) {
 		this.mat = mat;
 	}
-	
+
+	@Override
+	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb) {
+		inMsgSubscribers.put(new Integer(port), cb);
+		logger.info("subscribeIncomingMsgs() " + cb + " subscribed to port " + port); 
+	}
+
 	public UDPCxn getCxn() {
 		return null;
 	}
@@ -140,7 +149,11 @@ public abstract class BaseComms implements Comms {
 	 * @param msg - the raw message
 	 */
 	protected void processIncomingMsg(int port, byte[] msg) {
-		logger.debug("--> RX MSG (port=" + port + ") " + toHexString(msg,0,msg.length-1));
+		logger.info("--> RX MSG (port=" + port + ") " + toHexString(msg,0,msg.length-1));
+		InMsgCallbackInt cb = inMsgSubscribers.get(new Integer(port));
+		if (cb != null) {
+			cb.processIncomingMsg(port,msg);
+		}
 		if (port == ORDER_PORT) {
 			processIncomingOrder(msg);
 		}

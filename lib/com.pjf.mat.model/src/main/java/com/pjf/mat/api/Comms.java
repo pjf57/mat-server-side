@@ -16,4 +16,5 @@ public interface Comms {
 	public void addNotificationSubscriber(NotificationCallback subscriber);
 	public long getHWSignature() throws Exception;
 	public void synchroniseClock(int syncOrigin) throws Exception;
+	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb);
 }

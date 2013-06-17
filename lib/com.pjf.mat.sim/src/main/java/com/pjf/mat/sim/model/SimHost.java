@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.model;
 
+import com.pjf.mat.api.InMsgCallbackInt;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.types.Event;
 
@@ -84,4 +85,12 @@ public interface SimHost {
 	 * @throws Exception 
 	 */
 	public TickdataResult tickdata(int elementId, int tickref, int tickdataKey) throws Exception;
+
+	/**
+	 * Subscribe for incoming comms messages on a given port
+	 * @param port	port to listen to
+	 * @param cb	message handler
+	 */
+	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb);
+
 }

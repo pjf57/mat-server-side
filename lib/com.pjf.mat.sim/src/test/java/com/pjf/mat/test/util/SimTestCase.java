@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
+import com.pjf.mat.api.InMsgCallbackInt;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.SimHost;
@@ -69,6 +70,12 @@ public class SimTestCase extends TestCase implements SimHost {
 	public TickdataResult tickdata(int elementId, int tickref, int tickdataKey) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -14,77 +14,33 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.impl.element.SystemCmd;
-import com.pjf.mat.util.comms.BaseComms;
-import com.pjf.mat.util.comms.RxPkt;
+import com.pjf.mat.util.comms.UDPSktComms;
 import com.pjf.mat.util.comms.UDPCxn;
 
-public class UDPComms extends BaseComms implements Comms {
+public class UDPComms extends UDPSktComms implements Comms {
 	private final static Logger logger = Logger.getLogger(UDPComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
-	private UDPCxn cxn;
-	private final String ip;
 	private int port;
-	private final Reader reader;
 	private long hwSig;
 	private TimeoutSemaphore hwSigSem;
-	
-	
-	
-	class Reader extends Thread {
-		private boolean keepGoing = true;
-		private int rspCnt;
-		
-		public Reader() {
-			super();
-			this.setName("reader");
-		}
-		
-		@Override
-		public void run() {
-			logger.info("Receiver starting");
-			try {
-				while (keepGoing) {
-					RxPkt pkt = cxn.rcv();
-					if (keepGoing) {
-						rspCnt++;
-						processIncomingMsg(pkt.getPort(),pkt.getData());
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			logger.info("Receiver stopped.");
-		}
-		
 
-		public void shutdown() {
-			logger.info("Receiver shutting down");
-			keepGoing = false;
-			cxn.close();
-		}
-	}
-	
-	
 	public UDPComms(String ip, int port) throws SocketException, UnknownHostException {
-		cxn = new UDPCxn(ip);
-		this.ip = ip;
+		super(ip);
 		this.port = port;
 		this.mat = null;
 		hwSigSem = new TimeoutSemaphore(0);
 		hwSig = 0;
-		this.reader = new Reader();
-		reader.start();
 	}
 
 	
 	public void shutdown() {
-		reader.shutdown();
+		super.shutdown();
 		hwSigSem.release();
 	}
 	
 	@Override
 	public void sendConfig(Collection<Element> elements) throws Exception {
-		logger.info("Preparing to send config to ip " + ip + " port " + port);
+		logger.info("Preparing to send config to ip:" + getIp() + " port:" + port);
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
 		for (Element el : elements) {
 			hwEncodeConfig(el,cfg);
