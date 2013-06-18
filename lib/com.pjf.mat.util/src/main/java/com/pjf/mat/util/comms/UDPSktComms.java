@@ -20,8 +20,6 @@ public abstract class UDPSktComms extends BaseComms {
 	private final Reader reader;
 	private final String ip;
 	private int rspCnt;
-
-
 	
 	class Reader extends Thread {
 		private boolean keepGoing = true;
@@ -37,6 +35,7 @@ public abstract class UDPSktComms extends BaseComms {
 			try {
 				while (keepGoing) {
 					RxPkt pkt = cxn.rcv();
+					logger.info("Got pkt");
 					if (keepGoing) {
 						rspCnt++;
 						processIncomingMsg(pkt.getPort(),pkt.getData());

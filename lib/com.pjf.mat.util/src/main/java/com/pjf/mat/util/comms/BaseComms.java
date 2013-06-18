@@ -29,7 +29,7 @@ import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.util.Conversion;
 import com.pjf.mat.util.ElementStatus;
 
-public abstract class BaseComms implements Comms {
+public abstract class BaseComms implements Comms, InMsgCallbackInt {
 	private final static Logger logger = Logger.getLogger(BaseComms.class);
 	private static final int ORDER_PORT = 5000;
 	protected MatApi mat;
@@ -148,7 +148,8 @@ public abstract class BaseComms implements Comms {
 	 * @param port - UDP port on which data was received
 	 * @param msg - the raw message
 	 */
-	protected void processIncomingMsg(int port, byte[] msg) {
+	@Override
+	public void processIncomingMsg(int port, byte[] msg) {
 		logger.info("--> RX MSG (port=" + port + ") " + toHexString(msg,0,msg.length-1));
 		InMsgCallbackInt cb = inMsgSubscribers.get(new Integer(port));
 		if (cb != null) {

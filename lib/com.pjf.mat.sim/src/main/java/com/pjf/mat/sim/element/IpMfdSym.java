@@ -127,50 +127,68 @@ public class IpMfdSym extends BaseElement implements SimElement, InMsgCallbackIn
 	public void processIncomingMsg(int port, byte[] msg) {
 		logger.info("processIncomingMsg() from port " + port);
 		if (started) {
-			if (msg.length != 17) {
-				logger.error("Received msg with incorrect size: " + msg.length);
-			} else {
-				String sym = new String(msg,0,7);
-				int priceInt = Conversion.getIntFromBytes(msg,8,4);
-				int priceNdp = msg[12];
-				int volInt = Conversion.getIntFromBytes(msg,13,4);
-				float price = priceInt;
-				price = price / (10^priceNdp);
-				float vol = volInt;
-				TickData td;
-				try {
-					td = new TickData(MarketEventType.TRADE,sym,price,vol);
-					Integer instrId = c_symbols.get(td.symbol);
-					if (instrId != null) {
-						// this symbol is to be handled
-						OpConfig opc = new OpConfig();
-						switch (td.evt.get()) {
-						case MarketEventType.TRADE 	: opc = c_trade;	break;
-						case MarketEventType.BID 	: opc = c_bid;		break;
-						case MarketEventType.ASK 	: opc = c_ask;		break;
-						}
-						if (opc.isOn) {
-							// send event
-							float data;
-							if (opc.type == op_t.PRICE) {
-								data = td.price;
-							} else {
-								data = td.volume;
-							}
-							int tickref = host.getTickref();
-							TickRefData trd = new TickRefData(tickref,c_mktId,instrId,td);
-							putTickrefData(tickref,trd);
-							Event evt = new Event(host.getCurrentSimTime(),elementId, opc.port, instrId, tickref, data);
-							host.publishEvent(evt,LATENCY);							
-						}
-					}
-				} catch (Exception e) {
-					logger.error("processIncomingMsg() - exception: " + e.getMessage());
-				}
+			int numEvts = msg[0];
+			int upto = 1;
+			for (int n=1; n<=numEvts; n++) {
+				processEvent(n,msg,upto);
+				upto += 18;
 			}
 		}
 	}
-
+	
+	/**
+	 * Process one event
+	 * 
+	 * @param n		event number in pkt
+	 * @param msg	base message from which to extract data
+	 * @param start	start point in base message
+	 */
+	private void processEvent(int n, byte[] msg, int start) {
+		int u = start;
+		int evtType = msg[u];
+		u++;
+		String sym = new String(msg,u,8);
+		u += 8;
+		int priceInt = Conversion.getIntFromBytes(msg,u,4);
+		u += 4;
+		int priceNdp = msg[12];
+		int volInt = Conversion.getIntFromBytes(msg,u,4);
+		u += 4;
+		float price = priceInt;
+		price = price / (10^priceNdp);
+		float vol = volInt;
+		TickData td;
+		try {
+			td = new TickData(evtType,sym,price,vol);
+			Integer instrId = c_symbols.get(td.symbol);
+			if (instrId != null) {
+				// this symbol is to be handled
+				countEvent();
+				OpConfig opc = new OpConfig();
+				switch (td.evt.get()) {
+				case MarketEventType.TRADE 	: opc = c_trade;	break;
+				case MarketEventType.BID 	: opc = c_bid;		break;
+				case MarketEventType.ASK 	: opc = c_ask;		break;
+				}
+				if (opc.isOn) {
+					// send event
+					float data;
+					if (opc.type == op_t.PRICE) {
+						data = td.price;
+					} else {
+						data = td.volume;
+					}
+					int tickref = host.getTickref();
+					TickRefData trd = new TickRefData(tickref,c_mktId,instrId,td);
+					putTickrefData(tickref,trd);
+					Event evt = new Event(host.getCurrentSimTime(),elementId, opc.port, instrId, tickref, data);
+					host.publishEvent(evt,LATENCY);							
+				}
+			}
+		} catch (Exception e) {
+			logger.error("processIncomingMsg() - exception: " + e.getMessage());
+		}
+	}
 
 
 	@Override
