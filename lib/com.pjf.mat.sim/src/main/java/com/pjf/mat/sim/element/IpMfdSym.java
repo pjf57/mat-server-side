@@ -30,7 +30,7 @@ import com.pjf.mat.util.data.TickData;
  */
 public class IpMfdSym extends BaseElement implements SimElement, InMsgCallbackInt {
 	private final static Logger logger = Logger.getLogger(IpMfdSym.class);
-	private static final int LATENCY = 0;	// input to output latency (microticks)
+	private static final int LATENCY = 3;	// network (microticks)
 	private OpConfig c_trade;				// output handling for trade events
 	private OpConfig c_bid;					// output handling for bid events
 	private OpConfig c_ask;					// output handling for ask events
@@ -129,8 +129,10 @@ public class IpMfdSym extends BaseElement implements SimElement, InMsgCallbackIn
 		if (started) {
 			int numEvts = msg[0];
 			int upto = 1;
+			int latency = 0;
 			for (int n=1; n<=numEvts; n++) {
-				processEvent(n,msg,upto);
+				processEvent(n,msg,upto,latency);
+				latency += LATENCY;
 				upto += 18;
 			}
 		}
@@ -143,7 +145,7 @@ public class IpMfdSym extends BaseElement implements SimElement, InMsgCallbackIn
 	 * @param msg	base message from which to extract data
 	 * @param start	start point in base message
 	 */
-	private void processEvent(int n, byte[] msg, int start) {
+	private void processEvent(int n, byte[] msg, int start, int latency) {
 		int u = start;
 		int evtType = msg[u];
 		u++;
@@ -182,7 +184,7 @@ public class IpMfdSym extends BaseElement implements SimElement, InMsgCallbackIn
 					TickRefData trd = new TickRefData(tickref,c_mktId,instrId,td);
 					putTickrefData(tickref,trd);
 					Event evt = new Event(host.getCurrentSimTime(),elementId, opc.port, instrId, tickref, data);
-					host.publishEvent(evt,LATENCY);							
+					host.publishEvent(evt,latency);							
 				}
 			}
 		} catch (Exception e) {
