@@ -246,4 +246,12 @@ public class BasicElement implements Element {
 		}
 		return out;
 	}
+
+	@Override
+	public void removeAllConnections() {
+		for (InputPort ip : inputs) {
+			ip.removeCxn();
+		}
+		
+	}
 }

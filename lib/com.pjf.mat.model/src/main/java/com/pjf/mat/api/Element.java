@@ -33,4 +33,9 @@ public interface Element extends Item {
 	 * @throws Exception if no such output
 	 */
 	public OutputPort getOutput(String name) throws Exception;
+	
+	/**
+	 * Remove all connections to this element
+	 */
+	public void removeAllConnections();
 }

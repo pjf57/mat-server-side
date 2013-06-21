@@ -35,4 +35,5 @@ public interface MatModel {
 	public Properties getProperties();
 
 	public Set<String> getTypes();
+
 }

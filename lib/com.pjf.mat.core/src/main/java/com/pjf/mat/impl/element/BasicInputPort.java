@@ -46,6 +46,10 @@ public class BasicInputPort implements InputPort {
 		this.src = src;
 	}
 
+	@Override
+	public void removeCxn() {
+		this.src = null;
+	}
 
 	@Override
 	public OutputPort getConnectedSrc() {
@@ -63,6 +67,4 @@ public class BasicInputPort implements InputPort {
 		}
 		return buf.toString();
 	}
-
-
 }

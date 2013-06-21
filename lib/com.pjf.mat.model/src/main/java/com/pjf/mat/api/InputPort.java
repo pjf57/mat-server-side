@@ -7,4 +7,5 @@ public interface InputPort extends Port {
 	public void connectTo(OutputPort src);
 	/** @model */
 	public OutputPort getConnectedSrc();	// rtn null if not connected
+	public void removeCxn();
 }
