@@ -158,9 +158,9 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 	@Override
 	public void shutdown() {
 		logger.info("shutdown(): shutting down ...");
-		for (SimElement se : simElements.values()) {
-			se.shutdown();
-		}
+//		for (SimElement se : simElements.values()) {
+//			se.shutdown();
+//		}
 		router.shutdown();
 		clk.shutdown();
 	}

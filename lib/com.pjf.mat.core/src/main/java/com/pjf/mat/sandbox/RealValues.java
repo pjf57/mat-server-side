@@ -22,7 +22,7 @@ public class RealValues {
 		System.out.println(Integer.toHexString(Float.floatToIntBits(250f)));
 		System.out.println(Integer.toHexString(Float.floatToIntBits(300f)));
 		System.out.println(Integer.toHexString(Float.floatToIntBits(30f)));
-		System.out.println(Float.intBitsToFloat(Integer.parseInt("42aa0000", 16)));
+		System.out.println(Float.intBitsToFloat(Integer.parseInt("419d999a", 16)));
 		System.out.println(Float.intBitsToFloat(Integer.parseInt("42770000", 16)));
 		System.out.println(Float.intBitsToFloat(Integer.parseInt("41b80000", 16)));
 	}

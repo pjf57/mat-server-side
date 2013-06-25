@@ -34,7 +34,9 @@ public class Clock extends Thread implements ClockTick{
 			super.start();
 			running = true;
 		}
+		shutdown = false;
 	}
+	
 	public void reset() {
 		this.timestamp = 0;
 	}
@@ -53,10 +55,23 @@ public class Clock extends Thread implements ClockTick{
 	
 	@Override
 	public void run() {
-		while (!shutdown) {
-			processMicroTick();
+		boolean didLog = false;
+		while (running) {
+			while (!shutdown) {
+				didLog = false;
+				processMicroTick();
+			}
+			if (!didLog) {
+				logger.info("Shutdown.");
+				didLog = true;
+			}
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				// ignore
+			}
 		}
-		logger.info("Shutdown.");
+		logger.info("Clock exited.");
 	}
 
 	private void processMicroTick() {
@@ -80,6 +95,18 @@ public class Clock extends Thread implements ClockTick{
 		return timestamp;
 	}
 
+	/**
+	 * Permanently kill the clock
+	 */
+	public void kill() {
+		logger.debug("Killing the clock ...");
+		shutdown = true;
+		running = false;
+	}
+
+	/**
+	 * Temp shutdown the clock. Can revive again with start()
+	 */
 	public void shutdown() {
 		logger.debug("Shutting down ...");
 		shutdown = true;
