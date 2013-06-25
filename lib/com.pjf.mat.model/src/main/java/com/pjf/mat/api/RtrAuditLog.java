@@ -9,7 +9,6 @@ import java.util.Set;
  *
  */
 public class RtrAuditLog extends BaseLog {
-	private final int sourcePort;			// port on the element that produced the event 
 	private final float data;
 	private final Set<Element> takers;		// element that took the event
 	private final int qTimeMicroticks;		// queueing time
@@ -32,8 +31,7 @@ public class RtrAuditLog extends BaseLog {
 	 */
 	public RtrAuditLog(Timestamp timestamp, Element source, int sourcePort, Set<Element> takers, 
 			int instrumentId, int tickref, int qTime, int deltime, float data) {
-		super(timestamp,instrumentId,tickref,source);
-		this.sourcePort = sourcePort;
+		super(timestamp,instrumentId,tickref,source,source.getOutputs().get(sourcePort));
 		this.qTimeMicroticks = qTime;
 		this.delTimeMicroticks = deltime;
 		this.data = data;
@@ -43,11 +41,6 @@ public class RtrAuditLog extends BaseLog {
 	@Override
 	public String getType() {
 		return "RTR";
-	}
-
-
-	public OutputPort getSourcePort() {
-		return getSrcElement().getOutputs().get(sourcePort);
 	}
 
 	public float getData() {
@@ -72,7 +65,7 @@ public class RtrAuditLog extends BaseLog {
 		buf.append("Router:");
 		buf.append(getTimestamp());
 		buf.append(": src:"); buf.append(getShortName(getSrcElement())); buf.append(":"); 
-		buf.append(getSrcElement().getOutputs().get(sourcePort).getName());
+		buf.append(getSourcePort().getName());
 		buf.append(",instr="); buf.append(getInstrumentId());
 		buf.append(",tickref="); buf.append(getTickref());
 		buf.append(" Data="); buf.append(data);
@@ -101,7 +94,6 @@ public class RtrAuditLog extends BaseLog {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + Float.floatToIntBits(data);
-		result = prime * result + sourcePort;
 		return result;
 	}
 
@@ -117,9 +109,6 @@ public class RtrAuditLog extends BaseLog {
 		if (Float.floatToIntBits(data) != Float.floatToIntBits(other.data))
 			return false;
 		if (!super.equals(obj)) {
-			return false;
-		}
-		if (sourcePort != other.sourcePort) {
 			return false;
 		}
 		return true;

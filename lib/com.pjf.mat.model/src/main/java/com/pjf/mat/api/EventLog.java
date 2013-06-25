@@ -1,14 +1,12 @@
 package com.pjf.mat.api;
 
 public class EventLog extends BaseLog {
-	private final OutputPort output;
 	private final int rawValue;
 	private final String dispValue;
 	
 	public EventLog(Timestamp timestamp, Element src, OutputPort op, int instrumentId,
 			int tickref, int rawValue, String dispValue) {
-		super(timestamp,instrumentId,tickref,src);
-		this.output = op;
+		super(timestamp,instrumentId,tickref,src,op);
 		this.rawValue = rawValue;
 		this.dispValue = dispValue;
 	}
@@ -16,11 +14,6 @@ public class EventLog extends BaseLog {
 	@Override
 	public String getType() {
 		return "EVT";
-	}
-
-	
-	public OutputPort getSourcePort() {
-		return output;
 	}
 
 	public int getRawValue() {
@@ -38,9 +31,9 @@ public class EventLog extends BaseLog {
 		buf.append(getTimestamp()); 
 		buf.append(": ");
 		buf.append(getSrcElement().getShortName()); 
-		if (output != null) {
+		if (getSourcePort() != null) {
 			buf.append(":");
-			buf.append(output.getName());
+			buf.append(getSourcePort().getName());
 		}
 		buf.append(" InstrId=");
 		buf.append(getInstrumentId());
