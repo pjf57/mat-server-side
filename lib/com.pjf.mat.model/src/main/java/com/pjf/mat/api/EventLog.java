@@ -20,6 +20,7 @@ public class EventLog extends BaseLog {
 		return rawValue;
 	}
 
+	@Override
 	public String getDispValue() {
 		return dispValue;
 	}

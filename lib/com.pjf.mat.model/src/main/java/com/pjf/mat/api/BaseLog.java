@@ -14,6 +14,8 @@ public class BaseLog implements TimeOrdered {
 	private final int tickref;
 	private final Element srcElement;		// null if missing
 	private final OutputPort sourcePort;	// null if missing
+	private final String srcName;			// alternative to srcElement
+	private final String srcPortName;		// alternative to sourcePort
 	
 	public BaseLog(Timestamp timestamp, int instrumentId, int tickref, Element srcElement) {
 		this.timestamp = timestamp;
@@ -21,14 +23,30 @@ public class BaseLog implements TimeOrdered {
 		this.tickref = tickref;
 		this.srcElement = srcElement;
 		this.sourcePort = null;
+		this.srcName = null;
+		this.srcPortName = null;
 	}
 
-	public BaseLog(Timestamp timestamp, int instrumentId, int tickref, Element srcElement, OutputPort sourcePort) {
+	public BaseLog(Timestamp timestamp, int instrumentId, int tickref, 
+			Element srcElement, OutputPort sourcePort) {
 		this.timestamp = timestamp;
 		this.instrumentId = instrumentId;
 		this.tickref = tickref;
 		this.srcElement = srcElement;
 		this.sourcePort = sourcePort;
+		this.srcName = null;
+		this.srcPortName = null;
+	}
+
+	public BaseLog(Timestamp timestamp, int instrumentId, int tickref, 
+			String srcElement, String sourcePort) {
+		this.timestamp = timestamp;
+		this.instrumentId = instrumentId;
+		this.tickref = tickref;
+		this.srcElement = null;
+		this.sourcePort = null;
+		this.srcName = srcElement;
+		this.srcPortName = sourcePort;
 	}
 
 	
@@ -66,13 +84,47 @@ public class BaseLog implements TimeOrdered {
 
 	@Override
 	public String toString() {
-		String ses = "";
-		if (srcElement != null) {
-			ses = srcElement.getShortName();
-		}
+		String ses = getSourceElementName();
 		return getTimestamp() + ":" + ses + ":" + getInstrumentId() +
 			"/" + getTickref();
 	}
+
+	/**
+	 * @return source element name or ""
+	 */
+	public String getSourceElementName() {
+		String s = "";
+		if (srcElement != null) {
+			s = srcElement.getShortName();
+		} else if (srcName != null) {
+			s = srcName;
+		}
+		return s;
+	}
+
+	/**
+	 * @return source port name or ""
+	 */
+	public String getSourcePortName() {
+		String s = "";
+		if (sourcePort != null) {
+			s = sourcePort.getName();
+		} else if (srcPortName != null) {
+			s = srcPortName;
+		}
+		return s;
+	}
+
+	/**
+	 * Template method
+	 * 
+	 * @return display value
+	 */
+	public String getDispValue() {
+		return "";
+	}
+	
+
 
 	@Override
 	public int hashCode() {
@@ -119,6 +171,6 @@ public class BaseLog implements TimeOrdered {
 			return false;
 		return true;
 	}
-	
+
 
 }
