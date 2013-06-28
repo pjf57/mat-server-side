@@ -66,7 +66,11 @@ public class BaseLog implements TimeOrdered {
 
 	@Override
 	public String toString() {
-		return getTimestamp() + ":" + srcElement.getShortName() + ":" + getInstrumentId() +
+		String ses = "";
+		if (srcElement != null) {
+			ses = srcElement.getShortName();
+		}
+		return getTimestamp() + ":" + ses + ":" + getInstrumentId() +
 			"/" + getTickref();
 	}
 
