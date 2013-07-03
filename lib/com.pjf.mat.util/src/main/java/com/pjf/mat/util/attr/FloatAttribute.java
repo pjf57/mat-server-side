@@ -11,8 +11,8 @@ public class FloatAttribute extends StringAttribute {
 	private final static Logger logger = Logger.getLogger(FloatAttribute.class);
 	private float value;
 
-	public FloatAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr, int order) throws Exception {
-		super(el,name,configId,sysType,order);
+	public FloatAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr, int order, String calcSpec) throws Exception {
+		super(el,name,configId,sysType,order,calcSpec);
 		value = 0;
 		if (defaultStr != null) {
 			setValue(defaultStr);
@@ -33,7 +33,7 @@ public class FloatAttribute extends StringAttribute {
 	public FloatAttribute clone(Element newParent) {
 		FloatAttribute attr = null;
 		try {
-			attr = new FloatAttribute(newParent,getName(),getConfigId(),getSysType(),getValue(),getOrder());
+			attr = new FloatAttribute(newParent,getName(),getConfigId(),getSysType(),getValue(),getOrder(),getCalcSpecs());
 		} catch (Exception e) {
 			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
 		}

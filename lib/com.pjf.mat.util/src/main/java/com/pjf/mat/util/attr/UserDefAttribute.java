@@ -24,8 +24,9 @@ public class UserDefAttribute implements Attribute, Cloneable {
 	private final int configId;
 	private String converter;
 	private final int order;
+	private final String calcSpec;
 	
-	public UserDefAttribute(Element parent, String name, int configId, String converter, AttrSysType sysType, String defaultStr, int order) throws Exception {
+	public UserDefAttribute(Element parent, String name, int configId, String converter, AttrSysType sysType, String defaultStr, int order, String calcSpec) throws Exception {
 		this.parent = parent;
 		this.name = name;
 		this.configId = configId;
@@ -36,15 +37,17 @@ public class UserDefAttribute implements Attribute, Cloneable {
 		if (defaultStr != null) {
 			setValue(defaultStr);
 		}
+		this.calcSpec = calcSpec;
 	}
 
-	public UserDefAttribute(Element el, String name, int configId, AttrSysType sysType, int order) throws Exception {
+	public UserDefAttribute(Element el, String name, int configId, AttrSysType sysType, int order, String calcSpec) throws Exception {
 		this.parent = el;
 		this.name = name;
 		this.configId = configId;
 		this.sysType = sysType;
 		this.value = "";
 		this.order = order;
+		this.calcSpec = calcSpec;
 	}
 
 	@Override
@@ -66,7 +69,7 @@ public class UserDefAttribute implements Attribute, Cloneable {
 	public UserDefAttribute clone(Element newParent) {
 		UserDefAttribute attr = null;
 		try {
-			attr = new UserDefAttribute(newParent,name,configId,converter,sysType,getValue(),getOrder());
+			attr = new UserDefAttribute(newParent,name,configId,converter,sysType,getValue(),getOrder(),getCalcSpecs());
 		} catch (Exception e) {
 			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
 		}
@@ -122,6 +125,16 @@ public class UserDefAttribute implements Attribute, Cloneable {
 	@Override
 	public int getOrder() {
 		return order;
+	}
+
+	@Override
+	public boolean isCalculated() {
+		return calcSpec != null;
+	}
+	
+	@Override
+	public String getCalcSpecs() {
+		return calcSpec;
 	}
 
 }

@@ -6,15 +6,19 @@ import javax.net.ssl.SSLEngineResult.Status;
 
 import org.apache.log4j.Logger;
 
+import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatModel;
+import com.pjf.mat.api.util.AttributeCalcInt;
 import com.pjf.mat.util.Conversion;
 
 public class MatInterface implements MatApi {
 	private final static Logger logger = Logger.getLogger(MatInterface.class);
+	private static final String CALCULATOR_PKG = "com.pjf.mat.config.calculators";
+
 	private final Comms comms;
 	private final MatModel model;
 	
@@ -47,6 +51,7 @@ public class MatInterface implements MatApi {
 
 	@Override
 	public void configureHW() throws Exception {
+		recalcCalculatedAttrs();
 		logger.info("About to encode the following configuration:");
 		for (Element el : model.getElements()){
 			logger.info("Element: " + el);
@@ -58,6 +63,33 @@ public class MatInterface implements MatApi {
 		}		
 	}
 	
+	/**
+	 * Recalculate all the calculated attributes in the model
+	 * @throws Exception 
+	 */
+	public void recalcCalculatedAttrs() throws Exception {
+		logger.info("Recalculating calculated attributes...");
+		for (Element el : model.getElements()){
+			for (Attribute attr : el.getAttributes()) {
+				if (attr.isCalculated()) {
+					String spec = attr.getCalcSpecs();
+					String tokens[] = spec.split(":");
+					String calcClassName = tokens[0];
+					String arg = "";
+					if (tokens.length > 1) {
+						arg = tokens[1];
+					}
+					// load the class and execute the calculation
+					String cn = CALCULATOR_PKG + "." + calcClassName;
+					AttributeCalcInt calc = (AttributeCalcInt) ClassLoader.getSystemClassLoader().loadClass(cn).newInstance();
+					calc.calculate(attr.getName(), el, arg);
+				}
+			}
+			logger.info("Element: " + el);
+		}
+	}
+
+
 	@Override
 	public void sendCmd(Cmd cmd) {
 		try {

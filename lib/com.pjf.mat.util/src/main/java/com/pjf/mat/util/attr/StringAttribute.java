@@ -22,8 +22,9 @@ public class StringAttribute implements Attribute, Cloneable {
 	private final AttrSysType sysType;
 	private final int configId;
 	private final int order;
+	private final String calcSpec;
 	
-	public StringAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr, int order) throws Exception {
+	public StringAttribute(Element el, String name, int configId, AttrSysType sysType, String defaultStr, int order, String calcSpec) throws Exception {
 		this.parent = el;
 		this.name = name;
 		this.configId = configId;
@@ -33,15 +34,17 @@ public class StringAttribute implements Attribute, Cloneable {
 			setValue(defaultStr);
 		}
 		this.order = 99;
+		this.calcSpec = calcSpec;
 	}
 
-	public StringAttribute(Element el, String name, int configId, AttrSysType sysType, int order) throws Exception {
+	public StringAttribute(Element el, String name, int configId, AttrSysType sysType, int order, String calcSpec) throws Exception {
 		this.parent = el;
 		this.name = name;
 		this.configId = configId;
 		this.sysType = sysType;
 		this.value = "";
 		this.order = order;
+		this.calcSpec = calcSpec;
 	}
 
 	@Override
@@ -68,7 +71,7 @@ public class StringAttribute implements Attribute, Cloneable {
 	public StringAttribute clone(Element newParent) {
 		StringAttribute attr = null;
 		try {
-			attr = new StringAttribute(newParent,name,configId,sysType,getValue(),getOrder());
+			attr = new StringAttribute(newParent,name,configId,sysType,getValue(),getOrder(),getCalcSpecs());
 		} catch (Exception e) {
 			logger.error("Unable to set default value [" + getValue() + "] on [" + this + "]");
 		}
@@ -136,6 +139,16 @@ public class StringAttribute implements Attribute, Cloneable {
 		ConfigItem cfg = new ConfigItem(parent.getId(),getSysType(), getConfigId(), getEncodedData());
 		configs.add(cfg);
 		return configs;
+	}
+
+	@Override
+	public boolean isCalculated() {
+		return calcSpec != null;
+	}
+	
+	@Override
+	public String getCalcSpecs() {
+		return calcSpec;
 	}
 
 }

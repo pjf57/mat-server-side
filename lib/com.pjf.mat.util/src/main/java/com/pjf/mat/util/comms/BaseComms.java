@@ -429,24 +429,27 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 	protected void hwEncodeConfig(Element el, EncodedConfigItemList cfg) throws Exception {	
 		// encode attribute values
 		for (Attribute attr : el.getAttributes()) {
-			switch (attr.getSysType()) {
-			
-			case NORMAL:
-				List<ConfigItem> configs = attr.getConfigList();
-				cfg.putConfigList(configs);
-				break;
+			if (attr.getConfigId() >= 0) {
+				// Only configure attrs that are not pseudo attrs
+				switch (attr.getSysType()) {
 				
-			case SYSTEM:
-				cfg.putSystemItem(el.getId(),attr.getConfigId(),0,attr.getEncodedData());
-				break;
-				
-			case LKU_TARGET:
-				cfg.putSystemItem(el.getId(),MatElementDefs.EL_C_CFG_LKU_TRG,0,
-						(attr.getConfigId() << 8) | (attr.getEncodedData() & 0xff));
-				break;
-				
-			default:
-				throw new Exception("Dont know how to encode: " + attr);
+				case NORMAL:
+					List<ConfigItem> configs = attr.getConfigList();
+					cfg.putConfigList(configs);
+					break;
+					
+				case SYSTEM:
+					cfg.putSystemItem(el.getId(),attr.getConfigId(),0,attr.getEncodedData());
+					break;
+					
+				case LKU_TARGET:
+					cfg.putSystemItem(el.getId(),MatElementDefs.EL_C_CFG_LKU_TRG,0,
+							(attr.getConfigId() << 8) | (attr.getEncodedData() & 0xff));
+					break;
+					
+				default:
+					throw new Exception("Dont know how to encode: " + attr);
+				}
 			}
 		}		
 		// encode connections

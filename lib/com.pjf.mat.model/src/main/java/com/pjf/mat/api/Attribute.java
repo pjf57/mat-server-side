@@ -39,4 +39,14 @@ public interface Attribute extends Cloneable {
 	/** get list of config items to configure this attribute */
 	public List<ConfigItem> getConfigList() throws Exception;
 
+	/**
+	 * @return true if the attribute is a calculated attribute
+	 */
+	public boolean isCalculated();
+	
+	/**
+	 * @return the calculation specs for the attribute, or null
+	 */
+	public String getCalcSpecs();
+
 }

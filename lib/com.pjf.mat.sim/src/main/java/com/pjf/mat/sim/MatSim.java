@@ -94,13 +94,16 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 		for (Element el : collection) {
 			// set attributes
 			for (Attribute attr : el.getAttributes()) {
-				List<ConfigItem> configs = attr.getConfigList();
-				for (ConfigItem cfg : configs) {
-					for (SimElement se : simElements.values()) {
-						se.putConfig(cfg);
+				if (attr.getConfigId() > 0) {
+					// only config items that are not pseudo-attrs
+					List<ConfigItem> configs = attr.getConfigList();
+					for (ConfigItem cfg : configs) {
+						for (SimElement se : simElements.values()) {
+							se.putConfig(cfg);
+						}
+						lkuAuditLogger.putConfig(cfg);
+						rtrAuditLogger.putConfig(cfg);
 					}
-					lkuAuditLogger.putConfig(cfg);
-					rtrAuditLogger.putConfig(cfg);
 				}
 			}
 			// set connections
