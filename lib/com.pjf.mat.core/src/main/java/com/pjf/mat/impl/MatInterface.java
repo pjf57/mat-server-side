@@ -1,6 +1,8 @@
 package com.pjf.mat.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.SSLEngineResult.Status;
 
@@ -70,23 +72,42 @@ public class MatInterface implements MatApi {
 	public void recalcCalculatedAttrs() throws Exception {
 		logger.info("Recalculating calculated attributes...");
 		for (Element el : model.getElements()){
-			for (Attribute attr : el.getAttributes()) {
-				if (attr.isCalculated()) {
-					String spec = attr.getCalcSpecs();
-					String tokens[] = spec.split(":");
-					String calcClassName = tokens[0];
-					String arg = "";
-					if (tokens.length > 1) {
-						arg = tokens[1];
-					}
-					// load the class and execute the calculation
-					String cn = CALCULATOR_PKG + "." + calcClassName;
-					AttributeCalcInt calc = (AttributeCalcInt) ClassLoader.getSystemClassLoader().loadClass(cn).newInstance();
-					calc.calculate(attr.getName(), el, arg);
-				}
-			}
-			logger.info("Element: " + el);
+			recalcElAttrs(el);
 		}
+	}
+
+
+	/**
+	 * Recalculate all the attributes for an element
+	 * 
+	 * @param el	the element
+	 * @return list of attributes that were recalculated
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws ClassNotFoundException
+	 * @throws Exception
+	 */
+	public List<Attribute> recalcElAttrs(Element el) throws InstantiationException,
+			IllegalAccessException, ClassNotFoundException, Exception {
+		List<Attribute> attrList = new ArrayList<Attribute>();
+		for (Attribute attr : el.getAttributes()) {
+			if (attr.isCalculated()) {
+				String spec = attr.getCalcSpecs();
+				String tokens[] = spec.split(":");
+				String calcClassName = tokens[0];
+				String arg = "";
+				if (tokens.length > 1) {
+					arg = tokens[1];
+				}
+				// load the class and execute the calculation
+				String cn = CALCULATOR_PKG + "." + calcClassName;
+				AttributeCalcInt calc = (AttributeCalcInt) ClassLoader.getSystemClassLoader().loadClass(cn).newInstance();
+				calc.calculate(attr.getName(), el, arg);
+				attrList.add(attr);
+				logger.info("Recalculated attr: " + attr.toString() + " on " + el.getShortName());
+			}
+		}
+		return attrList;
 	}
 
 
