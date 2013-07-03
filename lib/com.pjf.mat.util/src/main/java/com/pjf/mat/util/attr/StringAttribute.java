@@ -151,4 +151,9 @@ public class StringAttribute implements Attribute, Cloneable {
 		return calcSpec;
 	}
 
+	@Override
+	public int getRawValue() {
+		return 0;
+	}
+
 }

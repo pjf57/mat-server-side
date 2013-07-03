@@ -136,5 +136,11 @@ public class UserDefAttribute implements Attribute, Cloneable {
 	public String getCalcSpecs() {
 		return calcSpec;
 	}
+	
+	@Override
+	public int getRawValue() {
+		return 0;
+	}
+
 
 }

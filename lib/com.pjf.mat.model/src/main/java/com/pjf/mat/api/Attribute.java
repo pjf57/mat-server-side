@@ -12,9 +12,17 @@ public interface Attribute extends Cloneable {
 	
 	/** @model */
 	public String getName();
-	/** @model */
+	
+	/** 
+	 * @return intepreted value of attr
+	 */
 	public String getValue();
-	/** @model */
+
+	/**
+	 * @return raw value of attr
+	 */
+	public int getRawValue();
+	
 	public int getConfigId();
 	
 	public int getOrder();

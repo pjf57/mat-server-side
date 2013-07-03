@@ -36,6 +36,17 @@ public class EnumAttribute extends IntegerAttribute {
 		}
 		return ev.getName();
 	}
+	
+	@Override
+	public int getRawValue() {
+		EnumValue ev = lookupByValue(value);
+		if (ev == null) {
+			return -1;
+		}
+		return ev.getValue();
+	}
+
+
 
 	@Override
 	public void setValue(String value) throws Exception {

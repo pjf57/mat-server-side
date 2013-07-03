@@ -287,7 +287,16 @@ public class MatInterfaceModel implements MatModel {
 				if (tokens.length > 2) {
 					description = tokens[2];
 				}
-				EnumValue ev = new EnumValue(tokens[0],Integer.parseInt(tokens[1]),en,description);
+				String sval = tokens[1];
+				EnumValue ev = null;
+				if (sval.charAt(0) == 'x') {
+					// intepret as hex
+					String hv = sval.substring(1);
+					ev = new EnumValue(tokens[0],Integer.parseInt(hv,16),en,description);
+				} else {
+					// interpret as decimal
+					ev = new EnumValue(tokens[0],Integer.parseInt(sval),en,description);
+				}
 				attr.addEnumValue(ev);
 				en++;
 			}

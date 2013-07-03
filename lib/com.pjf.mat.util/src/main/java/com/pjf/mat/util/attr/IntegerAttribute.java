@@ -28,6 +28,12 @@ public class IntegerAttribute extends StringAttribute {
 	public String getValue() {
 		return Integer.toString(value);
 	}
+	
+	@Override
+	public int getRawValue() {
+		return value;
+	}
+
 
 	@Override
 	public void setValue(String value) throws Exception {
