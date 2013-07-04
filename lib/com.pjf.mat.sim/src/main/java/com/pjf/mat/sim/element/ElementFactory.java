@@ -24,7 +24,7 @@ public class ElementFactory {
 		case MatElementDefs.EL_TYP_EMA:			el = new EMA(id,host);			break;
 		case MatElementDefs.EL_TYP_MACD:		el = new MACD(id,host);			break;
 		case MatElementDefs.EL_TYP_LOGIC_4IP:	el = new L4IP(id,host);			break;
-		case MatElementDefs.EL_TYP_ARITH_4IP:	el = new L4IP(id,host);			break;
+		case MatElementDefs.EL_TYP_ARITH_4IP:	el = new A4IP(id,host);			break;
 		case MatElementDefs.EL_TYP_HLOC:		el = new HLOC(id,host);			break;
 		case MatElementDefs.EL_TYP_ATR:			el = new ATR(id,host);			break;
 		case MatElementDefs.EL_TYP_ADX:			el = new ADX(id,host);			break;

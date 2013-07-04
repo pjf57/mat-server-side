@@ -52,9 +52,9 @@ public class A4IP extends BaseElement implements SimElement {
 		
 	public A4IP(int id, SimHost host) {
 		super(id, MatElementDefs.EL_TYP_ARITH_4IP,host);
-		lastValue = new FloatValue[MatElementDefs.MAX_INSTRUMENTS][5];
+		lastValue = new FloatValue[MatElementDefs.MAX_INSTRUMENTS][4];
 		for (int instr=0; instr<MatElementDefs.MAX_INSTRUMENTS; instr++) {
-			for (int ip=1; ip<5; ip++) {
+			for (int ip=0; ip<4; ip++) {
 				lastValue[instr][ip] = new FloatValue();
 			}
 		}
@@ -69,10 +69,10 @@ public class A4IP extends BaseElement implements SimElement {
 		case MatElementDefs.EL_A4IP_C_K2: c_k2.set(cfg.getFloatData());	break;
 		case MatElementDefs.EL_A4IP_C_OPS: 
 			c_lop = cfg.getRawData() & 0xf;
-			c_ysel = (cfg.getRawData() / 16) & 0x3;
-			c_ysel = (cfg.getRawData() / 64) & 0x3;
-			c_cf2 = (cfg.getRawData() / 256) & 0xf;
-			c_cf1 = (cfg.getRawData() / 4096) & 0xf;
+			c_ysel = (cfg.getRawData() >> 4) & 0x3;
+			c_xsel = (cfg.getRawData() >> 6) & 0x3;
+			c_cf2 = (cfg.getRawData() >> 8) & 0xf;
+			c_cf1 = (cfg.getRawData() >> 12) & 0xf;
 			break;
 		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
 		}
@@ -81,7 +81,7 @@ public class A4IP extends BaseElement implements SimElement {
 	@Override
 	protected void processEvent(int input, Event evt) {
 		int instr = evt.getInstrument_id();
-		lastValue[instr][input].set(evt.getFloatData());
+		lastValue[instr][input-1].set(evt.getFloatData());
 		FloatValue x = (c_xsel == 0) ? lastValue[instr][1] : c_k1;
 		FloatValue y = (c_ysel == 0) ? lastValue[instr][3] : c_k2;
 		FloatValue p = fn(c_cf1,lastValue[instr][0],x);
