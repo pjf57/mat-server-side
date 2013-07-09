@@ -182,7 +182,7 @@ public class DummyComms extends BaseComms implements Comms {
 	}
 
 	@Override
-	public void synchroniseClock(int syncOrigin) throws Exception {
+	public void synchroniseClock(long syncOrigin) throws Exception {
 		logger.info("synchroniseClock(" + syncOrigin + ")");		
 	}
 

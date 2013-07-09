@@ -14,6 +14,7 @@ import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatModel;
+import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.api.util.AttributeCalcInt;
 import com.pjf.mat.util.Conversion;
 
@@ -23,6 +24,7 @@ public class MatInterface implements MatApi {
 
 	private final Comms comms;
 	private final MatModel model;
+	private long clockOriginMs;
 	
 	public MatInterface(Comms comms, MatModel model) throws Exception {
 		this.comms = comms;
@@ -167,10 +169,17 @@ public class MatInterface implements MatApi {
 
 
 	@Override
-	public void syncClock(int origin) throws Exception {
-		comms.synchroniseClock(origin);	
+	public void syncClock(long ltime) throws Exception {
+		this.clockOriginMs = ltime;
+		comms.synchroniseClock(ltime);	
 	}
 
+	@Override
+	public Timestamp getCurrentTime() {
+		long ctime = System.currentTimeMillis();
+		Timestamp ts = new Timestamp(clockOriginMs,ctime);
+		return ts;
+	}
 
 	@Override
 	public void reqLkuAuditLogs() throws Exception {

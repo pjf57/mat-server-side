@@ -122,6 +122,12 @@ public class IpMfdSym extends BaseElement implements SimElement, InMsgCallbackIn
 			break;
 		}
 	}
+	
+	@Override
+	protected void processConfigDone() {
+		host.subscribeIncomingMsgs(c_port, this);
+		started = true;	
+	}
 
 	@Override
 	public void processIncomingMsg(int port, byte[] msg) {

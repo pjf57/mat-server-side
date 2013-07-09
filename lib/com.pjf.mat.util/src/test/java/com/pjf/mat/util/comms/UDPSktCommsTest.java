@@ -57,7 +57,7 @@ public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
 		}
 
 		@Override
-		public void synchroniseClock(int syncOrigin) throws Exception {
+		public void synchroniseClock(long syncOrigin) throws Exception {
 		}
 		
 	}

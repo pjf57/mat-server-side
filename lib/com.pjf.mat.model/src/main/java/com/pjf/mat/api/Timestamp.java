@@ -34,6 +34,18 @@ public class Timestamp implements Comparable<Timestamp>{
 	}
 
 	/**
+	 * Construct timestamp with origin and current time
+	 * 
+	 * @param originMs - the origin for the timestamp
+	 * @param timeMs - the desired time for the timestamp
+	 */
+	public Timestamp(long originMs, long timeMs) {
+		long timeSinceOrigin = timeMs - originMs;
+		long mt = timeSinceOrigin / nsBase;
+		microticks = mt * 1000000L;
+	}
+
+	/**
 	 * @return timestamp in microticks
 	 */
 	public long getMicroticks() {
@@ -94,6 +106,9 @@ public class Timestamp implements Comparable<Timestamp>{
 
 	@Override
 	public String toString() {
+		if (!isValid()) {
+			return "none";
+		}
 		String str;
 		long ns = microticks * nsBase;
 		BigDecimal secs = new BigDecimal(ns);

@@ -9,7 +9,7 @@ package com.pjf.mat.api;
  *
  */
 public class BaseLog implements TimeOrdered {
-	private final Timestamp timestamp;
+	protected Timestamp timestamp;
 	private final int instrumentId;
 	private final int tickref;
 	private final Element srcElement;		// null if missing
@@ -49,7 +49,21 @@ public class BaseLog implements TimeOrdered {
 		this.srcPortName = sourcePort;
 	}
 
-	
+	/**
+	 * Construct a baselog with only a timestamp
+	 * 
+	 * @param timestamp
+	 */
+	public BaseLog(Timestamp timestamp) {
+		this.timestamp = timestamp;
+		this.instrumentId = 0;
+		this.tickref = 0;
+		this.srcElement = null;
+		this.sourcePort = null;
+		this.srcName = null;
+		this.srcPortName = null;
+	}
+
 	public Timestamp getTimestamp() {
 		return timestamp;
 	}

@@ -19,6 +19,7 @@ import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.NotificationCallback;
+import com.pjf.mat.api.OrderLog;
 import com.pjf.mat.api.RtrAuditLog;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.TimeOrdered;
@@ -26,11 +27,12 @@ import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
 import com.pjf.mat.impl.element.BasicCmd;
 import com.pjf.mat.sim.MatSim;
+import com.pjf.mat.util.SystemServicesInt;
 import com.pjf.mat.util.comms.BaseComms;
 import com.pjf.mat.util.comms.UDPCxn;
 
 
-public abstract class MatSystem {
+public abstract class MatSystem implements SystemServicesInt {
 	protected final static Logger logger = Logger.getLogger(MatSystem.class);
 	private MatInterface mat = null;
 	private MatSim sim = null;
@@ -78,12 +80,17 @@ public abstract class MatSystem {
 				logger.info("Unified Event Log: " + log);
 			}
 		}
+
+		@Override
+		public void notifyOrderReceipt(OrderLog order) {
+			logger.error("notifyOrderReceipt() - not supported");			
+		}
 		
 	}
 
 	public MatSystem(){
 		notificationHandler = new NotificationHandler();
-		ueLogger = new UnifiedEventLogger(notificationHandler);
+		ueLogger = new UnifiedEventLogger(notificationHandler,false);
 	}
 	
 	
@@ -138,7 +145,7 @@ public abstract class MatSystem {
 				public void debug(String message) {
 					logger.debug(message);
 				}
-			});
+			}, this);
 			comms = sim;
 		} else if (System.getProperty("dummy") != null) {
 			comms = new DummyComms();
@@ -294,6 +301,11 @@ public abstract class MatSystem {
 			throw new Exception("Cant load properties file",e);
 		}
 		return props;
+	}
+
+	@Override
+	public UDPCxn getCxnOrLoopback(String ip) throws SocketException, UnknownHostException {
+		throw new UnknownHostException("not supported");
 	}
 
 }

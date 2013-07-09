@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.element;
 
+
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.model.SimElement;
@@ -8,6 +9,7 @@ import com.pjf.mat.sim.model.TickDataBasicResult;
 import com.pjf.mat.sim.model.TickDataSymbolResult;
 import com.pjf.mat.sim.model.TickDataVolPriceResult;
 import com.pjf.mat.sim.types.Event;
+import com.pjf.mat.util.comms.UDPCxn;
 import com.pjf.mat.api.util.ConfigItem;
 
 /**
@@ -31,6 +33,8 @@ public class RMO extends BaseElement implements SimElement {
 	private int c_minVol;
 	private int c_maxVol;
 	private int c_maxPosn;
+	private int c_ip;
+	private int c_port;
 	private int[] posn;
 	private float[] pnl;
 	
@@ -50,8 +54,8 @@ public class RMO extends BaseElement implements SimElement {
 		case MatElementDefs.EL_RMO_C_MIN_VOL: 	c_minVol = cfg.getRawData();	break;
 		case MatElementDefs.EL_RMO_C_MAX_VOL: 	c_maxVol = cfg.getRawData();	break;
 		case MatElementDefs.EL_RMO_C_MAX_POSN: 	c_maxPosn = cfg.getRawData();	break;
-		case MatElementDefs.EL_RMO_C_UDPPORT: 	/* ignore */					break;
-		case MatElementDefs.EL_RMO_C_UDPIP: 	/* ignore */					break;
+		case MatElementDefs.EL_RMO_C_UDPPORT: 	c_port = cfg.getRawData();		break;
+		case MatElementDefs.EL_RMO_C_UDPIP: 	c_ip = cfg.getRawData();		break;
 		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
 		}
 	}
@@ -115,15 +119,63 @@ public class RMO extends BaseElement implements SimElement {
 										" Place ORDER: " + dir + " " + orderVol +
 										" " + symbol + " at " + price +
 										" posn=" + posn[instr] + " pnl=" + pnl[instr]);
+								transmitOrder(symbol,dir,price,orderVol);
 								Event evtOut = new Event(host.getCurrentSimTime(),elementId,0,evt.getInstrument_id(),evt.getTickref(), logPrice);
 								publishEvent(evtOut,1);	
 							}
 						}
 					}
 				} catch (Exception e) {
-					logger.error("Error getting tickdata - " + e.getMessage());
+					logger.error("Error placing order - " + e.getMessage());
 				}
 			}
+		}
+	}
+
+	/**
+	 * Encode and transmit the order
+	 * 
+	 * 
+	 * 		        8b     8b     64b        32b         32b
+	 *			-----------------------------------------------------
+	 *			|msg Size|B/S|instr_symbol|price fp(4)|volume uint32|
+	 *			-----------------------------------------------------
+	 *
+	 * @param symbol
+	 * @param dir
+	 * @param price
+	 * @param orderVol
+	 */
+	private void transmitOrder(String symbol, String dir, float price, int orderVol) {
+		// Encode the data
+		byte[] data = new byte[19];
+		int upto = 0;
+		data[upto++] = 17;
+		data[upto++] = (byte) dir.charAt(0);
+		for (int i=0; i<8; i++) {
+			data[i+2] = (byte) symbol.charAt(i);
+		}
+		upto += 8;
+		int iprice = Float.floatToIntBits(price);
+		data[upto++] = (byte) ((iprice >> 24) & 0xff);
+		data[upto++] = (byte) ((iprice >> 16) & 0xff);
+		data[upto++] = (byte) ((iprice >> 8) & 0xff);
+		data[upto++] = (byte) (iprice & 0xff);
+		data[upto++] = (byte) ((orderVol >> 24) & 0xff);
+		data[upto++] = (byte) ((orderVol >> 16) & 0xff);
+		data[upto++] = (byte) ((orderVol >> 8) & 0xff);
+		data[upto++] = (byte) (orderVol & 0xff);
+		// send it
+		String ip = "" + c_ip;
+		if (c_ip == 0) {
+			ip = "direct";
+		}
+		UDPCxn cxn;
+		try {
+			cxn = host.getCxnOrLoopback(ip);
+			cxn.send(data, c_port);
+		} catch (Exception e) {
+			logger.error("Unable to get cxn or send data - " + e.getMessage());
 		}
 	}
 

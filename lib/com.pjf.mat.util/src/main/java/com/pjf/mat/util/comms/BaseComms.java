@@ -22,6 +22,7 @@ import com.pjf.mat.api.LkuResult;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.NotificationCallback;
+import com.pjf.mat.api.OrderLog;
 import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.api.RtrAuditLog;
 import com.pjf.mat.api.Status;
@@ -31,7 +32,6 @@ import com.pjf.mat.util.ElementStatus;
 
 public abstract class BaseComms implements Comms, InMsgCallbackInt {
 	private final static Logger logger = Logger.getLogger(BaseComms.class);
-	private static final int ORDER_PORT = 5000;
 	protected MatApi mat;
 	protected Collection<NotificationCallback> notificationSubscribers;
 	protected Map<Integer,InMsgCallbackInt> inMsgSubscribers;
@@ -153,20 +153,30 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 		logger.info("--> RX MSG (port=" + port + ") " + toHexString(msg,0,msg.length-1));
 		InMsgCallbackInt cb = inMsgSubscribers.get(new Integer(port));
 		if (cb != null) {
+			// send the message to the subscriber
 			cb.processIncomingMsg(port,msg);
-		}
-		if (port == ORDER_PORT) {
-			processIncomingOrder(msg);
-		}
-		else {
-			byte cmd = msg[0];
-			switch (cmd) {
-			case MatElementDefs.ST_TX_HWSIG: processHWSigMsg(msg); break;
-			case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg);	break;
-			case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg); break;
-			case MatElementDefs.ST_TX_LKUAUDIT: processLkuAuditLogMsg(msg); break;
-			case MatElementDefs.ST_TX_RTRAUDIT: processRtrAuditLogMsg(msg); break;
-			default: logger.error("Unkown status message received: [" + Conversion.toHexString(msg)); break;
+		} else {
+			// process the message here
+			if (port == MatElementDefs.CS_RMO_ORDER_PORT) {
+				processIncomingOrder(msg);
+			} else if (port == MatElementDefs.CS_PORT_LOGGER) {
+				byte cmd = msg[0];
+				switch (cmd) {
+				case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg); break;
+				default: logger.error("Unkown message received on logger port: [" + Conversion.toHexString(msg)); break;
+				}
+			} else if (port == MatElementDefs.CS_PORT_STATUS) {
+				byte cmd = msg[0];
+				switch (cmd) {
+				case MatElementDefs.ST_TX_HWSIG: processHWSigMsg(msg); break;
+				case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg);	break;
+				case MatElementDefs.ST_TX_LKUAUDIT: processLkuAuditLogMsg(msg); break;
+				case MatElementDefs.ST_TX_RTRAUDIT: processRtrAuditLogMsg(msg); break;
+				default: logger.error("Unkown message received on status port: [" + Conversion.toHexString(msg)); break;
+				}
+			} else {
+				logger.error("Unkown message received on port " + port +
+						" [" + Conversion.toHexString(msg));
 			}
 		}
 	}
@@ -488,6 +498,12 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 			int volume = Conversion.getIntFromBytes(msg,upto,4);	
 			logger.info("---- Order: side=" + side + ", symbol=[" + symbol + 
 					"], price=" + price + ", vol=" + volume);
+			// create Order log
+			OrderLog order = new OrderLog(symbol,side,price,volume);
+			for (NotificationCallback subscriber : notificationSubscribers) {
+				subscriber.notifyOrderReceipt(order);
+			}
+
 		} else {
 			logger.error("Order with incorrect len received. Len=" + len);
 		}

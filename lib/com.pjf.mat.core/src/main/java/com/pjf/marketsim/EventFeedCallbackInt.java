@@ -1,8 +1,8 @@
 package com.pjf.marketsim;
 
+
 /**
  * Callback interface through which an event feeder communicates its status
- *
  */
 public interface EventFeedCallbackInt {
 	
@@ -13,5 +13,5 @@ public interface EventFeedCallbackInt {
 	 * @param totalsent		total number of events sent so far
 	 */
 	public void notifyEventFeedState(String state, long totalSent);
-
+	
 }

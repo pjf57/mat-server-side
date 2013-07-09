@@ -13,7 +13,7 @@ public class Clock extends Thread implements ClockTick{
 	private int timestamp;
 	private int counter;
 	private boolean shutdown;
-	private int timestampOrigin;		// 32 bit origin of timestamp
+	private long timestampOrigin;		// 32 bit origin of timestamp
 	private boolean running;
 	
 	public Clock(SimAccess host, int periodMs, MatLogger logger) {
@@ -41,7 +41,7 @@ public class Clock extends Thread implements ClockTick{
 		this.timestamp = 0;
 	}
 	
-	public int getOrigin() {
+	public long getOrigin() {
 		return timestampOrigin;
 	}
 	
@@ -117,7 +117,7 @@ public class Clock extends Thread implements ClockTick{
 		return "simtime=" + simTime + ", timestamp=" + timestamp;
 	}
 
-	public void sync(int syncOrigin) {
+	public void sync(long syncOrigin) {
 		timestampOrigin = syncOrigin;
 		simTime = new Timestamp(0);		
 	}

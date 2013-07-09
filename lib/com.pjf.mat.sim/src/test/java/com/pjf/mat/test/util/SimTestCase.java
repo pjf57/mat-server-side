@@ -1,5 +1,8 @@
 package com.pjf.mat.test.util;
 
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
 import junit.framework.TestCase;
 
 import org.apache.log4j.BasicConfigurator;
@@ -12,6 +15,7 @@ import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.model.TickdataResult;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.Conversion;
+import com.pjf.mat.util.comms.UDPCxn;
 
 
 public class SimTestCase extends TestCase implements SimHost {
@@ -76,6 +80,12 @@ public class SimTestCase extends TestCase implements SimHost {
 	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public UDPCxn getCxnOrLoopback(String ip) throws SocketException,
+			UnknownHostException {
+		throw new UnknownHostException("Not supported");
 	}
 
 }

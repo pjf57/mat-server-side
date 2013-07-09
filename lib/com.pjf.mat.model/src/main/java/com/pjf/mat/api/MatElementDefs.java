@@ -23,6 +23,15 @@ public class MatElementDefs {
 	public static final int EL_TYP_ADX			= 0x62;
 	public static final int EL_TYP_RMO			= 0x70;
 
+//	--------------------------------
+//	-- Standard communications ports
+//	--------------------------------
+
+	public static final int CS_PORT_CONFIG		= 2000;		// port for sending config
+	public static final int CS_PORT_STATUS		= 2001;		// port for status reports
+	public static final int CS_PORT_LOGGER		= 2002;		// port for logger reports
+	public static final int CS_RMO_ORDER_PORT 	= 3500;		// src port for RMO orders
+	
 
 //	------------------------------
 //	-- STATUS transmission types

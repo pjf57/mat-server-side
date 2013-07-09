@@ -26,7 +26,14 @@ public interface MatApi {
 	public void checkHWSignature() throws Exception;
 	
 	public long getSWSignature();
-	public void syncClock(int origin) throws Exception;
+	
+	public void syncClock(long originMs) throws Exception;
+	
+	/**
+	 * @return current time taking the syncClock into account
+	 */
+	public Timestamp getCurrentTime();
+	
 	public void reqLkuAuditLogs() throws Exception;
 	public void reqRtrAuditLogs() throws Exception;
 

@@ -109,10 +109,10 @@ public class UDPComms extends UDPSktComms implements Comms {
 
 
 	@Override
-	public void synchroniseClock(int syncOrigin) throws IOException {
+	public void synchroniseClock(long syncOriginMs) throws IOException {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
 		cfg.putCmdItem(0,MatElementDefs.EL_C_CLKSYNC_REQ | 0x80,0, 0);
-		logger.info("synchroniseClock(" + syncOrigin + "): encoded " + cfg.getLength() + " bytes");
+		logger.info("synchroniseClock(" + syncOriginMs + "): encoded " + cfg.getLength() + " bytes");
 		cxn.send(cfg.getData(),port);
 	}
 

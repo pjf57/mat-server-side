@@ -1,8 +1,12 @@
 package com.pjf.mat.sim.model;
 
+import java.net.SocketException;
+import java.net.UnknownHostException;
+
 import com.pjf.mat.api.InMsgCallbackInt;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.types.Event;
+import com.pjf.mat.util.comms.UDPCxn;
 
 /**
  * Interface for providing sim services to elements
@@ -92,5 +96,15 @@ public interface SimHost {
 	 * @param cb	message handler
 	 */
 	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb);
+	
+	/**
+	 * get a UDP connection, either a loopback or normal
+	 * 
+	 * @param ip ("direct" for loopback)
+	 * @return cxn
+	 * @throws SocketException
+	 * @throws UnknownHostException
+	 */
+	public UDPCxn getCxnOrLoopback(String ip) throws SocketException, UnknownHostException;
 
 }

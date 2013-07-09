@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import org.apache.log4j.Logger;
-
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.TimeOrdered;
 import com.pjf.mat.api.Timestamp;
@@ -18,15 +17,14 @@ import com.pjf.mat.api.Timestamp;
  * @author pjf
  *
  */
-public class UnifiedEventLogger {
-	
+public class UnifiedEventLogger {	
 	private final static int windowMs = 50;
-	
 	private final static Logger logger = Logger.getLogger(UnifiedEventLogger.class);
 	private final PriorityBlockingQueue<TimeOrdered> store;
 	private final PumpWorker pumper;
 	private NotificationCallback notificationHandler;
 	private Timestamp lastAddedTs;	// timestamp of event last added
+	private boolean showLogs;
 
 	class PumpWorker extends Thread {
 		private boolean running;
@@ -55,8 +53,9 @@ public class UnifiedEventLogger {
 		}
 	}
 	
-	public UnifiedEventLogger(NotificationCallback notificationHandler) {
+	public UnifiedEventLogger(NotificationCallback notificationHandler, boolean showLogs) {
 		this.notificationHandler = notificationHandler;
+		this.showLogs = showLogs;
 		this.lastAddedTs = null;
 		store = new PriorityBlockingQueue<TimeOrdered>();
 		pumper = new PumpWorker();
@@ -64,6 +63,9 @@ public class UnifiedEventLogger {
 	}
 	
 	public void addLog(TimeOrdered event) {
+		if (showLogs) {
+			logger.info("Adding log: " + event);
+		}
 		store.put(event);
 		lastAddedTs = event.getTimestamp();
 	}

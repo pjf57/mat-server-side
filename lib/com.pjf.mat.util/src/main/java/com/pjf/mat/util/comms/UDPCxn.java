@@ -78,8 +78,9 @@ public class UDPCxn {
 			if (loopbackCb != null) {
 				// perform the loopback
 				loopbackCb.processIncomingMsg(port, data);
+			} else {
+				skt.send(pkt);
 			}
-    		skt.send(pkt);   		
     	}
     	
     	public void fixSend(String str, int port, boolean print) throws IOException {

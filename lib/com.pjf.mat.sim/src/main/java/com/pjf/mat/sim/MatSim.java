@@ -32,6 +32,8 @@ import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.model.TickdataResult;
 import com.pjf.mat.sim.types.Event;
+import com.pjf.mat.util.SystemServicesInt;
+import com.pjf.mat.util.comms.UDPCxn;
 import com.pjf.mat.util.comms.UDPSktComms;
 import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.sim.router.Router;
@@ -40,6 +42,7 @@ import com.pjf.mat.api.LkuResult;
 
 public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 	private final static Logger logger = Logger.getLogger(MatSim.class);
+	private SystemServicesInt sysServices;
 	private final Map<Integer,SimElement> simElements; // keyed on el id
 	private final LkuAuditLogger lkuAuditLogger;
 	private final RtrAuditLogger rtrAuditLogger;
@@ -48,8 +51,9 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 	private boolean stopOnError;
 	private int nextTickref;
 	
-	public MatSim(MatLogger logger) throws SocketException, UnknownHostException {
+	public MatSim(MatLogger logger, SystemServicesInt sysServices) throws SocketException, UnknownHostException {
 		super("localhost");
+		this.sysServices = sysServices;
 		stopOnError = true;
 		simElements = new HashMap<Integer,SimElement>();
 		clk = new Clock(this,10,logger);
@@ -316,7 +320,7 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public void synchroniseClock(int syncOrigin) throws Exception {
+	public void synchroniseClock(long syncOrigin) throws Exception {
 		logger.info("synchroniseClock(" + syncOrigin + ")");
 		clk.sync(syncOrigin);		
 	}
@@ -367,6 +371,12 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 		int lookupTime = (int) (endTime.getMicroticks() - startTime.getMicroticks());
 		logger.debug(logstr + " returned " + result);
 		return result;
+	}
+
+	@Override
+	public UDPCxn getCxnOrLoopback(String ip) throws SocketException,
+			UnknownHostException {
+		return sysServices.getCxnOrLoopback(ip);
 	}
 	
 
