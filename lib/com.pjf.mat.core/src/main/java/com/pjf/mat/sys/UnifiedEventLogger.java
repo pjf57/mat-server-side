@@ -18,13 +18,15 @@ import com.pjf.mat.api.Timestamp;
  *
  */
 public class UnifiedEventLogger {	
-	private final static int windowMs = 50;
+	private final static int windowMs = 100;
 	private final static Logger logger = Logger.getLogger(UnifiedEventLogger.class);
+	private static final long IDLE_TIME_FLUSH_MS = 1000;
 	private final PriorityBlockingQueue<TimeOrdered> store;
 	private final PumpWorker pumper;
 	private NotificationCallback notificationHandler;
 	private Timestamp lastAddedTs;	// timestamp of event last added
 	private boolean showLogs;
+	private long lastRealtimeAddedMs = 0;
 
 	class PumpWorker extends Thread {
 		private boolean running;
@@ -68,12 +70,21 @@ public class UnifiedEventLogger {
 		}
 		store.put(event);
 		lastAddedTs = event.getTimestamp();
+		lastRealtimeAddedMs = System.currentTimeMillis();
 	}
 	
 	/**
 	 * Pump out all events that are windowMs earlier than the latest one written
 	 */
 	private void pump() {
+		if (lastRealtimeAddedMs != 0) {
+			if (!store.isEmpty()) {
+				long msSinceLastAdd = System.currentTimeMillis() - lastRealtimeAddedMs;
+				if (msSinceLastAdd > IDLE_TIME_FLUSH_MS) {
+					flush();
+				}
+			}
+		}
 		if (lastAddedTs != null) {
 			List<TimeOrdered> logs = new ArrayList<TimeOrdered>();
 			while (true) {
