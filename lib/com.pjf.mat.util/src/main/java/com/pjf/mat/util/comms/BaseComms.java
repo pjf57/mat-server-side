@@ -315,6 +315,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 	 * |#items|ts(48bit)|src|takers(32 bit map)|instr|data(32bit)|qtime|delivery time| .. next ..|
 	 */
 	private void processRtrAuditLogMsg(byte[] msg) {
+		logger.info("Received RTR audit message with " + msg.length + " bytes.");
 		byte items = msg[1];
 		int upto = 2;
 		List<RtrAuditLog> logs = new ArrayList<RtrAuditLog>();
