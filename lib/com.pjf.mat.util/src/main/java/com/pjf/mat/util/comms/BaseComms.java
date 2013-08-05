@@ -337,8 +337,15 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 			// resolve format of incoming binary data
 			Element source = mat.getModel().getElement(sourceId);
 			Set<Element> takers = ConvertBitmapToElementSet(takerBitmap);
-			RtrAuditLog log = new RtrAuditLog(new Timestamp(timestamp),source,sourcePort,takers,
+			OutputPort op = null;
+			if (source != null) {
+				op = source.getOutputs().get(sourcePort);
+			}
+			RtrAuditLog log = new RtrAuditLog(new Timestamp(timestamp),source,op,takers,
 					instrId,tickref,qTime,delTime,fdata);
+			if (source == null) {
+				logger.error("processRtrAuditLogMsg() - source element is null [" + log + "], sourceId=" + sourceId);
+			}
 			logs.add(log);
 		}
 		notifyRtrAuditLogsReceipt(logs);

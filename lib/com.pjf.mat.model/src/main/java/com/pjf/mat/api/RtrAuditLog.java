@@ -29,9 +29,9 @@ public class RtrAuditLog extends BaseLog {
 	 * @param data
 	 * @param fdata 
 	 */
-	public RtrAuditLog(Timestamp timestamp, Element source, int sourcePort, Set<Element> takers, 
+	public RtrAuditLog(Timestamp timestamp, Element source, OutputPort sourcePort, Set<Element> takers, 
 			int instrumentId, int tickref, int qTime, int deltime, float data) {
-		super(timestamp,instrumentId,tickref,source,source.getOutputs().get(sourcePort));
+		super(timestamp,instrumentId,tickref,source,sourcePort);
 		this.qTimeMicroticks = qTime;
 		this.delTimeMicroticks = deltime;
 		this.data = data;

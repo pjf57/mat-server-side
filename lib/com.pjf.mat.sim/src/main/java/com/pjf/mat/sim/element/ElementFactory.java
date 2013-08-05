@@ -28,7 +28,7 @@ public class ElementFactory {
 		case MatElementDefs.EL_TYP_HLOC:		el = new HLOC(id,host);			break;
 		case MatElementDefs.EL_TYP_ATR:			el = new ATR(id,host);			break;
 		case MatElementDefs.EL_TYP_ADX:			el = new ADX(id,host);			break;
-		case MatElementDefs.EL_TYP_UDP_MFD_SYM:	el = new IpMfdSym(id,host);		break;
+		case MatElementDefs.EL_TYP_MFD_SYM:		el = new IpMfdSym(id,host);		break;
 		case MatElementDefs.EL_TYP_RMO:			el = new RMO(id,host);			break;
 		case MatElementDefs.EL_TYP_UDP_RAW_MKT:	// not supported in sim
 		default:

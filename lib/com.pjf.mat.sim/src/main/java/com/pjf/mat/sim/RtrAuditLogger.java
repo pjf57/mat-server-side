@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.api.RtrAuditLog;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.api.util.ConfigItem;
@@ -65,9 +66,15 @@ public class RtrAuditLogger {
 	 */
 	public void addLog(Timestamp timestamp, Element source, int srcPort, Set<Element> takers, 
 			int instrument_id, int tickref, int qTime, int deltime, float data) {
-		
-		RtrAuditLog log = new RtrAuditLog(timestamp, source, srcPort, takers, 
+		OutputPort op = null;
+		if (source != null) {
+			op = source.getOutputs().get(srcPort);
+		}		
+		RtrAuditLog log = new RtrAuditLog(timestamp, source, op, takers, 
 				instrument_id, tickref, qTime, deltime, data);
+		if (source == null) {
+			logger.error("addLog() - source element is null [" + log + "]");
+		}
 		addLog(log);		
 	}
 

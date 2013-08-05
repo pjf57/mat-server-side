@@ -18,6 +18,7 @@ public class MatElementDefs {
 	public static final int EL_TYP_ARITH_4IP	= 0x41;
 	public static final int EL_TYP_UDP_RAW_MKT	= 0x50;
 	public static final int EL_TYP_UDP_MFD_SYM	= 0x51;
+	public static final int EL_TYP_MFD_SYM		= 0x52;
 	public static final int EL_TYP_HLOC			= 0x60;
 	public static final int EL_TYP_ATR			= 0x61;
 	public static final int EL_TYP_ADX			= 0x62;
