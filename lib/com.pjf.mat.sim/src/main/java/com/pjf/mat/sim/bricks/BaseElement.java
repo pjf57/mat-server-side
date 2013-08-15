@@ -167,25 +167,29 @@ public abstract class BaseElement implements SimElement {
 		if ((cfg.getElementId() == elementId) || (cfg.getElementId() == MatElementDefs.EL_ID_ALL)) {
 			// config item is for us
 			logger.debug(getIdStr() + "received CFG request: " + cfg);
-			// check if we can process generically
-			switch (cfg.getSysType()) {
-			case SYSTEM: doSysConfig(cfg);	break;
-	
-			case LKU_TARGET:
-				int num = (cfg.getRawData() >> 8) & 0xf;		// 0..15
-				int target = cfg.getRawData() & 0x3f;
-				if (num > MAX_LKU_TARGETS) {
-					throw new Exception("target number out of range for config: " + cfg);
+			if (baseState.equals(BaseState.CFG)) {
+				// check if we can process generically
+				switch (cfg.getSysType()) {
+				case SYSTEM: doSysConfig(cfg);	break;
+		
+				case LKU_TARGET:
+					int num = (cfg.getRawData() >> 8) & 0xf;		// 0..15
+					int target = cfg.getRawData() & 0x3f;
+					if (num > MAX_LKU_TARGETS) {
+						throw new Exception("target number out of range for config: " + cfg);
+					}
+					lkuTargets[num] = target;
+					break;
+		
+				case NORMAL:
+					// pass config item up to the element
+					processConfig(cfg);
+					break;
+					
+				default: throw new Exception("Unhandled configuration item: " + cfg);
 				}
-				lkuTargets[num] = target;
-				break;
-	
-			case NORMAL:
-				// pass config item up to the element
-				processConfig(cfg);
-				break;
-				
-			default: throw new Exception("Unhandled configuration item: " + cfg);
+			} else {
+				logger.error(getIdStr() + "Cant process cfg [" + cfg + "] in state: " + baseState);
 			}
 		}
 	}
@@ -215,6 +219,9 @@ public abstract class BaseElement implements SimElement {
 		case MatElementDefs.EL_C_RESET: 
 			setBaseState(BaseState.RST);
 			processReset();
+			break;
+		case MatElementDefs.EL_C_RESET_CNTRS:
+			evtCount = 0;
 			break;
 		case MatElementDefs.EL_C_CFG_DONE: 
 			processConfigDone();

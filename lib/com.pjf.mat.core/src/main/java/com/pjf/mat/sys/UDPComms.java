@@ -129,12 +129,19 @@ public class UDPComms extends UDPSktComms implements Comms {
 	@Override
 	public void requestRtrAuditLogs() throws Exception {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
-		cfg.putCmdItem(0,MatElementDefs.EL_C_RTR_AUDIT_REQ | 0x80,0, 0);
+		cfg.putCmdItem(0,MatElementDefs.EL_C_RTR_AUDIT_REQ,0, 0);
 		logger.info("requestRtrAuditLogs(): encoded " + cfg.getLength() + " bytes");
 		cxn.send(cfg.getData(),port);
 	}
 
 
+	@Override
+	public void resetCounters() throws IOException {
+		EncodedConfigItemList cfg = new EncodedConfigItemList();
+		cfg.putSystemItem(MatElementDefs.EL_ID_ALL,MatElementDefs.EL_C_RESET_CNTRS,0, 0);
+		logger.info("resetCounters(): encoded " + cfg.getLength() + " bytes");
+		cxn.send(cfg.getData(),port);
+	}
 
 
 }

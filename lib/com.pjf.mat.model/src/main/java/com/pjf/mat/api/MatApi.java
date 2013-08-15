@@ -16,13 +16,19 @@ public interface MatApi {
 	 * @model
 	 */
 	public void sendCmd(Cmd cmd);				// send a cmd to the HW
+
 	/**
-	 * @model 
+	 * Request status from the hardware
+	 * 
+	 * @return
 	 */
 	public Status getHWStatus();				// get status from HW
+	
 	/**
-	 * @model 
+	 * Reset the Cheetah Block counters
 	 */
+	public void resetCounters();
+
 	public void checkHWSignature() throws Exception;
 	
 	public long getSWSignature();

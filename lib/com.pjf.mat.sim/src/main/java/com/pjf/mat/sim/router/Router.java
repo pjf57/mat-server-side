@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.ElementException;
+import com.pjf.mat.sim.model.BaseState;
 import com.pjf.mat.sim.model.SimAccess;
 import com.pjf.mat.sim.model.SimElement;
 import com.pjf.mat.sim.types.Event;
@@ -22,10 +23,12 @@ public class Router {
 	private final SimAccess sim;
 	private PriorityBlockingQueue<Event> queue;
 	private int nextTag;
+	private int evtCount;
 		
 	public Router(SimAccess sim) {
 		this.sim = sim;
 		nextTag = 0;
+		evtCount = 0;
 		queue = new PriorityBlockingQueue<Event>();
 	}
 
@@ -35,6 +38,7 @@ public class Router {
 	
 	public synchronized void post(Event evt, int latency) {
 		logger.debug("publishEvent(" + evt + "," + latency + ")");
+		evtCount++;
 		if (latency <= 0) {
 			// force latency of at least one, otherwise this will not get picked up
 			latency = 1;
@@ -111,4 +115,26 @@ public class Router {
 	public void shutdown() {
 		logger.debug("Shutting down ...");
 		}
+
+	/**
+	 * @return the router's base state
+	 */
+	public BaseState getBaseState() {
+		return BaseState.RUN;
 	}
+
+	/**
+	 * @return the router's event count
+	 */
+	public int getCount() {
+		return evtCount;
+	}
+
+	/**
+	 * Reset the event counters
+	 */
+	public void resetCounters() {
+		evtCount = 0;		
+	}
+
+}

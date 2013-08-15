@@ -233,7 +233,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 
 	protected void processNewStatusUpdate(int id, String type,
 			String basisState, int intState, int evtCount) {
-		
+				
 		Element element = mat.getModel().getElement(id);
 		String srcName = "unknown";
 		if (element != null) {			
@@ -241,17 +241,21 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 			// Update status in the element
 			Status newStatus = new ElementStatus(basisState,intState,evtCount);
 			element.setStatus(newStatus);
-		}
+			logger.debug("processNewStatusUpdate(): id=" + id + 
+					" name=" + srcName + 
+					" type=" + type +
+					" basis-state=" + basisState + " int-state=" + intState +
+					" event-count=" + evtCount);
 
-		logger.debug("processNewStatusUpdate(): id=" + id + 
-				" name=" + srcName + 
-				" type=" + type +
-				" basis-state=" + basisState + " int-state=" + intState +
-				" event-count=" + evtCount);
-		for (NotificationCallback subscriber : notificationSubscribers) {
-			subscriber.notifyElementStatusUpdate(element);
+			for (NotificationCallback subscriber : notificationSubscribers) {
+				subscriber.notifyElementStatusUpdate(element);
+			}
+		} else {
+			logger.error("processNewStatusUpdate(): Error getting element, id=" + id + 
+					" type=" + type +
+					" basis-state=" + basisState + " int-state=" + intState +
+					" event-count=" + evtCount);
 		}
-
 	}
 
 	protected void processEventLogMsg(byte[] msg) {

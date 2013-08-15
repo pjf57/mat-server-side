@@ -1,5 +1,6 @@
 package com.pjf.mat.sim;
 
+import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Collection;
@@ -24,6 +25,7 @@ import com.pjf.mat.api.RtrAuditLog;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.element.ElementFactory;
+import com.pjf.mat.sim.model.BaseState;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.LookupValidity;
@@ -133,6 +135,9 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 		for (SimElement se : simElements.values()) {
 			se.getStatus();
 		}
+		BaseState rbs = router.getBaseState();
+		int rcnt = router.getCount();
+		publishElementStatusUpdate(0, "Router",rbs.toString(),0,rcnt);
 		return null;
 	}
 
@@ -377,6 +382,20 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 	public UDPCxn getCxnOrLoopback(String ip) throws SocketException,
 			UnknownHostException {
 		return sysServices.getCxnOrLoopback(ip);
+	}
+
+	@Override
+	public void resetCounters() throws IOException {
+		router.resetCounters();
+		ConfigItem cfg = new ConfigItem(MatElementDefs.EL_ID_ALL, 
+				AttrSysType.SYSTEM, MatElementDefs.EL_C_RESET_CNTRS,0);
+		for (SimElement se : simElements.values()) {
+			try {
+				se.putConfig(cfg);
+			} catch (Exception e) {
+				throw new IOException("resetCounters(): " + e.getMessage());
+			}
+		}
 	}
 	
 

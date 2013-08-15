@@ -196,4 +196,9 @@ public class DummyComms extends BaseComms implements Comms {
 		logger.info("Requesting RTR Audit logs");		
 	}
 
+	@Override
+	public void resetCounters() throws IOException {
+		logger.info("Requesting Counter Reset");		
+	}
+
 }

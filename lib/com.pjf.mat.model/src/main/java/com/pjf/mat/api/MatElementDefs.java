@@ -73,6 +73,7 @@ public class MatElementDefs {
 	public static final int EL_C_CFG_DONE 		= 0x02;	// config is done
 	public static final int EL_C_CFG_LKU_TRG	= 0x03;	// xxxx xxxx xxxx xNTT (entry N with target TT)
 	public static final int EL_C_CFG_OP_ENA		= 0x04;	// xxxx xxxx xxxx xxxE (set op enable bitmask)
+	public static final int EL_C_RESET_CNTRS	= 0x05;	// xxxx xxxx xxxx xxxx
 
 	
 //	------------------------------

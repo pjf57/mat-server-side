@@ -191,6 +191,15 @@ public class MatInterface implements MatApi {
 		comms.requestRtrAuditLogs();
 	}
 
+	@Override
+	public void resetCounters() {
+		try {
+			comms.resetCounters();
+		} catch (Exception e) {
+			logger.error("Error requesting status: " + e);
+		}		
+	}
+
 
 
 
