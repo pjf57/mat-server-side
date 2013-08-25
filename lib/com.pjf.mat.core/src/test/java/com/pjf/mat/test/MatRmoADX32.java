@@ -9,7 +9,7 @@ public class MatRmoADX32 extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat.properties.32.rmo");
+		init("resources/mat.32v83.csp");
 	}
 	
 	@Override

@@ -128,6 +128,7 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 				se.putConfig(new ConfigItem(el.getId(),AttrSysType.SYSTEM,MatElementDefs.EL_C_CFG_DONE,0));
 			}
 		}
+		router.cfgDone();
 	}
 
 	@Override
@@ -152,6 +153,7 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 
 	@Override
 	public void sendCmd(Cmd cmd) throws Exception {
+		router.putCmd(cmd);
 		for (SimElement se : simElements.values()) {
 			se.putCmd(cmd);
 		}
