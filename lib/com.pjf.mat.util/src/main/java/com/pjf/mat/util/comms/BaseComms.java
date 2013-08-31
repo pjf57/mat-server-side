@@ -163,7 +163,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 				byte cmd = msg[0];
 				switch (cmd) {
 				case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg); break;
-				default: logger.error("Unkown message received on logger port: [" + Conversion.toHexString(msg)); break;
+				default: logger.error("Unkown log message received on logger port: [" + Conversion.toHexString(msg)); break;
 				}
 			} else if (port == MatElementDefs.CS_PORT_STATUS) {
 				byte cmd = msg[0];
@@ -172,7 +172,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 				case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg);	break;
 				case MatElementDefs.ST_TX_LKUAUDIT: processLkuAuditLogMsg(msg); break;
 				case MatElementDefs.ST_TX_RTRAUDIT: processRtrAuditLogMsg(msg); break;
-				default: logger.error("Unkown message received on status port: [" + Conversion.toHexString(msg)); break;
+				default: logger.error("Unkown status message received on status port: [" + Conversion.toHexString(msg)); break;
 				}
 			} else {
 				logger.error("Unkown message received on port " + port +

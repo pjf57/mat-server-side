@@ -116,7 +116,7 @@ public class UDPCxn {
 				    for (int i=0; i<len; i++) {
 				    	data[i] = rd[i];
 				    }
-					logger.debug("Msg received (port=" + pkt.getPort() + "):  [" + toHexString(data) + "]");
+					logger.info("Msg received (port=" + pkt.getPort() + "):  [" + toHexString(data) + "]");
 					} catch (SocketTimeoutException e) {
 						// ignore timeout and just keep going
 					}
