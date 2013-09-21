@@ -376,7 +376,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 				}
 			}
 			id++;
-			t /= 2;
+			t = t >>> 1;
 		}
 		return set;
 	}
