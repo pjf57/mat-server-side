@@ -14,7 +14,7 @@ public class RtrAuditLog extends BaseLog {
 	private final int qTimeMicroticks;		// queueing time
 	private final int delTimeMicroticks;	// delivery time
 	
-	private static final int CLK_TIME_NS = 8;	// microtick time
+	private static final int CLK_TIME_NS = 10;	// microtick time
 
 	/**
 	 * Construct a Router Audit Log entry
