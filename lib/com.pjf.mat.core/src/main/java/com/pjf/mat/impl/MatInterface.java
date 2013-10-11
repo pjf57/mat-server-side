@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.net.ssl.SSLEngineResult.Status;
 
 import org.apache.log4j.Logger;
 
@@ -37,20 +36,15 @@ public class MatInterface implements MatApi {
 		return this.model;
 	}
 	
-	
-	public MatModel copyModel() throws Exception {
-		return this.model.copy();
-	}
-	
+		
 	
 	@Override
-	public Status getHWStatus() {
+	public void requestHWStatus() {
 		try {
 			comms.requestStatus();
 		} catch (Exception e) {
 			logger.error("Error requesting status: " + e);
 		}		
-		return null;
 	}
 
 	@Override

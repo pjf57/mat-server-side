@@ -1,46 +1,80 @@
 package com.pjf.mat.api;
 
-import javax.net.ssl.SSLEngineResult.Status;
 
 /** @model */
-public interface MatApi {	
+public interface MatApi {
+	
 	/**
-	 * @model
+	 * @return model of the design
 	 */
 	public MatModel getModel();					// access the model	
+
 	/**
-	 * @model
+	 * Configure the HW by encoding the model and sending it to the HW
+	 * over the configured comms channel
+	 * 
+	 * @throws Exception
 	 */
-	public void configureHW() throws Exception;	// send config state of elements to HW
+	public void configureHW() throws Exception;
+
 	/**
-	 * @model
+	 * Send a command in realtime to a Cheetah Block in the hardware
+	 * 
+	 * @param cmd command specifying the Cheetah Block and the command to send
 	 */
-	public void sendCmd(Cmd cmd);				// send a cmd to the HW
+	public void sendCmd(Cmd cmd);
 
 	/**
 	 * Request status from the hardware
-	 * 
-	 * @return
+	 * will be returned asynchronously
 	 */
-	public Status getHWStatus();				// get status from HW
+	public void requestHWStatus();
 	
 	/**
 	 * Reset the Cheetah Block counters
 	 */
 	public void resetCounters();
 
+	/**
+	 * Check the HW signature against the signature of the model
+	 * This essentially confirms that the palette loaded into the model
+	 * matches the HW build.
+	 * 
+	 * @throws Exception if no match or comms error
+	 */
 	public void checkHWSignature() throws Exception;
-	
+
+	/**
+	 * @return software signature
+	 */
 	public long getSWSignature();
-	
+
+	/**
+	 * Synchronise the clock of the HW to the server clock
+	 * Must be done before audit logs can be captured in the HW
+	 * 
+	 * @param originMs current timestamp in the server
+	 * @throws Exception if communication error
+	 */
 	public void syncClock(long originMs) throws Exception;
 	
 	/**
 	 * @return current time taking the syncClock into account
 	 */
 	public Timestamp getCurrentTime();
-	
+
+	/**
+	 * Request the HW to send all remaining Lookup Bus Audit logs
+	 * 
+	 * @throws Exception if comms error
+	 */
 	public void reqLkuAuditLogs() throws Exception;
+
+	/**
+	 * Request the HW to send all remaining Router Audit logs
+	 * 
+	 * @throws Exception if comms error
+	 */
 	public void reqRtrAuditLogs() throws Exception;
 
 }

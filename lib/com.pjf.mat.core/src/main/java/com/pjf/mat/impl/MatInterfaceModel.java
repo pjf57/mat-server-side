@@ -62,13 +62,6 @@ public class MatInterfaceModel implements MatModel {
 	}
 
 	@Override
-	public MatModel copy() throws Exception {
-		Properties p = new Properties(props);
-		MatInterfaceModel copy = new MatInterfaceModel(p);
-		return copy;
-	}
-
-	@Override
 	public Element getElement(int id) {
 		return elements.get(new Integer(id));
 	}

@@ -7,33 +7,35 @@ import java.util.Set;
 /** @model */
 public interface MatModel {
 
-	public MatModel copy() throws Exception;
-
 	/**
-	 * return collection of mutable elements
-	 * @model type="Element" containment="true"
+	 * @return collection of mutable elements
 	 */
 	public Collection<Element> getElements(); 
 
 	/**
-	 * Return element for this id or null
-	 * @model
+	 * @return mutable element for this id or null
 	 */
 	public Element getElement(int id); 
 
 	/**
-	 * @model
+	 * @return signature of the model
 	 */
 	public long getSWSignature();
 
 	/**
-	 * @model
+	 * @param typeName - name of the type to retrieve
+	 * @return type descriptor
 	 */
-	public Element getType(String typeName);
-	
-	
+	public Element getType(String typeName);	
+
+	/**
+	 * @return set of properties used to originally construct the model
+	 */
 	public Properties getProperties();
 
+	/**
+	 * @return set of names of all types used in the model
+	 */
 	public Set<String> getTypes();
 
 }

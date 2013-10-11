@@ -245,7 +245,7 @@ public abstract class MatSystem implements SystemServicesInt {
 	}
 	
 	protected void reqStatus() {
-		mat.getHWStatus();		
+		mat.requestHWStatus();		
 	}
 	
 	/**
