@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 
@@ -16,6 +17,7 @@ import com.pjf.mat.api.MatModel;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.api.util.AttributeCalcInt;
 import com.pjf.mat.util.Conversion;
+import com.pjf.mat.util.DesignUtils;
 
 public class MatInterface implements MatApi {
 	private final static Logger logger = Logger.getLogger(MatInterface.class);
@@ -192,6 +194,19 @@ public class MatInterface implements MatApi {
 		} catch (Exception e) {
 			logger.error("Error requesting status: " + e);
 		}		
+	}
+
+
+	@Override
+	public void loadDesign(String designText) throws Exception {
+		JSONObject design = JSONObject.fromObject(designText);
+		loadDesign(design);
+	}
+
+
+	@Override
+	public void loadDesign(JSONObject design) throws Exception {
+		DesignUtils.parseDesign(design,model);
 	}
 
 

@@ -1,5 +1,6 @@
 package com.pjf.mat.api;
 
+import net.sf.json.JSONObject;
 
 /** @model */
 public interface MatApi {
@@ -7,7 +8,23 @@ public interface MatApi {
 	/**
 	 * @return model of the design
 	 */
-	public MatModel getModel();					// access the model	
+	public MatModel getModel();
+	
+	/**
+	 * Load a design into the model.
+	 * 
+	 * @param designText - The design encoded as JSON text
+	 * @throws Exception if parse error
+	 */
+	public void loadDesign(String designText) throws Exception;
+	
+	/**
+	 * Load a design into the model.
+	 * 
+	 * @param design - The design encoded as JSON Object
+	 * @throws Exception if parse error
+	 */
+	public void loadDesign(JSONObject design) throws Exception;
 
 	/**
 	 * Configure the HW by encoding the model and sending it to the HW
