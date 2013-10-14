@@ -69,6 +69,7 @@ public class MatInterfaceModel implements MatModel {
 	private void initialise() throws Exception {
 		// read info about the basic types of element
 		
+		logger.info("Reading types from properties ...");
 		int id = 1;
 		Element type = null;
 		while((type=readType(id)) != null) {
@@ -76,8 +77,10 @@ public class MatInterfaceModel implements MatModel {
 			types.put(type.getType(), type);
 			id++;
 		}
+		logger.info("Read " + (id-1) + " types.");
 
 		// read element info
+		logger.info("Reading elements from properties ...");
 		id = 0;
 		Element element = null;
 		while((element=readElement(id)) != null) {
@@ -85,6 +88,7 @@ public class MatInterfaceModel implements MatModel {
 			elements.put(new Integer(id),element);
 			id++;
 		}
+		logger.info("Read " + (id-1) + " elements.");
 	}
 
 	// read one element from properties - return null if non existent

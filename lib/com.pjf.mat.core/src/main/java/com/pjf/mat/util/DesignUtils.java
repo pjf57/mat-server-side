@@ -12,6 +12,8 @@ import com.pjf.mat.api.MatModel;
 public class DesignUtils {
 	private final static Logger logger = Logger.getLogger(DesignUtils.class);
 
+	public static final int MAX_DESIGN_SIZE = 10000;	// max encoded design size
+
 	/**
 	 * Decode one CB, setting attr values into the model
 	 * 
