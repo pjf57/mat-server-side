@@ -102,7 +102,12 @@ public class HLOC extends BaseElement implements SimElement {
 			while (!shutdown) {
 				try {
 					sem.acquire();
-					logger.debug("Start emitting output events for period");
+					logger.debug("Start emitting output events for " + instrToOp.size() +
+							" instruments for period.");
+					if (instrToOp.size() > 0) {
+						logState("Emitting " + c_opMetric);
+					}
+					int numEmitted = 0;
 					for (Integer instr : instrToOp) {
 						if (shutdown) {
 							break;
@@ -114,7 +119,9 @@ public class HLOC extends BaseElement implements SimElement {
 							if (val.isValid()) {
 								Event evt = new Event(host.getCurrentSimTime(),
 										elementId,instr,0,val.getValue());
+								logger.info("Emitting: " + evt);
 								host.publishEvent(evt,LATENCY);
+								numEmitted++;
 								// wait for throttle period
 								// TODO - this is not really well timed cf hardware
 								Thread.sleep(c_throttle);
@@ -125,7 +132,7 @@ public class HLOC extends BaseElement implements SimElement {
 						}
 						instr++;
 					}
-					logger.debug("Done emitting output events for period");
+					logger.debug("Done emitting " + numEmitted + " output events for period");
 				} catch (InterruptedException e1) {
 					logger.debug("run() - interrupted lock on sem");
 				}
@@ -213,16 +220,19 @@ public class HLOC extends BaseElement implements SimElement {
 				st.getStore(Metric.CLOSE).put(val, instr);
 			}
 		}
+		logState("event processed");
 	}
 
 
 	@Override
 	public void processTick(ClockTick tick) {
 		if (baseState == BaseState.RUN) {
+			logger.debug("processTick() " + periodCnt + "/" + c_period);
 			if (periodCnt >= c_period) {
 				periodCnt = 0;
 				// end of period -- switch stores and then emit events
-				logger.debug(getIdStr() + "End of period.");
+				logger.info(getIdStr() + "End of period.");
+				logState("start end-period processing");
 				Set<Integer> lastPeriodSet;	// for instruments from last period
 				synchronized(this) {
 					lastPeriodSet = iset;
@@ -233,8 +243,8 @@ public class HLOC extends BaseElement implements SimElement {
 					store.put(Period.PREV, store.get(Period.CURRENT));
 					store.put(Period.CURRENT,new MetricStore(" "));
 				}
-				logState();
 				opDrv.emitEvents(lastPeriodSet);
+				logState("done end-period processing");
 			} else {
 				periodCnt++;
 			}
@@ -300,12 +310,16 @@ public class HLOC extends BaseElement implements SimElement {
 	}
 	
 	/**
-	 * Output the store state via the logger at debug level
+	 * Output the store state via the logger
 	 */
-	public void logState() {
-		logger.debug(getIdStr() + "CURRENT:");	store.get(Period.CURRENT).logState();
-		logger.debug(getIdStr() + "PREV:");		store.get(Period.PREV).logState();
-		logger.debug(getIdStr() + "PREV-1:");	store.get(Period.PRVM1).logState();
+	public void logState(String msg) {
+		logger.debug("Metric store state at: " + msg);
+		logger.debug(getIdStr() + "CURRENT:");	
+		store.get(Period.CURRENT).logState();
+		logger.debug(getIdStr() + "PREV:");		
+		store.get(Period.PREV).logState();
+		logger.debug(getIdStr() + "PREV-1:");	
+		store.get(Period.PRVM1).logState();
 	}
 
 }
