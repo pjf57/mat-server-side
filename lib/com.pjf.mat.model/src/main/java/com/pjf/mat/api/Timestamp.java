@@ -7,7 +7,7 @@ import java.math.RoundingMode;
  * Model of simulation time
  */
 public class Timestamp implements Comparable<Timestamp>{
-	private final static long nsBase = 8;			// timebase in ns
+	private final static long nsBase = 10;			// timebase in ns
 	private long microticks;						// clks since origin
 	
 	/**
