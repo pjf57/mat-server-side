@@ -15,8 +15,11 @@ import com.pjf.mat.api.InMsgCallbackInt;
 
 public class UDPCxn {
 		private final static Logger logger = Logger.getLogger(UDPCxn.class);
+
 		private static final int SKT_TMO_MS = 500;
-    	private DatagramSocket skt;
+		private static final int SKT_RXBUF_SIZE = 200000;
+
+		private DatagramSocket skt;
     	private InetAddress dstIP;
     	private final int LOCAL_PORT = 3500;
     	private boolean shutdown;
@@ -58,6 +61,9 @@ public class UDPCxn {
     	private void initialise() throws SocketException {
     		skt = new DatagramSocket(LOCAL_PORT);
     		skt.setSoTimeout(SKT_TMO_MS);
+    		skt.setReceiveBufferSize(SKT_RXBUF_SIZE);
+    		int rxBufSize = skt.getReceiveBufferSize();
+    		logger.info("initialise(): rx buffer size set to " + rxBufSize);
     		shutdown = false;
     		sktInUse = false;
 		}
