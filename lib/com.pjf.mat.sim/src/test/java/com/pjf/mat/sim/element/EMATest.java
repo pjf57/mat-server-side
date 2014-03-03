@@ -3,7 +3,6 @@ package com.pjf.mat.sim.element;
 
 import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.test.util.SimTestCase;
 import com.pjf.mat.api.util.ConfigItem;
@@ -20,7 +19,7 @@ public class EMATest extends SimTestCase {
 
 		float data = 50.0f;
 		for (int i=1; i<10; i++) {
-			el.putEvent(new Event(new Timestamp(1L), 2, 12, 2, data));
+			el.putEvent(new Event(getTimestamp(1L), 2, 12, 2, data));
 			data += 0.25;
 		}
 	}

@@ -87,5 +87,22 @@ public class SimTestCase extends TestCase implements SimHost {
 			UnknownHostException {
 		throw new UnknownHostException("Not supported");
 	}
+	
+	/**
+	 * @return default microtick period (ps)
+	 */
+	public int getMicroTickPeriod() {
+		return 10000;
+	}
+	
+	/**
+	 * 	create a timestamp with the specified time and the default microtick period
+	 * 
+	 * @param time
+	 * @return
+	 */
+	public Timestamp getTimestamp(long time) {
+		return new Timestamp(time,getMicroTickPeriod());
+	}
 
 }

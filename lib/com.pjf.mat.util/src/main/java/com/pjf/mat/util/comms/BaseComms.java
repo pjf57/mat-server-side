@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.util.ConfigItem;
+import com.pjf.mat.api.util.HwStatus;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.EventLog;
 import com.pjf.mat.api.InMsgCallbackInt;
@@ -35,6 +36,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 	protected MatApi mat;
 	protected Collection<NotificationCallback> notificationSubscribers;
 	protected Map<Integer,InMsgCallbackInt> inMsgSubscribers;
+	protected HwStatus hwStatus;
 
 	// basis states
 	protected final byte BS_INIT	= 1;
@@ -45,6 +47,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 	public BaseComms() {
 		notificationSubscribers = new ArrayList<NotificationCallback>();
 		inMsgSubscribers = new HashMap<Integer,InMsgCallbackInt>();
+		hwStatus = new HwStatus();
 	}
 	
 	public void setMat(MatApi mat) {
@@ -188,7 +191,25 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 	 */
 	private void processHWSigMsg(byte[] msg) {
 		long hwSig = Conversion.getLongFromBytes(msg,1,8);
-		processRxHwSig(hwSig);
+		int microtickPeriod = 0;
+		if (msg.length >= 11) {
+			microtickPeriod = Conversion.getIntFromBytes(msg,9,2);
+		}
+		String cf_version = "unknown";
+		if (msg.length >= 13) {
+			byte maj = msg[11];
+			byte min = msg[12];
+			cf_version = "" + maj + "." + min;
+		}
+		HwStatus st = new HwStatus(hwSig,microtickPeriod,cf_version);
+		setHwStatus(st);
+		processRxHwSig(st);
+	}
+
+	@Override
+	public void setHwStatus(HwStatus st) {
+		logger.info("setHwStatus() - new HW Status is: " + st);
+		this.hwStatus = st;
 	}
 
 	/**
@@ -196,7 +217,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 	 * 
 	 * @param sig
 	 */
-	protected void processRxHwSig(long hwSig) {
+	protected void processRxHwSig(HwStatus hws) {
 		logger.warn("processRxHwSig() - signature received - default action is do nothing");
 	}
 
@@ -261,6 +282,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 	protected void processEventLogMsg(byte[] msg) {
 		byte items = msg[1];
 		int upto = 2;
+		int mtp = hwStatus.getMicrotickPeriod();
 		while (items-- > 0) {
 			// process first/next log item
 			int src = msg[upto++];
@@ -271,7 +293,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 			upto+=6;
 			int data = Conversion.getIntFromBytes(msg,upto,4);
 			upto +=4;
-			notifyEvent(new Timestamp(timestamp),src, port, instrId, tickref, data);
+			notifyEvent(new Timestamp(timestamp,mtp),src, port, instrId, tickref, data);
 		}		
 	}
 
@@ -282,6 +304,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 	private void processLkuAuditLogMsg(byte[] msg) {
 		byte items = msg[1];
 		int upto = 2;
+		int mtp = hwStatus.getMicrotickPeriod();
 		List<LkuAuditLog> logs = new ArrayList<LkuAuditLog>();
 		while (items-- > 0) {
 			// process first/next log item
@@ -307,7 +330,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 			case 2:	rslt = LkuResult.ERROR;		break;
 			case 3:	rslt = LkuResult.TIMEOUT;	break;
 			}
-			LkuAuditLog log = new LkuAuditLog(new Timestamp(timestamp),requester,instrId,
+			LkuAuditLog log = new LkuAuditLog(new Timestamp(timestamp,mtp),requester,instrId,
 					tickref,op,responder,rspTime,rslt,fdata);
 			logs.add(log);
 		}
@@ -322,6 +345,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 		logger.info("Received RTR audit message with " + msg.length + " bytes.");
 		byte items = msg[1];
 		int upto = 2;
+		int mtp = hwStatus.getMicrotickPeriod();
 		List<RtrAuditLog> logs = new ArrayList<RtrAuditLog>();
 		while (items-- > 0) {
 			// process first/next log item
@@ -345,7 +369,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 			if (source != null) {
 				op = source.getOutputs().get(sourcePort);
 			}
-			RtrAuditLog log = new RtrAuditLog(new Timestamp(timestamp),source,op,takers,
+			RtrAuditLog log = new RtrAuditLog(new Timestamp(timestamp,mtp),source,op,takers,
 					instrId,tickref,qTime,delTime,fdata);
 			if (source == null) {
 				logger.error("processRtrAuditLogMsg() - source element is null [" + log + "], sourceId=" + sourceId);
@@ -519,6 +543,11 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 		} else {
 			logger.error("Order with incorrect len received. Len=" + len);
 		}
+	}
+
+	@Override
+	public HwStatus getHWStatus() {
+		return hwStatus;
 	}
 
 	

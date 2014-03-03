@@ -2,7 +2,6 @@ package com.pjf.mat.sim.element;
 
 import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.sim.types.FloatValue;
@@ -22,13 +21,13 @@ public class ATRTest extends SimTestCase {
 		el.putConfig(new ConfigItem(6, AttrSysType.SYSTEM, MatElementDefs.EL_C_CFG_DONE,0));
 		
 		lkuData = new float[]{3f,2f,0.5f}; // T3: C(n-1)=3, H(n)=2, L(n)=0.5
-		el.putEvent(new Event(new Timestamp(1L), 2, 12, 2, 2f));
+		el.putEvent(new Event(getTimestamp(1L), 2, 12, 2, 2f));
 		
 		lkuData = new float[]{1f,2f,0.5f}; // T4: C(n-1)=1, H(n)=2, L(n)=0.5)
-		el.putEvent(new Event(new Timestamp(2L), 2, 12, 2, 2f));
+		el.putEvent(new Event(getTimestamp(2L), 2, 12, 2, 2f));
 
 		lkuData = new float[]{0.1f,2f,0.5f}; // T5: C(n-1)=0.1, H(n)=2, L(n)=0.5)
-		el.putEvent(new Event(new Timestamp(3L), 2, 12, 2, 2f));
+		el.putEvent(new Event(getTimestamp(3L), 2, 12, 2, 2f));
 	}
 
 	@Override

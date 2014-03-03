@@ -7,13 +7,14 @@ import java.math.RoundingMode;
  * Model of simulation time
  */
 public class Timestamp implements Comparable<Timestamp>{
-	private final static long nsBase = 10;			// timebase in ns
+	private int mtp;								// microtick period (ps)
 	private long microticks;						// clks since origin
 	
 	/**
 	 * Construct timestamp and set to invalid value
 	 */
 	public Timestamp() {
+		mtp = 10000;
 		microticks = -1;
 	}
 	
@@ -22,14 +23,17 @@ public class Timestamp implements Comparable<Timestamp>{
 	 * @param time
 	 */
 	public Timestamp(Timestamp time) {
+		this.mtp = time.mtp;
 		this.microticks = time.microticks;
 	}
 
 	/**
 	 * Construct timestamp with specified microticks
-	 * @param init
+	 * @param init initial time value
+	 * @param mtp microtick period (ps)
 	 */
-	public Timestamp(long init) {
+	public Timestamp(long init, int mtp) {
+		this.mtp = mtp;
 		microticks = init;
 	}
 
@@ -38,11 +42,21 @@ public class Timestamp implements Comparable<Timestamp>{
 	 * 
 	 * @param originMs - the origin for the timestamp
 	 * @param timeMs - the desired time for the timestamp
+	 * @param mtp microtick period (ps)
 	 */
-	public Timestamp(long originMs, long timeMs) {
+	public Timestamp(long originMs, long timeMs, int mtp) {
+		this.mtp = mtp;
 		long timeSinceOrigin = timeMs - originMs;
-		long mt = timeSinceOrigin / nsBase;
+		long mt = timeSinceOrigin / getNsBase();
 		microticks = mt * 1000000L;
+	}
+
+	/**
+	 * @return microtick timebase in ns
+	 */
+	private long getNsBase() {
+		long nsBase = (long)(mtp) / 1000L;					// timebase in ns
+		return nsBase;
 	}
 
 	/**
@@ -56,7 +70,7 @@ public class Timestamp implements Comparable<Timestamp>{
 	 * @return length of a microtick in ns
 	 */
 	public long getMicrotickSize() {
-		return nsBase;
+		return getNsBase();
 	}
 	
 	@Override
@@ -87,7 +101,7 @@ public class Timestamp implements Comparable<Timestamp>{
 	 */
 	public long diffNs(Timestamp t1) {
 		long diff = microticks - t1.getMicroticks();
-		return nsBase * diff;
+		return getNsBase() * diff;
 	}
 
 	@Override
@@ -110,7 +124,7 @@ public class Timestamp implements Comparable<Timestamp>{
 			return "none";
 		}
 		String str;
-		long ns = microticks * nsBase;
+		long ns = microticks * getNsBase();
 		BigDecimal secs = new BigDecimal(ns);
 		if (ns < 1000000) {
 			// less than 1ms - scale output in us

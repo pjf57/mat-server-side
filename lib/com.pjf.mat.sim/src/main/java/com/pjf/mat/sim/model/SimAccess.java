@@ -1,5 +1,6 @@
 package com.pjf.mat.sim.model;
 
+import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.ElementException;
 import com.pjf.mat.sim.types.Event;
@@ -40,6 +41,11 @@ public interface SimAccess {
 	 * @param clock
 	 */
 	void publishClockTick(ClockTick tick);
+
+	/**
+	 * @return comms interface
+	 */
+	Comms getComms();
 
 
 }

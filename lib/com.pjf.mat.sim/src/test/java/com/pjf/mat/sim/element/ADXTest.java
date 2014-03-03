@@ -2,7 +2,6 @@ package com.pjf.mat.sim.element;
 
 import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.types.Event;
@@ -25,28 +24,28 @@ public class ADXTest extends SimTestCase {
 		el.putConfig(new ConfigItem(6, AttrSysType.SYSTEM, MatElementDefs.EL_C_CFG_DONE,0));
 
 		lkuData = new float[]{10,8,9,7,2};
-		el.putEvent(new Event(new Timestamp(1L), 2, 12, 1, 2f));
+		el.putEvent(new Event(getTimestamp(1L), 2, 12, 1, 2f));
 		
 		lkuData = new float[]{11,10,10,9,3};
-		el.putEvent(new Event(new Timestamp(2L), 2, 12, 2, 2f));
+		el.putEvent(new Event(getTimestamp(2L), 2, 12, 2, 2f));
 
 		lkuData = new float[]{9,11,8,10,2};
-		el.putEvent(new Event(new Timestamp(3L), 2, 12, 2, 2f));
+		el.putEvent(new Event(getTimestamp(3L), 2, 12, 2, 2f));
 
 		lkuData = new float[]{12,11,10,10,3};
-		el.putEvent(new Event(new Timestamp(4L), 2, 12, 2, 2f));
+		el.putEvent(new Event(getTimestamp(4L), 2, 12, 2, 2f));
 
 		lkuData = new float[]{13,12,11,10,3};
-		el.putEvent(new Event(new Timestamp(5L), 2, 12, 2, 2f));
+		el.putEvent(new Event(getTimestamp(5L), 2, 12, 2, 2f));
 
 		lkuData = new float[]{14,13,11,11,2};
-		el.putEvent(new Event(new Timestamp(6L), 2, 12, 2, 2f));
+		el.putEvent(new Event(getTimestamp(6L), 2, 12, 2, 2f));
 
 		lkuData = new float[]{16,14,12,11,3};
-		el.putEvent(new Event(new Timestamp(7L), 2, 12, 2, 2f));
+		el.putEvent(new Event(getTimestamp(7L), 2, 12, 2, 2f));
 
 		lkuData = new float[]{18,16,14,12,3};
-		el.putEvent(new Event(new Timestamp(8L), 2, 12, 2, 2f));
+		el.putEvent(new Event(getTimestamp(8L), 2, 12, 2, 2f));
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.api.util.HwStatus;
 import com.pjf.mat.impl.element.SystemCmd;
 import com.pjf.mat.util.comms.UDPSktComms;
 import com.pjf.mat.util.comms.UDPCxn;
@@ -21,7 +22,6 @@ public class UDPComms extends UDPSktComms implements Comms {
 	private final static Logger logger = Logger.getLogger(UDPComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
 	private int port;
-	private long hwSig;
 	private TimeoutSemaphore hwSigSem;
 
 	public UDPComms(String ip, int port) throws SocketException, UnknownHostException {
@@ -29,7 +29,7 @@ public class UDPComms extends UDPSktComms implements Comms {
 		this.port = port;
 		this.mat = null;
 		hwSigSem = new TimeoutSemaphore(0);
-		hwSig = 0;
+		hwStatus = new HwStatus();
 	}
 
 	
@@ -81,7 +81,7 @@ public class UDPComms extends UDPSktComms implements Comms {
 		if (hwSigSem.timedOut()) {
 			throw new Exception("Request for HW Signature timed out");
 		}
-		return hwSig;
+		return hwStatus.getHwSig();
 	}
 
 	@Override
@@ -101,9 +101,9 @@ public class UDPComms extends UDPSktComms implements Comms {
 	}
 
 	@Override
-	protected void processRxHwSig(long sig) {
-		logger.info("processRxHwSig() - signature received: ");
-		hwSig = sig;
+	protected void processRxHwSig(HwStatus hws) {
+		logger.info("processRxHwSig() - signature received: " + hws);
+		hwStatus = hws;
 		hwSigSem.release();
 	}
 

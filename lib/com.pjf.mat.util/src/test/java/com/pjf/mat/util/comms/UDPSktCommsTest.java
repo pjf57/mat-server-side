@@ -12,6 +12,7 @@ import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InMsgCallbackInt;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.api.util.HwStatus;
 
 import junit.framework.TestCase;
 
@@ -62,6 +63,11 @@ public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
 
 		@Override
 		public void resetCounters() throws IOException {
+		}
+
+		@Override
+		public HwStatus getHWStatus() {
+			return null;
 		}
 		
 	}

@@ -173,7 +173,7 @@ public class MatInterface implements MatApi {
 	@Override
 	public Timestamp getCurrentTime() {
 		long ctime = System.currentTimeMillis();
-		Timestamp ts = new Timestamp(clockOriginMs,ctime);
+		Timestamp ts = new Timestamp(clockOriginMs,ctime,comms.getHWStatus().getMicrotickPeriod());
 		return ts;
 	}
 

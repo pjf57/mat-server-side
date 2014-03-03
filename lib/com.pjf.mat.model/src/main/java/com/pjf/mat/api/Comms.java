@@ -4,6 +4,8 @@ package com.pjf.mat.api;
 import java.io.IOException;
 import java.util.Collection;
 
+import com.pjf.mat.api.util.HwStatus;
+
 
 
 public interface Comms {
@@ -16,6 +18,8 @@ public interface Comms {
 	public void shutdown();
 	public void addNotificationSubscriber(NotificationCallback subscriber);
 	public long getHWSignature() throws Exception;
+	public void setHwStatus(HwStatus st);
+	public HwStatus getHWStatus();
 	public void synchroniseClock(long syncOriginMs) throws Exception;
 	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb);
 	public void resetCounters() throws IOException;

@@ -119,7 +119,7 @@ public class Clock extends Thread implements ClockTick{
 
 	public void sync(long syncOrigin) {
 		timestampOrigin = syncOrigin;
-		simTime = new Timestamp(0);		
+		simTime = new Timestamp(0,host.getComms().getHWStatus().getMicrotickPeriod());		
 	}
 
 }

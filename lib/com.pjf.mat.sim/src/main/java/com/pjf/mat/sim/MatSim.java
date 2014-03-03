@@ -38,11 +38,15 @@ import com.pjf.mat.util.SystemServicesInt;
 import com.pjf.mat.util.comms.UDPCxn;
 import com.pjf.mat.util.comms.UDPSktComms;
 import com.pjf.mat.api.util.ConfigItem;
+import com.pjf.mat.api.util.HwStatus;
 import com.pjf.mat.sim.router.Router;
 import com.pjf.mat.api.LkuResult;
 
 
 public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
+
+	private static final String SIM_VER = "SIM v1.01";
+
 	private final static Logger logger = Logger.getLogger(MatSim.class);
 	private SystemServicesInt sysServices;
 	private final Map<Integer,SimElement> simElements; // keyed on el id
@@ -181,7 +185,9 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 
 	@Override
 	public long getHWSignature() throws Exception {
-		return mat.getSWSignature();
+		HwStatus st = new HwStatus(mat.getSWSignature(),10,SIM_VER);
+		setHwStatus(st);
+		return hwStatus.getHwSig();
 	}
 
 	@Override
@@ -398,6 +404,11 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 				throw new IOException("resetCounters(): " + e.getMessage());
 			}
 		}
+	}
+
+	@Override
+	public Comms getComms() {
+		return this;
 	}
 	
 
