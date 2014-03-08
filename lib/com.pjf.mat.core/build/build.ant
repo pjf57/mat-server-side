@@ -1,0 +1,18 @@
+<project name="com.pjf.mat.core" default="dist" basedir="C:\Users\pjf\Documents\GitHub\mat-server-side\com.pjf.mat.core">
+  <!-- set global properties for this build -->
+	<property name="github" location="C:/Users/pjf/Documents/GitHub"/>
+	<property name="gitprj" location="${github}/mat-server-side\com.pjf.mat.core"/>	
+	<property name="gitwebsrc" location="${gitprj}/src/main"/>	
+	<property name="dist" location="${gitprj}/distr"/>	
+
+  <target name="dist"
+        description="generate the distribution" >
+  	<echo message= "Project Root: ${basedir}" />
+  	<echo message= "Distributing to: ${dist}" />
+    <!-- Jar up all the class files -->
+  	<jar destfile="${dist}/cheetahcore.jar"
+  	       basedir="${basedir}/target/classes"
+   	 />
+  </target>
+
+</project>

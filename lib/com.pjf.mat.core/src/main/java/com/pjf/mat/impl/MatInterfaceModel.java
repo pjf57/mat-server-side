@@ -325,11 +325,17 @@ public class MatInterfaceModel implements MatModel {
 	public long getSWSignature() {
 		int id = 0;
 		Element el;
-		long crc = 0;
+// TODO - remove once CRC matchs with HW
+//		long crc = 0;
+//		while ((el = getElement(id)) != null) {
+//			crc = crc40(crc,el.getHWType());
+//			id++;
+//		}
+		long crc = 1;
 		while ((el = getElement(id)) != null) {
-			crc = crc40(crc,el.getHWType());
-			id++;
+			crc += el.getHWType() * (id+1);
 		}
+		crc &= 0xffffffffffL;
 		return crc;
 	}
 
