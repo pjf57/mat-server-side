@@ -3,16 +3,27 @@
 	<property name="github" location="C:/Users/pjf/Documents/GitHub"/>
 	<property name="gitprj" location="${github}/mat-server-side\com.pjf.mat.core"/>	
 	<property name="gitwebsrc" location="${gitprj}/src/main"/>	
-	<property name="dist" location="${gitprj}/distr"/>	
+	<property name="gitbase" location="C:/Users/pjf/Documents/GitHub/mat-server-side"/>
+	<property name="distr" location="${gitbase}/distr"/>	
 
   <target name="dist"
         description="generate the distribution" >
   	<echo message= "Project Root: ${basedir}" />
-  	<echo message= "Distributing to: ${dist}" />
+  	<echo message= "gitbase: ${gitbase}" />
+  	<echo message= "Distributing to: ${distr}" />
     <!-- Jar up all the class files -->
-  	<jar destfile="${dist}/cheetahcore.jar"
-  	       basedir="${basedir}/target/classes"
-   	 />
+  	
+    <jar destfile="${distr}/lib/cheetahcore.jar">
+      <fileset dir="${gitbase}/lib/com.pjf.mat.core/target/classes" />
+      <fileset dir="${gitbase}/lib/com.pjf.mat.model/target/classes" />
+      <fileset dir="${gitbase}/lib/com.pjf.mat.util/target/classes" />
+    </jar>
+  	
+    <!-- copy external libs -->
+  	<copy todir="${distr}/extlib" overwrite="true">
+  	  <fileset dir="${gitbase}/lib/com.pjf.mat.core/lib">  <include name="*.jar"/>  </fileset>
+      <fileset dir="${gitbase}/lib/com.pjf.mat.util/lib">  <include name="*.jar"/>  </fileset>
+  	</copy>
   </target>
 
 </project>

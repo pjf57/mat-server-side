@@ -334,6 +334,7 @@ public class MatInterfaceModel implements MatModel {
 		long crc = 1;
 		while ((el = getElement(id)) != null) {
 			crc += el.getHWType() * (id+1);
+			id++;
 		}
 		crc &= 0xffffffffffL;
 		return crc;
