@@ -10,12 +10,16 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Cmd;
-import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
+import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.MatModel;
+import com.pjf.mat.api.Status;
 import com.pjf.mat.api.Timestamp;
+import com.pjf.mat.api.comms.Comms;
 import com.pjf.mat.api.util.AttributeCalcInt;
+import com.pjf.mat.api.util.SignatureResult;
+import com.pjf.mat.impl.element.BasicCmd;
 import com.pjf.mat.util.Conversion;
 import com.pjf.mat.util.DesignUtils;
 
@@ -36,9 +40,7 @@ public class MatInterface implements MatApi {
 	@Override
 	public MatModel getModel() {
 		return this.model;
-	}
-	
-		
+	}	
 	
 	@Override
 	public void requestHWStatus() {
@@ -63,10 +65,7 @@ public class MatInterface implements MatApi {
 		}		
 	}
 	
-	/**
-	 * Recalculate all the calculated attributes in the model
-	 * @throws Exception 
-	 */
+	@Override
 	public void recalcCalculatedAttrs() throws Exception {
 		logger.info("Recalculating calculated attributes...");
 		for (Element el : model.getElements()){
@@ -75,16 +74,7 @@ public class MatInterface implements MatApi {
 	}
 
 
-	/**
-	 * Recalculate all the attributes for an element
-	 * 
-	 * @param el	the element
-	 * @return list of attributes that were recalculated
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 * @throws ClassNotFoundException
-	 * @throws Exception
-	 */
+	@Override
 	public List<Attribute> recalcElAttrs(Element el) throws InstantiationException,
 			IllegalAccessException, ClassNotFoundException, Exception {
 		List<Attribute> attrList = new ArrayList<Attribute>();
@@ -131,13 +121,51 @@ public class MatInterface implements MatApi {
 		comms.shutdown();		
 	}
 
+
+	@Override
+	public void putIntoConfigMode() throws Exception {
+		logger.info("Ensuring system is in config mode.");
+		boolean didReset = false;
+		for (Element el : getModel().getElements()) {
+			if (el.getId() != 0) {	// ignore router element
+				Status s = el.getElementStatus();
+				if (!s.isInConfigState()) {
+					logger.info("Resetting " + el.getShortName() + " to force it to config state..");
+					sendCmd(new BasicCmd(el, "reset", MatElementDefs.EL_C_RESET, 0));
+					didReset = true;
+				}
+			}
+		}
+		if (didReset) {
+			// check that all elements are ready for configuration
+			requestHWStatus();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				logger.info("Sleep interrupted - " + e);
+			}
+			// check all in config mode now
+			for (Element el : getModel().getElements()) {
+				if (el.getId() != 0) {	// ignore router element
+					Status s = el.getElementStatus();
+					if (!s.isInConfigState()) {
+						logger.error("Unable to force element " + el.getShortName() + " into config state.");
+						throw new Exception("System not ready for configuration - el:" + el.getShortName());
+					}
+				}
+			}
+		}		
+		logger.info("Ready to config ...");
+	}
+	
+
 	/**
 	 * Check that the HW signature matches with the configuration we have loaded.
 	 * 
 	 * @throws Exception if the configuration doesn't match
 	 */
 	@Override
-	public void checkHWSignature() throws Exception {
+	public SignatureResult checkHWSignature() throws Exception {
 		long signatureSW = getSWSignature();
 		logger.info("SW Signature is " + Conversion.toHexLongString(signatureSW));
 		long signatureHW = comms.getHWSignature();
@@ -150,6 +178,7 @@ public class MatInterface implements MatApi {
 // FIXME - enable this throw once HW sig is returned ok
 //			throw new Exception(msg);
 		}
+		return new SignatureResult(signatureHW,signatureSW);
 	}
 
 

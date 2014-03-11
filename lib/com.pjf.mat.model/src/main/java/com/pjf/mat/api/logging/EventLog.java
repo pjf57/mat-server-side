@@ -1,4 +1,8 @@
-package com.pjf.mat.api;
+package com.pjf.mat.api.logging;
+
+import com.pjf.mat.api.Element;
+import com.pjf.mat.api.OutputPort;
+import com.pjf.mat.api.Timestamp;
 
 public class EventLog extends BaseLog {
 	private final int rawValue;

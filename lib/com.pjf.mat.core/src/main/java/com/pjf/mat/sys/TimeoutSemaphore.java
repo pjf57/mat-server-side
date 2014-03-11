@@ -6,6 +6,7 @@ import java.util.concurrent.Semaphore;
 
 public class TimeoutSemaphore {
 
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -3476547520719296799L;
 	private final Semaphore sem;
 	private final Timer timer;

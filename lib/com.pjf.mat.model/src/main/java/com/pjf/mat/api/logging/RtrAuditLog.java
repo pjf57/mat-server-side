@@ -1,6 +1,10 @@
-package com.pjf.mat.api;
+package com.pjf.mat.api.logging;
 
 import java.util.Set;
+
+import com.pjf.mat.api.Element;
+import com.pjf.mat.api.OutputPort;
+import com.pjf.mat.api.Timestamp;
 
 /**
  * Container for one Router Audit Log entry

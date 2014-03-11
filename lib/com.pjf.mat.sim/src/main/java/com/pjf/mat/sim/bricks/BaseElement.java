@@ -7,6 +7,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
+import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.sim.model.BaseState;
@@ -278,7 +279,8 @@ public abstract class BaseElement implements SimElement {
 
 	@Override
 	public void putCmd(Cmd cmd) {
-		if ((cmd.getParent().getId() == elementId) || (cmd.getParent().getId() == MatElementDefs.EL_ID_ALL)) {
+		Element parent = cmd.getParent();
+		if (((parent == null) || parent.getId() == elementId) || (parent.getId() == MatElementDefs.EL_ID_ALL)) {
 			if (cmd.getConfigId() == MatElementDefs.EL_C_RESET) {
 				// reset the element
 				setBaseState(BaseState.RST);

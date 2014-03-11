@@ -8,14 +8,14 @@ import junit.framework.TestCase;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
-import com.pjf.mat.api.InMsgCallbackInt;
 import com.pjf.mat.api.Timestamp;
+import com.pjf.mat.api.comms.CxnInt;
+import com.pjf.mat.api.comms.InMsgCallbackInt;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.model.TickdataResult;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.Conversion;
-import com.pjf.mat.util.comms.UDPCxn;
 
 
 public class SimTestCase extends TestCase implements SimHost {
@@ -83,7 +83,7 @@ public class SimTestCase extends TestCase implements SimHost {
 	}
 
 	@Override
-	public UDPCxn getCxnOrLoopback(String ip) throws SocketException,
+	public CxnInt getCxnOrLoopback(String ip) throws SocketException,
 			UnknownHostException {
 		throw new UnknownHostException("Not supported");
 	}

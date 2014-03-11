@@ -1,4 +1,4 @@
-package com.pjf.mat.util.comms;
+package com.pjf.mat.api.comms;
 
 public class RxPkt {
 	private int port;

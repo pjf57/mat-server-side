@@ -23,7 +23,7 @@ public interface Element extends Item {
 	/** @model transient="true" volatile="true" changeable="false" */
 	public Status getElementStatus();
 	
-	public Attribute getAttribute(String name);	// return null if not found
+	public Attribute getAttribute(String name) throws Exception;	// Exception if not found
 	public void setStatus(Status newStatus);
 	
 	public String getShortName();

@@ -126,8 +126,12 @@ public class BasicElement implements Element {
 	}
 
 	@Override
-	public Attribute getAttribute(String name) {
-		return attributes.get(name);
+	public Attribute getAttribute(String name) throws Exception {
+		Attribute attr = attributes.get(name);
+		if (attr == null) {
+			throw new Exception("Attribute [" + name + "] doesnt exist on CB " + getShortName());
+		}
+		return attr;
 	}
 
 	@Override
@@ -242,7 +246,7 @@ public class BasicElement implements Element {
 			}
 		}
 		if (out == null) {
-			throw new Exception("No such output named [" + name + "] on element " + this);
+			throw new Exception("No such output named [" + name + "] on element " + getShortName());
 		}
 		return out;
 	}

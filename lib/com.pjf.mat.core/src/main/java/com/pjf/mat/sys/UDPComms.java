@@ -9,14 +9,14 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
-import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.util.HwStatus;
 import com.pjf.mat.impl.element.SystemCmd;
 import com.pjf.mat.util.comms.UDPSktComms;
-import com.pjf.mat.util.comms.UDPCxn;
 
 public class UDPComms extends UDPSktComms implements Comms {
 	private final static Logger logger = Logger.getLogger(UDPComms.class);
@@ -96,7 +96,7 @@ public class UDPComms extends UDPSktComms implements Comms {
 	 * @return underlying cxn used to do the comms
 	 */
 	@Override
-	public UDPCxn getCxn() {
+	public CxnInt getCxn() {
 		return cxn;
 	}
 

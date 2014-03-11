@@ -7,10 +7,10 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Element;
-import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.LkuResult;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Timestamp;
+import com.pjf.mat.api.logging.LkuAuditLog;
 import com.pjf.mat.api.util.ConfigItem;
 
 /**

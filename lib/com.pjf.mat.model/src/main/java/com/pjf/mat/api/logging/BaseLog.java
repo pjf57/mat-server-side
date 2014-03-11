@@ -1,4 +1,9 @@
-package com.pjf.mat.api;
+package com.pjf.mat.api.logging;
+
+import com.pjf.mat.api.Element;
+import com.pjf.mat.api.OutputPort;
+import com.pjf.mat.api.TimeOrdered;
+import com.pjf.mat.api.Timestamp;
 
 /**
  * Base class for logs

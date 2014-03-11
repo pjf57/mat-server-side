@@ -4,9 +4,9 @@ import com.pjf.marketsim.EventFeedInt;
 import com.pjf.marketsim.SymbolEventFeed;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
+import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.sys.MatSystem;
 import com.pjf.mat.util.DesignUtils;
-import com.pjf.mat.util.comms.UDPCxn;
 import com.pjf.mat.util.file.FileUtils;
 
 public class MATLoadFromDesign extends MatSystem {
@@ -14,7 +14,7 @@ public class MATLoadFromDesign extends MatSystem {
 	@Override
 	protected void start() throws Exception {
 //		init("resources/mat.properties.32.rmo");
-		init("C:/Users/pjf/Documents/GitHub/mat-hw/PALETTES/mat.32v84.csp");
+		init("C:/Users/pjf/Documents/GitHub/mat-hw/PALETTES/mat.32v84.csp","192.168.0.9",2000);
 	}
 	
 	@Override
@@ -32,7 +32,7 @@ public class MATLoadFromDesign extends MatSystem {
 	}
 
 	@Override
-	protected EventFeedInt createEventFeeder(UDPCxn cxn) throws Exception {
+	protected EventFeedInt createEventFeeder(CxnInt cxn) throws Exception {
 		EventFeedInt fd = new SymbolEventFeed(cxn,15000);
 		return fd;
 	}

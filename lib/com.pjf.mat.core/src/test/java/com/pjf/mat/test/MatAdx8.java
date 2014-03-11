@@ -9,7 +9,7 @@ public class MatAdx8 extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat_adx.properties.8");
+		init("resources/mat_adx.properties.8","192.168.0.9",2000);
 	}
 	
 	@Override

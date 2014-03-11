@@ -6,6 +6,9 @@ import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
 
+import com.pjf.mat.api.comms.CxnInt;
+import com.pjf.mat.api.comms.RxPkt;
+
 
 
 /**
@@ -16,7 +19,7 @@ import org.apache.log4j.Logger;
  */
 public abstract class UDPSktComms extends BaseComms {
 	private final static Logger logger = Logger.getLogger(UDPSktComms.class);
-	protected UDPCxn cxn;
+	protected CxnInt cxn;
 	private final Reader reader;
 	private final String ip;
 	private int rspCnt;
@@ -35,8 +38,8 @@ public abstract class UDPSktComms extends BaseComms {
 			try {
 				while (keepGoing) {
 					RxPkt pkt = cxn.rcv();
-					logger.info("Got pkt");
 					if (keepGoing) {
+						logger.info("Got pkt");
 						rspCnt++;
 						processIncomingMsg(pkt.getPort(),pkt.getData());
 					}
@@ -56,6 +59,7 @@ public abstract class UDPSktComms extends BaseComms {
 	}
 	
 	public UDPSktComms(String ip) throws SocketException, UnknownHostException {
+		logger.info("starting up with IP = " + ip);
 		cxn = new UDPCxn(ip);
 		this.ip = ip;
 		rspCnt = 0;
@@ -86,7 +90,7 @@ public abstract class UDPSktComms extends BaseComms {
 	}
 	
 	@Override
-	public UDPCxn getCxn() {
+	public CxnInt getCxn() {
 		return cxn;
 	}
 

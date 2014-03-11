@@ -13,29 +13,27 @@ import com.pjf.marketsim.BasicEventFeed;
 import com.pjf.marketsim.EventFeedInt;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
-import com.pjf.mat.api.EventLog;
-import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.MatApi;
-import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.api.MatLogger;
+import com.pjf.mat.api.MatSimInt;
 import com.pjf.mat.api.NotificationCallback;
-import com.pjf.mat.api.OrderLog;
-import com.pjf.mat.api.RtrAuditLog;
-import com.pjf.mat.api.Status;
 import com.pjf.mat.api.TimeOrdered;
+import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.CxnInt;
+import com.pjf.mat.api.logging.EventLog;
+import com.pjf.mat.api.logging.LkuAuditLog;
+import com.pjf.mat.api.logging.MatLogger;
+import com.pjf.mat.api.logging.OrderLog;
+import com.pjf.mat.api.logging.RtrAuditLog;
 import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
-import com.pjf.mat.impl.element.BasicCmd;
 import com.pjf.mat.sim.MatSim;
 import com.pjf.mat.util.SystemServicesInt;
-import com.pjf.mat.util.comms.BaseComms;
-import com.pjf.mat.util.comms.UDPCxn;
 
 
 public abstract class MatSystem implements SystemServicesInt {
 	protected final static Logger logger = Logger.getLogger(MatSystem.class);
 	private MatInterface mat = null;
-	private MatSim sim = null;
+	private MatSimInt sim = null;
 	private EventFeedInt feed;
 	private final UnifiedEventLogger ueLogger;
 	private final NotificationHandler notificationHandler;
@@ -126,11 +124,13 @@ public abstract class MatSystem implements SystemServicesInt {
 	 * Method to call to initialise the system.
 	 * 
 	 * @param propsResource	resource file for HW properties
+	 * @param hwIPAddr - IP address of hardware
+	 * @param hwPortNum - port number of hardware
 	 * @throws Exception
 	 */
-	protected void init(String propsResource) throws Exception {
+	protected void init(String propsResource, String hwIPAddr, int hwPortNum) throws Exception {
 		Properties props = loadProperties(propsResource);
-		BaseComms comms;
+		Comms comms;
 		if (System.getProperty("sim") != null) {
 			sim = new MatSim(new MatLogger() {
 				@Override
@@ -150,7 +150,7 @@ public abstract class MatSystem implements SystemServicesInt {
 		} else if (System.getProperty("dummy") != null) {
 			comms = new DummyComms();
 		} else {
-			comms = new UDPComms("192.168.0.9",2000);
+			comms = new UDPComms(hwIPAddr,hwPortNum);
 		}
 		comms.addNotificationSubscriber(notificationHandler);
 		MatInterfaceModel model = new MatInterfaceModel(props);
@@ -173,7 +173,7 @@ public abstract class MatSystem implements SystemServicesInt {
 	 * @throws UnknownHostException 
 	 * @throws SocketException 
 	 */
-	protected EventFeedInt createEventFeeder(UDPCxn cxn) throws Exception {
+	protected EventFeedInt createEventFeeder(CxnInt cxn) throws Exception {
 		EventFeedInt fd = new BasicEventFeed(cxn,15000);
 		return fd;
 	}
@@ -181,7 +181,7 @@ public abstract class MatSystem implements SystemServicesInt {
 	protected void run() throws Exception {
 		logger.info("-----");	
 		reqStatus(); Thread.sleep(500);
-		putIntoConfigMode();
+		mat.putIntoConfigMode();
 		configure(mat);
 		mat.syncClock(0);
 		
@@ -247,47 +247,7 @@ public abstract class MatSystem implements SystemServicesInt {
 	protected void reqStatus() {
 		mat.requestHWStatus();		
 	}
-	
-	/**
-	 * Send HW into configuration state if not already there
-	 * @throws Exception if unable to get all elements into config state
-	 * 
-	 */
-	private void putIntoConfigMode() throws Exception {
-		logger.info("Ensuring system is in config mode.");
-		boolean didReset = false;
-		for (Element el : mat.getModel().getElements()) {
-			if (el.getId() != 0) {	// ignore router element
-				Status s = el.getElementStatus();
-				if (!s.isInConfigState()) {
-					logger.info("Resetting " + el.getShortName() + " to force it to config state..");
-					mat.sendCmd(new BasicCmd(el, "reset", MatElementDefs.EL_C_RESET, 0));
-					didReset = true;
-				}
-			}
-		}
-		if (didReset) {
-			// check that all elements are ready for configuration
-			reqStatus();
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				logger.info("Sleep interrupted - " + e);
-			}
-			// check all in config mode now
-			for (Element el : mat.getModel().getElements()) {
-				if (el.getId() != 0) {	// ignore router element
-					Status s = el.getElementStatus();
-					if (!s.isInConfigState()) {
-						logger.error("Unable to force element " + el.getShortName() + " into config state.");
-						throw new Exception("System not ready for configuration - el:" + el.getShortName());
-					}
-				}
-			}
-		}		
-		logger.info("Ready to config ...");
-	}
-	
+		
 	protected void reqAuditLogs() throws Exception {
 		mat.reqLkuAuditLogs();		
 		mat.reqRtrAuditLogs();		
@@ -304,7 +264,7 @@ public abstract class MatSystem implements SystemServicesInt {
 	}
 
 	@Override
-	public UDPCxn getCxnOrLoopback(String ip) throws SocketException, UnknownHostException {
+	public CxnInt getCxnOrLoopback(String ip) throws SocketException, UnknownHostException {
 		throw new UnknownHostException("not supported");
 	}
 

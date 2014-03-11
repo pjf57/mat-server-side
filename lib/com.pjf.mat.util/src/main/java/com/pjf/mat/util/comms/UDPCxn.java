@@ -10,10 +10,12 @@ import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
 
-import com.pjf.mat.api.InMsgCallbackInt;
+import com.pjf.mat.api.comms.CxnInt;
+import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.comms.RxPkt;
 
 
-public class UDPCxn {
+public class UDPCxn implements CxnInt {
 		private final static Logger logger = Logger.getLogger(UDPCxn.class);
 
 		private static final int SKT_TMO_MS = 500;
@@ -68,17 +70,20 @@ public class UDPCxn {
     		sktInUse = false;
 		}
 
-    	/**
-    	 * Set the object that should receive outgoing messages
-    	 * 
-    	 * @param cb	callback object
-    	 */
-    	public void setLoopbackCallback(InMsgCallbackInt cb) {
+    	/* (non-Javadoc)
+		 * @see com.pjf.mat.util.comms.CxnInt#setLoopbackCallback(com.pjf.mat.api.InMsgCallbackInt)
+		 */
+    	@Override
+		public void setLoopbackCallback(InMsgCallbackInt cb) {
     		logger.info("Loopback mode set to " + cb);
     		this.loopbackCb = cb;
     	}
 
-    	public void send(byte[] data, int port) throws IOException {
+    	/* (non-Javadoc)
+		 * @see com.pjf.mat.util.comms.CxnInt#send(byte[], int)
+		 */
+    	@Override
+		public void send(byte[] data, int port) throws IOException {
     		DatagramPacket pkt = new DatagramPacket(data, data.length, dstIP, port);
 			logger.debug("Msg sent (port=" + port + "):  [" + toHexString(data) + "]");
 			if (loopbackCb != null) {
@@ -97,13 +102,11 @@ public class UDPCxn {
     		skt.send(pkt);   		
     	}
 
-    	/**
-    	 * Receive one datagram. Abort if cxn is shutdown
-    	 * 
-    	 * @return
-    	 * @throws IOException
-    	 */
-    	public RxPkt rcv() throws IOException {
+    	/* (non-Javadoc)
+		 * @see com.pjf.mat.util.comms.CxnInt#rcv()
+		 */
+    	@Override
+		public RxPkt rcv() throws IOException {
   	      	byte[] buf = new byte[1500];
 	  	    DatagramPacket pkt = new DatagramPacket(buf, buf.length);
 	  	    boolean gotPkt = false;
@@ -134,7 +137,11 @@ public class UDPCxn {
 		    return new RxPkt(port,data);
     	}
     	
-    	public void close() {
+    	/* (non-Javadoc)
+		 * @see com.pjf.mat.util.comms.CxnInt#close()
+		 */
+    	@Override
+		public void close() {
     		shutdown = true;
     		logger.debug("Waiting for skt to be not in use...");
     		while (sktInUse) {
@@ -161,6 +168,10 @@ public class UDPCxn {
     		return buf.toString();
     	}
 
+		/* (non-Javadoc)
+		 * @see com.pjf.mat.util.comms.CxnInt#getIp()
+		 */
+		@Override
 		public String getIp() {
 			return dstIP.toString();
 		}

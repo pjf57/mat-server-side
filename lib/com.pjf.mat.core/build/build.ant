@@ -24,6 +24,12 @@
   	  <fileset dir="${gitbase}/lib/com.pjf.mat.core/lib">  <include name="*.jar"/>  </fileset>
       <fileset dir="${gitbase}/lib/com.pjf.mat.util/lib">  <include name="*.jar"/>  </fileset>
   	</copy>
+
+    <!-- copy examples -->
+ 	<copy todir="${distr}/examples">
+ 	    <fileset dir="${gitbase}/lib/com.pjf.mat.core/src/main/java/com/pjf/mat/examples"/>
+ 	</copy>
+
   </target>
 
 </project>

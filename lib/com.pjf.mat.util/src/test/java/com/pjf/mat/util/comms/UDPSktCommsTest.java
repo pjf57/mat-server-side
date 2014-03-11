@@ -10,8 +10,9 @@ import org.apache.log4j.BasicConfigurator;
 
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
-import com.pjf.mat.api.InMsgCallbackInt;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.api.comms.CxnInt;
+import com.pjf.mat.api.comms.InMsgCallbackInt;
 import com.pjf.mat.api.util.HwStatus;
 
 import junit.framework.TestCase;
@@ -80,7 +81,7 @@ public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
 	}
 	
 	public void testCxnSendReceive() throws IOException {
-		UDPCxn cxn = skt.getCxn();
+		CxnInt cxn = skt.getCxn();
 		byte[] data = "Test Data".getBytes();
 		cxn.send(data, 5000);
 	}

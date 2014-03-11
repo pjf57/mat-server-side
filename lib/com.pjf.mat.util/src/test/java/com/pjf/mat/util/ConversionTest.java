@@ -1,11 +1,6 @@
 package com.pjf.mat.util;
 
 
-import java.util.HashSet;
-import java.util.Set;
-
-import com.pjf.mat.api.Element;
-
 import junit.framework.TestCase;
 
 

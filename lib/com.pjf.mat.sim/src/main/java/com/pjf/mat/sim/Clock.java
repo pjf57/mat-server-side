@@ -1,7 +1,7 @@
 package com.pjf.mat.sim;
 
-import com.pjf.mat.api.MatLogger;
 import com.pjf.mat.api.Timestamp;
+import com.pjf.mat.api.logging.MatLogger;
 import com.pjf.mat.sim.model.ClockTick;
 import com.pjf.mat.sim.model.SimAccess;
 

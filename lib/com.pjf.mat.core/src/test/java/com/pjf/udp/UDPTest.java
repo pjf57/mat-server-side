@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import com.pjf.mat.util.comms.RxPkt;
+import com.pjf.mat.api.comms.RxPkt;
 import com.pjf.mat.util.comms.UDPCxn;
 
 

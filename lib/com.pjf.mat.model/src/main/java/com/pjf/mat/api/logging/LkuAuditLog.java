@@ -1,4 +1,9 @@
-package com.pjf.mat.api;
+package com.pjf.mat.api.logging;
+
+import com.pjf.mat.api.Element;
+import com.pjf.mat.api.LkuResult;
+import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.Timestamp;
 
 /**
  * Container for one Lookup Audit Log entry

@@ -12,6 +12,9 @@ import com.pjf.mat.api.util.ConfigItem;
 /**
  * Encode config for a symbol with ID as a number of config items
  * 
+ * Format of config string is SYM1:instrID1,SYM2:instrID2 ...
+ * Configs created are SYM_L, SYM_R, and id.
+ * 
  * @author pjf
  *
  */

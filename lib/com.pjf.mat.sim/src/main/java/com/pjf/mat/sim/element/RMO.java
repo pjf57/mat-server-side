@@ -9,7 +9,7 @@ import com.pjf.mat.sim.model.TickDataBasicResult;
 import com.pjf.mat.sim.model.TickDataSymbolResult;
 import com.pjf.mat.sim.model.TickDataVolPriceResult;
 import com.pjf.mat.sim.types.Event;
-import com.pjf.mat.util.comms.UDPCxn;
+import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.util.ConfigItem;
 
 /**
@@ -170,7 +170,7 @@ public class RMO extends BaseElement implements SimElement {
 		if (c_ip == 0) {
 			ip = "direct";
 		}
-		UDPCxn cxn;
+		CxnInt cxn;
 		try {
 			cxn = host.getCxnOrLoopback(ip);
 			cxn.send(data, c_port);

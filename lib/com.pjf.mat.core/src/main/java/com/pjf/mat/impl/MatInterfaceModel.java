@@ -333,35 +333,13 @@ public class MatInterfaceModel implements MatModel {
 //		}
 		long crc = 1;
 		while ((el = getElement(id)) != null) {
-			crc += el.getHWType() * (id+1);
+			crc += el.getHWType() * (id+1) * 1237;
 			id++;
 		}
 		crc &= 0xffffffffffL;
 		return crc;
 	}
 
-	private long crc40(long init, int data) {
-		long crc = init;
-		int d = data;
-		for (int bitnum=7; bitnum>=0; bitnum--) {
-			// calc feedback bit
-			boolean nextbit = false;
-			if ((crc & 0x4000000) != 0) { nextbit = !nextbit; }
-			if ((crc & 0x0800000) != 0) { nextbit = !nextbit; }
-			if ((crc & 0x0010000) != 0) { nextbit = !nextbit; }
-			if ((crc & 0x0000008) != 0) { nextbit = !nextbit; }
-			if ((crc & 0x0000001) != 0) { nextbit = !nextbit; }
-			if ((d & 0x80) != 0) { nextbit = !nextbit; }
-			// feed the feedback bit into the crc
-			crc *= 2;
-			if (nextbit) {
-				crc += 1;
-			}
-			crc = crc & 0xffffffffffL;
-			d *= 2;
-			}
-		return crc;
-	}
 
 	@Override
 	public Properties getProperties() {

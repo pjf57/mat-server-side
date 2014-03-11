@@ -11,27 +11,28 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Attribute;
-import com.pjf.mat.api.Comms;
+import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.CxnInt;
+import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.logging.EventLog;
+import com.pjf.mat.api.logging.LkuAuditLog;
+import com.pjf.mat.api.logging.OrderLog;
+import com.pjf.mat.api.logging.RtrAuditLog;
 import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.api.util.HwStatus;
 import com.pjf.mat.api.Element;
-import com.pjf.mat.api.EventLog;
-import com.pjf.mat.api.InMsgCallbackInt;
 import com.pjf.mat.api.InputPort;
-import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.LkuResult;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.NotificationCallback;
-import com.pjf.mat.api.OrderLog;
 import com.pjf.mat.api.OutputPort;
-import com.pjf.mat.api.RtrAuditLog;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.util.Conversion;
 import com.pjf.mat.util.ElementStatus;
 
-public abstract class BaseComms implements Comms, InMsgCallbackInt {
+public abstract class BaseComms implements Comms {
 	private final static Logger logger = Logger.getLogger(BaseComms.class);
 	protected MatApi mat;
 	protected Collection<NotificationCallback> notificationSubscribers;
@@ -50,6 +51,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 		hwStatus = new HwStatus();
 	}
 	
+	@Override
 	public void setMat(MatApi mat) {
 		this.mat = mat;
 	}
@@ -60,7 +62,8 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 		logger.info("subscribeIncomingMsgs() " + cb + " subscribed to port " + port); 
 	}
 
-	public UDPCxn getCxn() {
+	@Override
+	public CxnInt getCxn() {
 		return null;
 	}
 
@@ -199,7 +202,7 @@ public abstract class BaseComms implements Comms, InMsgCallbackInt {
 		if (msg.length >= 13) {
 			byte maj = msg[11];
 			byte min = msg[12];
-			cf_version = "" + maj + "." + min;
+			cf_version = "" + Conversion.toHexByteString(maj) + "." + Conversion.toHexByteString(min);
 		}
 		HwStatus st = new HwStatus(hwSig,microtickPeriod,cf_version);
 		setHwStatus(st);

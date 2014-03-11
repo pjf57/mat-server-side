@@ -15,13 +15,10 @@ import org.apache.log4j.Logger;
 import com.pjf.mat.api.AttrSysType;
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.Cmd;
-import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
-import com.pjf.mat.api.LkuAuditLog;
 import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.api.MatLogger;
-import com.pjf.mat.api.RtrAuditLog;
+import com.pjf.mat.api.MatSimInt;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.element.ElementFactory;
@@ -35,15 +32,19 @@ import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.model.TickdataResult;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.SystemServicesInt;
-import com.pjf.mat.util.comms.UDPCxn;
 import com.pjf.mat.util.comms.UDPSktComms;
+import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.CxnInt;
+import com.pjf.mat.api.logging.LkuAuditLog;
+import com.pjf.mat.api.logging.MatLogger;
+import com.pjf.mat.api.logging.RtrAuditLog;
 import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.api.util.HwStatus;
 import com.pjf.mat.sim.router.Router;
 import com.pjf.mat.api.LkuResult;
 
 
-public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
+public class MatSim extends UDPSktComms implements SimHost, SimAccess, MatSimInt {
 
 	private static final String SIM_VER = "SIM v1.01";
 
@@ -73,12 +74,10 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 		this.clk = clock;
 	}
 	
-	/**
-	 * instantiate all the simulation elements
-	 * 
-	 * @param prjElements
-	 * @throws Exception
+	/* (non-Javadoc)
+	 * @see com.pjf.mat.sim.MatSimInt#init(java.util.Collection)
 	 */
+	@Override
 	public void init(Collection<Element> prjElements) throws Exception {
 		// instantiate the elements according to the project requirements
 		for (Element el : prjElements) {
@@ -173,6 +172,9 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 		shutdown();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.pjf.mat.sim.MatSimInt#shutdown()
+	 */
 	@Override
 	public void shutdown() {
 		logger.info("shutdown(): shutting down ...");
@@ -323,9 +325,10 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 		}
 	}
 
-	/**
-	 * Start the simulator
+	/* (non-Javadoc)
+	 * @see com.pjf.mat.sim.MatSimInt#start()
 	 */
+	@Override
 	public void start() {
 		logger.info("-------------- sim start -------------");
 		router.start();
@@ -366,6 +369,7 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
+	@SuppressWarnings("unused")
 	public TickdataResult tickdata(int source, int tickref, int tickdataKey) throws Exception {
 		TickdataResult result = null;
 		Timestamp startTime = clk.getSimTime();
@@ -387,7 +391,7 @@ public class MatSim extends UDPSktComms implements Comms, SimHost, SimAccess {
 	}
 
 	@Override
-	public UDPCxn getCxnOrLoopback(String ip) throws SocketException,
+	public CxnInt getCxnOrLoopback(String ip) throws SocketException,
 			UnknownHostException {
 		return sysServices.getCxnOrLoopback(ip);
 	}

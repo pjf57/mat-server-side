@@ -1,4 +1,4 @@
-package com.pjf.mat.api;
+package com.pjf.mat.api.logging;
 
 public interface MatLogger {
 

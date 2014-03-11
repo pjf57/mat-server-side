@@ -9,7 +9,7 @@ public class MatAdx16feed extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat_adx.properties.16feed");
+		init("resources/mat_adx.properties.16feed","192.168.0.9",2000);
 	}
 	
 	@Override

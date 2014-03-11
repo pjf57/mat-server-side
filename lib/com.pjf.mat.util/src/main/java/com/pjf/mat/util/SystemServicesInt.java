@@ -3,7 +3,7 @@ package com.pjf.mat.util;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import com.pjf.mat.util.comms.UDPCxn;
+import com.pjf.mat.api.comms.CxnInt;
 
 /**
  * Interface to provide generalised MAT system services
@@ -22,6 +22,6 @@ public interface SystemServicesInt {
 	 * @throws SocketException
 	 * @throws UnknownHostException
 	 */
-	public UDPCxn getCxnOrLoopback(String ip) throws SocketException, UnknownHostException;
+	public CxnInt getCxnOrLoopback(String ip) throws SocketException, UnknownHostException;
 
 }

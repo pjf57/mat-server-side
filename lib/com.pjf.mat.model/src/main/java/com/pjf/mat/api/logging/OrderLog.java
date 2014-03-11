@@ -1,4 +1,6 @@
-package com.pjf.mat.api;
+package com.pjf.mat.api.logging;
+
+import com.pjf.mat.api.Timestamp;
 
 /**
  * Model an order event

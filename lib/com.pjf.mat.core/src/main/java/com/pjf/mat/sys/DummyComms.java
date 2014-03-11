@@ -7,9 +7,9 @@ import java.util.Random;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
-import com.pjf.mat.api.Comms;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.api.comms.Comms;
 import com.pjf.mat.api.util.HwStatus;
 import com.pjf.mat.util.comms.BaseComms;
 

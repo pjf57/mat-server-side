@@ -6,8 +6,8 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
-import com.pjf.mat.api.InMsgCallbackInt;
 import com.pjf.mat.api.MatElementDefs;
+import com.pjf.mat.api.comms.InMsgCallbackInt;
 import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.model.SimElement;

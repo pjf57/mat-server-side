@@ -1,15 +1,18 @@
-package com.pjf.mat.test;
+package com.pjf.mat.examples;
+
+import org.apache.log4j.BasicConfigurator;
 
 import com.pjf.marketsim.EventFeedInt;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.sys.MatSystem;
 
-public class MatRmo32 extends MatSystem {
+public class CheetahExample1 extends MatSystem{
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat.properties.32.rmo","192.168.0.9",2000);
+		// initialise model with specified palette
+		init("resources/mat.32v83.csp","192.168.1.9",2000);
 	}
 	
 	@Override
@@ -25,29 +28,30 @@ public class MatRmo32 extends MatSystem {
 		// configure system attributes
 		sys.getAttribute("lookup_audit_autosend").setValue("4");
 		sys.getAttribute("router_audit_autosend").setValue("4");
-		// configure MFD
+		// configure MFD 
 		mfd.getAttribute("udp_listen_port").setValue("15000");
-		mfd.getAttribute("price_op").setValue("0");
-		mfd.getAttribute("volume_op").setValue("f");	// no vol output
-		mfd.getAttribute("mdtype").setValue("1");		
+		mfd.getAttribute("market_ID").setValue("1");
+		mfd.getAttribute("trade").setValue("0");	// trade to this op
+		mfd.getAttribute("bid").setValue("1");		// bid to this op
+		mfd.getAttribute("ask").setValue("2");		// ask to this op
+		mfd.getAttribute("symbols").setValue("IBM:5,APPL:7");		
 		// Configure MACD
-		macd.getAttribute("FAST_EMA_alpha").setValue("0.5");	// 
 		macd.getAttribute("FAST_EMA_len").setValue("3");	// 
-		macd.getAttribute("SLOW_EMA_alpha").setValue("0.25");	// 
 		macd.getAttribute("SLOW_EMA_len").setValue("7");	// 
-		macd.getAttribute("SIGNAL_EMA_alpha").setValue("0.5");	// 
 		macd.getAttribute("SIGNAL_EMA_len").setValue("3");	// 
 		macd.getAttribute("OP_ENABLE_MASK").setValue("4");	// enable hist op
-		macd.getInputs().get(0).connectTo(mfd.getOutputs().get(0));
+		macd.getInputs().get(0).connectTo(mfd.getOutputs().get(2));
 		// Configure logic 1
-		logicBuy.getAttribute("oper").setValue("3044");	// 	Z = A > k1
-		logicBuy.getAttribute("k1").setValue("0");	// 	
+		logicBuy.getAttribute("Z").setValue("P");
+		logicBuy.getAttribute("P").setValue("A>K1");
+		logicBuy.getAttribute("k1").setValue("0.05");
 		logicBuy.getInputs().get(0).connectTo(macd.getOutputs().get(2));
-		logicSell.getAttribute("oper").setValue("1044");	// 	Z = A < k1
-		logicSell.getAttribute("k1").setValue("0");	// 	
+		logicSell.getAttribute("Z").setValue("P");
+		logicSell.getAttribute("P").setValue("A<K1");
+		logicSell.getAttribute("k1").setValue("0");	 	
 		logicSell.getInputs().get(0).connectTo(macd.getOutputs().get(2));
 		// Configure RMO
-		rmo.getAttribute("udp_ip").setValue("0C0A80006");	// 
+		rmo.getAttribute("udp_ip").setValue("0C0A80105");	// 
 		rmo.getAttribute("udp_port").setValue("3500");	// 
 		rmo.getAttribute("min_vol").setValue("100");	// 
 		rmo.getAttribute("max_vol").setValue("500");	// 
@@ -84,7 +88,9 @@ public class MatRmo32 extends MatSystem {
 
 
 	public static void main(String[] args) {
-		MatRmo32 sys = new MatRmo32();
+		BasicConfigurator.configure();
+		logger.info("startup");
+		CheetahExample1 sys = new CheetahExample1();
 		sys.boot();
 	}
 

@@ -1,4 +1,4 @@
-package com.pjf.mat.api;
+package com.pjf.mat.api.comms;
 
 /**
  * Callback for incoming messages

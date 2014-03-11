@@ -7,6 +7,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import org.apache.log4j.Logger; 
 
+import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.util.Conversion;
 import com.pjf.mat.util.data.DataSource;
 import com.pjf.mat.util.comms.UDPCxn;
@@ -34,7 +35,7 @@ import com.pjf.mat.util.data.TickData;
  */
 public class SymbolEventFeed implements EventFeedInt {
 	private final static Logger logger = Logger.getLogger(SymbolEventFeed.class);
-	private UDPCxn cxn;
+	private CxnInt cxn;
 	private final String ip;
 	private int port;
 	private EventFeedCallbackInt cb;
@@ -95,7 +96,7 @@ public class SymbolEventFeed implements EventFeedInt {
 		this.cb = null;
 	}
 
-	public SymbolEventFeed(UDPCxn cxn, int port) throws SocketException, UnknownHostException {
+	public SymbolEventFeed(CxnInt cxn, int port) throws SocketException, UnknownHostException {
 		this.ip = cxn.getIp();
 		this.port = port;
 		this.cxn = cxn;

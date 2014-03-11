@@ -9,7 +9,7 @@ public class MatSimTest extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat.properties.32.rmo");
+		init("resources/mat.properties.32.rmo","192.168.0.9",2000);
 	}
 	
 	@Override

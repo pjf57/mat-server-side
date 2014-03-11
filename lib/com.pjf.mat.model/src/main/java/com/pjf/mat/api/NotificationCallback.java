@@ -3,6 +3,11 @@ package com.pjf.mat.api;
 import java.util.Collection;
 import java.util.List;
 
+import com.pjf.mat.api.logging.EventLog;
+import com.pjf.mat.api.logging.LkuAuditLog;
+import com.pjf.mat.api.logging.OrderLog;
+import com.pjf.mat.api.logging.RtrAuditLog;
+
 public interface NotificationCallback {
 	/**
 	 * An output event log has been received from the element logger.

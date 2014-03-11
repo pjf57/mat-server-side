@@ -10,8 +10,8 @@ import org.apache.log4j.Logger;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.OutputPort;
-import com.pjf.mat.api.RtrAuditLog;
 import com.pjf.mat.api.Timestamp;
+import com.pjf.mat.api.logging.RtrAuditLog;
 import com.pjf.mat.api.util.ConfigItem;
 
 /**

@@ -9,7 +9,7 @@ public class MatAdx32ema3_27 extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat.properties.32ema3-27");
+		init("resources/mat.properties.32ema3-27","192.168.0.9",2000);
 	}
 	
 	@Override

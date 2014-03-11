@@ -9,7 +9,7 @@ public class MatMacd16 extends MatSystem {
 
 	@Override
 	protected void start() throws Exception {
-		init("resources/mat_macd.properties.16");
+		init("resources/mat_macd.properties.16","192.168.0.9",2000);
 	}
 	
 	@Override
