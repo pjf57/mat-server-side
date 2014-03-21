@@ -19,9 +19,9 @@ public interface NotificationCallback {
 	/**
 	 * An element status update has been received. The element has been updated.
 	 * 
-	 * @param element
+	 * @param cbs - collection of CBs that have status updates
 	 */
-	public void notifyElementStatusUpdate(Element element);
+	public void notifyElementStatusUpdate(Collection<Element> cbs);
 	
 	/**
 	 * Notify the receipt of some lookup audit logs. These are in no particular order.

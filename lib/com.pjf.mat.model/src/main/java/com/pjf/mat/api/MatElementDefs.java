@@ -200,6 +200,8 @@ public class MatElementDefs {
 	public static final int EL_RMO_C_MIN_VOL	 	= 0x05; // set min order volume
 	public static final int EL_RMO_C_MAX_VOL	 	= 0x06; // set max order volume
 	public static final int EL_RMO_C_MAX_POSN	 	= 0x07; // set max position
+	// CMDS
+	public static final int EL_RMO_C_RESET_POSN		= 0x03; // Reset instrument positions
 	
 
 // ---------------------- utilities ----------------------------------------

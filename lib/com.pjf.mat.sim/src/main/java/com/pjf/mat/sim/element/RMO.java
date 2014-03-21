@@ -1,6 +1,7 @@
 package com.pjf.mat.sim.element;
 
 
+import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.model.SimElement;
@@ -42,10 +43,7 @@ public class RMO extends BaseElement implements SimElement {
 		super(id, MatElementDefs.EL_TYP_LOG,host);
 		posn = new int[256];
 		pnl = new float[256];
-		for (int i=0; i<256; i++) {
-			posn[i] = 0;
-			pnl[i] = 0.0f;
-		}
+		resetInstrumentPositions();
 	}
 
 	@Override
@@ -60,6 +58,26 @@ public class RMO extends BaseElement implements SimElement {
 		}
 	}
 
+	@Override
+	protected void processCmd(Cmd cmd) {
+		switch (cmd.getConfigId()) {
+		case MatElementDefs.EL_RMO_C_RESET_POSN: 
+			resetInstrumentPositions();
+			break;
+		default:
+			logger.warn(getIdStr() + "Unexpected configuration: " + cmd);
+			break;
+		}
+	}
+
+
+	private void resetInstrumentPositions() {
+		logger.info(getIdStr() + "Resetting instrument positions ...");
+		for (int i=0; i<256; i++) {
+			posn[i] = 0;
+			pnl[i] = 0.0f;
+		}
+	}
 
 	@Override
 	protected void processEvent(int input, Event evt) {

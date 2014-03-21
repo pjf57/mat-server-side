@@ -18,7 +18,11 @@
       <fileset dir="${gitbase}/lib/com.pjf.mat.model/target/classes" />
       <fileset dir="${gitbase}/lib/com.pjf.mat.util/target/classes" />
     </jar>
-  	
+
+    <jar destfile="${distr}/lib/cheetahsim.jar">
+      <fileset dir="${gitbase}/lib/com.pjf.mat.sim/target/classes" />
+    </jar>
+
     <!-- copy external libs -->
   	<copy todir="${distr}/extlib" overwrite="true">
   	  <fileset dir="${gitbase}/lib/com.pjf.mat.core/lib">  <include name="*.jar"/>  </fileset>
