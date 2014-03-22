@@ -28,6 +28,7 @@ public class BasicElement implements Element {
 	private Map<String,Attribute> attributes;	// key = name
 	private List<Cmd> cmds;
 	private ElementStatus status;
+	private boolean statusHasChanged;
 	
 	/**
 	 * Basic constructor to make a type
@@ -44,6 +45,7 @@ public class BasicElement implements Element {
 		this.attributes = new HashMap<String,Attribute>();
 		this.cmds = new ArrayList<Cmd>();
 		this.status = new ElementStatus();
+		this.statusHasChanged = true;
 	}
 
 	/**
@@ -63,6 +65,7 @@ public class BasicElement implements Element {
 		this.attributes = cloneAttributesFromType(this,type);
 		this.cmds = cloneCmdsFromType(type);
 		this.status = new ElementStatus();
+		this.statusHasChanged = true;
 	}
 
 	private Map<String,Attribute> cloneAttributesFromType(Element newParent, Element type) throws Exception {
@@ -212,6 +215,9 @@ public class BasicElement implements Element {
 
 	@Override
 	public void setStatus(Status newStatus) {
+		if (!this.status.equals(newStatus)) {
+			statusHasChanged = true;
+		}
 		this.status = new ElementStatus(newStatus.getBaseState(),
 							newStatus.getRawRunState(),
 							newStatus.getEventInCount());
@@ -257,5 +263,14 @@ public class BasicElement implements Element {
 			ip.removeCxn();
 		}
 		
+	}
+
+	@Override
+	public boolean hasStatusChanged(boolean reset) {
+		boolean ret = statusHasChanged;
+		if (reset) {
+			statusHasChanged = false;
+		}
+		return ret;
 	}
 }

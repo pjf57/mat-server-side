@@ -50,10 +50,13 @@ public abstract class MatSystem implements SystemServicesInt {
 		}
 
 		@Override
-		public void notifyElementStatusUpdate(Element element) {
-			logger.info("Status Update: element=" + element.getId() +
-						" type=" + element.getType() +
-						" state=" + element.getElementStatus());			
+		public void notifyElementStatusUpdate(Collection<Element> cbs) {
+			logger.info("Status update received for " + cbs.size() + " CBs:");
+			for (Element cb : cbs) {
+				logger.info("Status Update: cb=" + cb.getId() +
+						" type=" + cb.getType() +
+						" state=" + cb.getElementStatus());	
+			}
 		}
 
 		@Override

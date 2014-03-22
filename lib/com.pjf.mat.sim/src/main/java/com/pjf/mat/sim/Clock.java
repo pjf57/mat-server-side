@@ -15,6 +15,7 @@ public class Clock extends Thread implements ClockTick{
 	private boolean shutdown;
 	private long timestampOrigin;		// 32 bit origin of timestamp
 	private boolean running;
+	private final int periodMs;
 	
 	public Clock(SimAccess host, int periodMs, MatLogger logger) {
 		this.logger = logger;
@@ -25,6 +26,7 @@ public class Clock extends Thread implements ClockTick{
 		counter = 0;
 		shutdown = false;
 		timestampOrigin = -1;
+		this.periodMs = periodMs;
 		running = false;
 	}
 	
@@ -60,6 +62,13 @@ public class Clock extends Thread implements ClockTick{
 			while (!shutdown) {
 				didLog = false;
 				processMicroTick();
+				if (periodMs > 0) {
+					try {
+						sleep(periodMs);
+					} catch (InterruptedException e) {
+						// ignore
+					}
+				}
 			}
 			if (!didLog) {
 				logger.info("Shutdown.");

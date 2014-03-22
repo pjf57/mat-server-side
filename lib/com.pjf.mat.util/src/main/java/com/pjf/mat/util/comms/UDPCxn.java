@@ -125,7 +125,7 @@ public class UDPCxn implements CxnInt {
 				    for (int i=0; i<len; i++) {
 				    	data[i] = rd[i];
 				    }
-					logger.info("Msg received (port=" + pkt.getPort() + "):  [" + toHexString(data) + "]");
+					logger.debug("Msg received (port=" + pkt.getPort() + "):  [" + toHexString(data) + "]");
 					} catch (SocketTimeoutException e) {
 						// ignore timeout and just keep going
 					}

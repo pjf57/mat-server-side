@@ -231,7 +231,7 @@ public class HLOC extends BaseElement implements SimElement {
 			if (periodCnt >= c_period) {
 				periodCnt = 0;
 				// end of period -- switch stores and then emit events
-				logger.info(getIdStr() + "End of period.");
+				logger.debug(getIdStr() + "End of period.");
 				logState("start end-period processing");
 				Set<Integer> lastPeriodSet;	// for instruments from last period
 				synchronized(this) {

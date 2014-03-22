@@ -38,4 +38,11 @@ public interface Element extends Item {
 	 * Remove all connections to this element
 	 */
 	public void removeAllConnections();
+	
+	/**
+	 * Determine if status has changed
+	 * 
+	 * reset - true if want to reset the changed flag
+	 */
+	public boolean hasStatusChanged(boolean reset);
 }

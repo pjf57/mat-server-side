@@ -156,7 +156,7 @@ public abstract class BaseComms implements Comms {
 	 */
 	@Override
 	public void processIncomingMsg(int port, byte[] msg) {
-		logger.info("--> RX MSG (port=" + port + ") " + toHexString(msg,0,msg.length-1));
+		logger.debug("--> RX MSG (port=" + port + ") " + toHexString(msg,0,msg.length-1));
 		InMsgCallbackInt cb = inMsgSubscribers.get(new Integer(port));
 		if (cb != null) {
 			// send the message to the subscriber
@@ -232,6 +232,8 @@ public abstract class BaseComms implements Comms {
 	protected void processStatusMsg(byte[] msg) {
 		byte items = msg[1];
 		int upto = 2;
+		int nCBs = 0;
+		Set<Element> cbsUpdated = new HashSet<Element>();
 		while (items-- > 0) {
 			// process first/next status item
 			int id = msg[upto++];
@@ -249,15 +251,39 @@ public abstract class BaseComms implements Comms {
 			case BS_RUN:	basisStateStr = Status.RUN;									break;
 			default:		basisStateStr = Status.UNKNOWN + "(" + basisState + ")";	break;
 			}
-			processNewStatusUpdate(id,typeStr,basisStateStr,intState,evtCount);
+			nCBs++;
+			Element cb = processNewStatusUpdate(id,typeStr,basisStateStr,intState,evtCount);
+			if (cb != null) {
+				if (cb.hasStatusChanged(true)) {
+					cbsUpdated.add(cb);
+				}
+			}
+		}
+		logger.info("processStatusMsg(): received status for " + nCBs + " CBs, with " +
+					cbsUpdated.size() + " changed.");
+		if (cbsUpdated.size() > 0) {
+			for (NotificationCallback subscriber : notificationSubscribers) {
+				subscriber.notifyElementStatusUpdate(cbsUpdated);
+			}
 		}		
 	}
 
 
 
-	protected void processNewStatusUpdate(int id, String type,
-			String basisState, int intState, int evtCount) {
-				
+	/**
+	 * Handle status update for a CB
+	 * 
+	 * NOTE: this does not send any notifications
+	 * 
+	 * @param id - id of the CB (used to select from model)
+	 * @param type - type of the CB - to update
+	 * @param basisState - basis state to update
+	 * @param intState - internal state to update
+	 * @param evtCount - event count
+	 * @return the updated CB (or null if not found)
+	 */
+	protected Element processNewStatusUpdate(int id, String type,
+			String basisState, int intState, int evtCount) {		
 		Element element = mat.getModel().getElement(id);
 		String srcName = "unknown";
 		if (element != null) {			
@@ -270,16 +296,13 @@ public abstract class BaseComms implements Comms {
 					" type=" + type +
 					" basis-state=" + basisState + " int-state=" + intState +
 					" event-count=" + evtCount);
-
-			for (NotificationCallback subscriber : notificationSubscribers) {
-				subscriber.notifyElementStatusUpdate(element);
-			}
 		} else {
 			logger.error("processNewStatusUpdate(): Error getting element, id=" + id + 
 					" type=" + type +
 					" basis-state=" + basisState + " int-state=" + intState +
 					" event-count=" + evtCount);
 		}
+		return element;
 	}
 
 	protected void processEventLogMsg(byte[] msg) {
@@ -345,7 +368,7 @@ public abstract class BaseComms implements Comms {
 	 * |#items|ts(48bit)|src|takers(32 bit map)|instr|data(32bit)|qtime|delivery time| .. next ..|
 	 */
 	private void processRtrAuditLogMsg(byte[] msg) {
-		logger.info("Received RTR audit message with " + msg.length + " bytes.");
+		logger.debug("Received RTR audit message with " + msg.length + " bytes.");
 		byte items = msg[1];
 		int upto = 2;
 		int mtp = hwStatus.getMicrotickPeriod();

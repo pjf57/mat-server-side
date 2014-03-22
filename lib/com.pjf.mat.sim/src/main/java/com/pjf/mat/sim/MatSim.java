@@ -3,6 +3,7 @@ package com.pjf.mat.sim;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.MatSimInt;
+import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.element.ElementFactory;
@@ -63,7 +65,12 @@ public class MatSim extends UDPSktComms implements SimHost, SimAccess, MatSimInt
 		this.sysServices = sysServices;
 		stopOnError = true;
 		simElements = new HashMap<Integer,SimElement>();
-		clk = new Clock(this,10,logger);
+		int simSpeed = 0;
+		if (System.getProperty("simslow") != null) {
+			simSpeed = 20;
+		}
+		logger.info("starting with simSpeed = " + simSpeed);
+		clk = new Clock(this,simSpeed,logger);
 		router = new Router(this);
 		lkuAuditLogger = new LkuAuditLogger();
 		rtrAuditLogger = new RtrAuditLogger();
@@ -208,7 +215,16 @@ public class MatSim extends UDPSktComms implements SimHost, SimAccess, MatSimInt
 	@Override
 	public void publishElementStatusUpdate(int elementId, String type,
 			String basisState, int intState, int evtCount) {
-		processNewStatusUpdate(elementId,type,basisState,intState,evtCount);		
+		Element cb = processNewStatusUpdate(elementId,type,basisState,intState,evtCount);
+		if (cb != null) {
+			if (cb.hasStatusChanged(true)) {
+				List<Element> list = new ArrayList<Element>();
+				list.add(cb);
+				for (NotificationCallback subscriber : notificationSubscribers) {
+					subscriber.notifyElementStatusUpdate(list);
+				}
+			}
+		}
 	}
 
 	/**

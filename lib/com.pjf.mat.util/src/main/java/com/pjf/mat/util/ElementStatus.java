@@ -95,4 +95,38 @@ public class ElementStatus implements Status{
 		return basisState.equals(Status.RUN);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((basisState == null) ? 0 : basisState.hashCode());
+		result = prime * result + el_state;
+		result = prime * result + (int) (evt_cnt ^ (evt_cnt >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ElementStatus other = (ElementStatus) obj;
+		if (basisState == null) {
+			if (other.basisState != null)
+				return false;
+		} else if (!basisState.equals(other.basisState))
+			return false;
+		if (el_state != other.el_state)
+			return false;
+		if (evt_cnt != other.evt_cnt)
+			return false;
+		return true;
+	}
+	
+	
+
 }

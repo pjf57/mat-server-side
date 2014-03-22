@@ -53,7 +53,7 @@ public class UDPComms extends UDPSktComms implements Comms {
 	public void sendCmd(Cmd cmd) throws IOException {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
 		cfg.putCmdItem(cmd.getParentID(),cmd.getConfigId(),cmd.getArg(), cmd.getData());
-		logger.info("sendCmd(" + cmd.getFullName() + "): encoded " + cfg.getLength() + " bytes");
+		logger.debug("sendCmd(" + cmd.getFullName() + "): encoded " + cfg.getLength() + " bytes");
 		cxn.send(cfg.getData(),port);
 	}
 
