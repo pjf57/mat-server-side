@@ -28,11 +28,14 @@ import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
 import com.pjf.mat.sim.MatSim;
 import com.pjf.mat.util.SystemServicesInt;
+import com.pjf.mat.util.comms.UDPCxn;
 
 
 public abstract class MatSystem implements SystemServicesInt {
 	protected final static Logger logger = Logger.getLogger(MatSystem.class);
 	private MatInterface mat = null;
+	private Comms comms = null;
+
 	private MatSimInt sim = null;
 	private EventFeedInt feed;
 	private final UnifiedEventLogger ueLogger;
@@ -84,7 +87,7 @@ public abstract class MatSystem implements SystemServicesInt {
 
 		@Override
 		public void notifyOrderReceipt(OrderLog order) {
-			logger.error("notifyOrderReceipt() - not supported");			
+			logger.error("notifyOrderReceipt(): " + order);			
 		}
 		
 	}
@@ -133,7 +136,6 @@ public abstract class MatSystem implements SystemServicesInt {
 	 */
 	protected void init(String propsResource, String hwIPAddr, int hwPortNum) throws Exception {
 		Properties props = loadProperties(propsResource);
-		Comms comms;
 		if (System.getProperty("sim") != null) {
 			sim = new MatSim(new MatLogger() {
 				@Override
@@ -193,6 +195,12 @@ public abstract class MatSystem implements SystemServicesInt {
 		Thread.sleep(500);
 		sendTradeBurst(mat,feed);
 		
+		try {
+			doRunProcessing(mat);
+		} catch (Exception e) {
+			logger.error("Exception in doRunProcessing(): " + e.getMessage());
+		}
+		
 		logger.info("-----");
 		getFinalStatus();
 		Thread.sleep(500);
@@ -202,6 +210,17 @@ public abstract class MatSystem implements SystemServicesInt {
 		ueLogger.flush();
 		logger.info("----------------------------------------");
 	}
+
+	/**
+	 * Template method for runtime processing - execution continues until this method completes
+	 * 
+	 * @param mat
+	 * @throws Exception 
+	 */
+	protected void doRunProcessing(MatInterface mat2) throws Exception {
+		logger.info("Default runtime processing");
+	}
+
 
 	/**
 	 * Template method
@@ -268,7 +287,18 @@ public abstract class MatSystem implements SystemServicesInt {
 
 	@Override
 	public CxnInt getCxnOrLoopback(String ip) throws SocketException, UnknownHostException {
-		throw new UnknownHostException("not supported");
+		CxnInt cxn = null;
+		if (ip.equals("direct")) {
+			cxn = comms.getCxn();
+			if (sim != null) {
+				// Set to loopback outgoing UDP pkts so that we can receive anything
+				// that is sent on this cxn
+				cxn.setLoopbackCallback(sim);
+			}
+		} else {
+			cxn = new UDPCxn(ip);				
+		}
+		return cxn;
 	}
 
 }
