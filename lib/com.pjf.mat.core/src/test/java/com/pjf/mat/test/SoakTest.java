@@ -1,32 +1,100 @@
 package com.pjf.mat.test;
 
 
+import java.io.FileInputStream;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.Semaphore;
 
+import org.apache.log4j.Logger;
+
 import com.pjf.marketsim.EventFeedCallbackInt;
-import com.pjf.marketsim.EventFeedInt;
 import com.pjf.marketsim.SymbolEventFeed;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
+import com.pjf.mat.api.NotificationCallback;
+import com.pjf.mat.api.TimeOrdered;
+import com.pjf.mat.api.comms.Comms;
 import com.pjf.mat.api.comms.CxnInt;
+import com.pjf.mat.api.logging.EventLog;
+import com.pjf.mat.api.logging.LkuAuditLog;
+import com.pjf.mat.api.logging.OrderLog;
+import com.pjf.mat.api.logging.RtrAuditLog;
 import com.pjf.mat.impl.MatInterface;
-import com.pjf.mat.sys.MatSystem;
+import com.pjf.mat.impl.MatInterfaceModel;
+import com.pjf.mat.sys.UDPComms;
+import com.pjf.mat.util.comms.UDPCxn;
 
-public class SoakTest extends MatSystem implements EventFeedCallbackInt{
+public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
+	private final static Logger logger = Logger.getLogger(SoakTest.class);
+	private MatInterface mat = null;
+	private Comms comms = null;
 	long totalTicksSent = 0;
 	Semaphore sem;
 	boolean running;
 
-	@Override
-	protected void start() throws Exception {
+	private void run() throws Exception {
 		// initialise model with specified palette
 		init("src/test/resources/mat_32_soak.csp","192.168.2.9",2000);
 		sem = new Semaphore(0);
 		running = true;
+		sleep(1000);
+		logger.info("Soaktest runtime processing");
+		// kick off the first batch of mkt evts
+		pushMktEvts();
+		while (running) {
+			sem.acquire();
+			sleep(50);
+			try {
+				pushMktEvts();
+			} catch (Exception e) {
+				logger.error("Error pushing mkt evts: " + e.getMessage());
+			}
+		}
+		shutdown();
 	}
+
+	public void shutdown() {
+		logger.info("Shutting down ...");
+		if (mat != null) {
+			mat.shutdown();
+		}
+	}
+
+	/**
+	 * Method to call to initialise the system.
+	 * 
+	 * @param propsResource	resource file for HW properties
+	 * @param hwIPAddr - IP address of hardware
+	 * @param hwPortNum - port number of hardware
+	 * @throws Exception
+	 */
+	private void init(String propsResource, String hwIPAddr, int hwPortNum) throws Exception {
+		Properties props = new Properties();
+		props.load(new FileInputStream(propsResource));
+		comms = new UDPComms(hwIPAddr,hwPortNum);
+		comms.addNotificationSubscriber(this);
+		MatInterfaceModel model = new MatInterfaceModel(props);
+		mat = new MatInterface(comms,model);
+		comms.setMat(mat);
+		mat.checkHWSignature();
+		if (System.getProperty("active") != null) {
+			logger.info("init(): active mode - so will configure the HW");
+			mat.putIntoConfigMode();
+			configure(mat);
+			mat.syncClock(0);
+		} else {
+			logger.info("init(): passive mode - so will NOT configure the HW");
+		}
+		logger.info("-----");	
+		mat.requestHWStatus();		
+	}
+
 	
-	@Override
-	protected void configure(MatApi mat) throws Exception {
+	private void configure(MatApi mat) throws Exception {
 		Element sys = mat.getModel().getElement(0);
 		Element mfd = mat.getModel().getElement(30);
 		Element macd = mat.getModel().getElement(10);
@@ -75,40 +143,9 @@ public class SoakTest extends MatSystem implements EventFeedCallbackInt{
 
 		mat.configureHW();
 	}
-
-	// Ignore default mkt feed mechanism
-	protected EventFeedInt createEventFeeder(CxnInt cxn) throws Exception {
-		return null;
-	}
 	
 
-	/** 
-	 * send mkt data to the HW
-	 * 
-	 * @param feed
-	 * @throws Exception
-	 */
-	@Override
-	protected void sendTradeBurst(MatApi mat, EventFeedInt feed) throws Exception {
-		logger.warn("sendTradeBurst() - not supported.");
-	}
 
-	@Override
-	protected void doRunProcessing(MatInterface mat2) throws Exception {
-		logger.info("Soaktest runtime processing");
-		// kick off the first batch of mkt evts
-		pushMktEvts();
-		while (running) {
-			sem.acquire();
-			sleep(50);
-			try {
-				pushMktEvts();
-			} catch (Exception e) {
-				logger.error("Error pushing mkt evts: " + e.getMessage());
-			}
-		}
-	}
-	
 	
 	private void sleep(int s) {
 		try {
@@ -142,27 +179,82 @@ public class SoakTest extends MatSystem implements EventFeedCallbackInt{
 	}
 	
 
-	@Override
-	protected void getFinalStatus() throws Exception {
-		reqAuditLogs(); 
-		reqStatus(); 
-	}
+//	private void getFinalStatus() throws Exception {
+//		reqAuditLogs(); 
+//		reqStatus(); 
+//	}
 
 
-	@Override
 	public void notifyEventFeedState(String state, long totalSent) {
 		logger.info("notifyEventFeedState: state=" + state + ", total sent = " + totalSent);
 		if (state.equals("stopped")) {
 			totalTicksSent += totalSent;
 			logger.info("TotalTicksSend = " + totalTicksSent);
+			mat.requestHWStatus();
 			sem.release();	// signal main thread to start another batch
 		}
 	}	
+	
+	private CxnInt getCxnOrLoopback(String ip) throws SocketException, UnknownHostException {
+		CxnInt cxn = null;
+		if (ip.equals("direct")) {
+			cxn = comms.getCxn();
+		} else {
+			cxn = new UDPCxn(ip);				
+		}
+		return cxn;
+	}
+
 
 	public static void main(String[] args) {
 		logger.info("startup");
 		SoakTest sys = new SoakTest();
-		sys.boot();
+		try {
+			sys.run();
+		} catch (Exception e) {
+			logger.error("Outer error catcher: " + e.getMessage());
+			e.printStackTrace();
+			sys.shutdown();
+		}		
+	}
+
+	@Override
+	public void notifyEventLog(EventLog evt) {
+		logger.info("notifyEventLog(): " + evt);
+	}
+
+	@Override
+	public void notifyElementStatusUpdate(Collection<Element> cbs) {
+		logger.info("Status update received for " + cbs.size() + " CBs:");
+		for (Element cb : cbs) {
+			logger.info("Status Update: cb=" + cb.getId() +
+					" type=" + cb.getType() +
+					" state=" + cb.getElementStatus());	
+		}
+	}
+
+	@Override
+	public void notifyLkuAuditLogReceipt(Collection<LkuAuditLog> logs) {
+		for (LkuAuditLog log : logs) {
+			logger.info("notifyLkuAuditLogReceipt(): " + log);
+		}
+	}
+
+	@Override
+	public void notifyRtrAuditLogReceipt(Collection<RtrAuditLog> logs) {
+		for (RtrAuditLog log : logs) {
+			logger.info("notifyRtrAuditLogReceipt(): " + log);
+		}
+	}
+
+	@Override
+	public void notifyOrderReceipt(OrderLog order) {
+		logger.warn("notifyOrderReceipt(): " + order);
+	}
+
+	@Override
+	public void notifyUnifiedEventLog(List<TimeOrdered> logs) {
+		logger.error("notifyUnifiedEventLog(): - not supported");
 	}
 
 
