@@ -39,6 +39,7 @@ public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
 	private void run() throws Exception {
 		// initialise model with specified palette
 		init("src/test/resources/mat_32_soak.csp","192.168.2.9",2000);
+		// semaphore interworks with mkt evt push.
 		sem = new Semaphore(0);
 		running = true;
 		sleep(1000);
@@ -47,7 +48,7 @@ public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
 		pushMktEvts();
 		while (running) {
 			sem.acquire();
-			sleep(50);
+//			sleep(1);
 			try {
 				pushMktEvts();
 			} catch (Exception e) {
@@ -206,18 +207,6 @@ public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
 	}
 
 
-	public static void main(String[] args) {
-		logger.info("startup");
-		SoakTest sys = new SoakTest();
-		try {
-			sys.run();
-		} catch (Exception e) {
-			logger.error("Outer error catcher: " + e.getMessage());
-			e.printStackTrace();
-			sys.shutdown();
-		}		
-	}
-
 	@Override
 	public void notifyEventLog(EventLog evt) {
 		logger.info("notifyEventLog(): " + evt);
@@ -257,5 +246,17 @@ public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
 		logger.error("notifyUnifiedEventLog(): - not supported");
 	}
 
+
+	public static void main(String[] args) {
+		logger.info("startup");
+		SoakTest sys = new SoakTest();
+		try {
+			sys.run();
+		} catch (Exception e) {
+			logger.error("Outer error catcher: " + e.getMessage());
+			e.printStackTrace();
+			sys.shutdown();
+		}		
+	}
 
 }
