@@ -1,21 +1,86 @@
 package com.pjf.mat.examples;
 
-import org.apache.log4j.BasicConfigurator;
+import java.io.FileInputStream;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
 
-import com.pjf.marketsim.EventFeedInt;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
-import com.pjf.mat.sys.MatSystem;
+import com.pjf.mat.api.NotificationCallback;
+import com.pjf.mat.api.TimeOrdered;
+import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.logging.EventLog;
+import com.pjf.mat.api.logging.LkuAuditLog;
+import com.pjf.mat.api.logging.OrderLog;
+import com.pjf.mat.api.logging.RtrAuditLog;
+import com.pjf.mat.impl.MatInterface;
+import com.pjf.mat.impl.MatInterfaceModel;
+import com.pjf.mat.sys.UDPComms;
 
-public class CheetahExample1 extends MatSystem{
-
-	@Override
-	protected void start() throws Exception {
+public class CheetahExample1 implements NotificationCallback {
+	private final static Logger logger = Logger.getLogger(CheetahExample1.class);
+	private MatInterface mat = null;
+	private Comms comms = null;
+	private boolean running = true;
+	
+	private void run() throws Exception {
 		// initialise model with specified palette
-		init("resources/mat.32v83.csp","192.168.1.9",2000);
+		init("resources/mat.32v83.csp","192.168.2.9",2000);
+		logger.info("Example runtime processing");
+		while (running) {
+			sleep(1000);
+			mat.requestHWStatus();
+		}
+		shutdown();
+	}
+
+	public void shutdown() {
+		logger.info("Shutting down ...");
+		if (mat != null) {
+			mat.shutdown();
+		}
+	}
+
+	/**
+	 * Method to call to initialise the system.
+	 * 
+	 * @param propsResource	resource file for HW properties
+	 * @param hwIPAddr - IP address of hardware
+	 * @param hwPortNum - port number of hardware
+	 * @throws Exception
+	 */
+	private void init(String propsResource, String hwIPAddr, int hwPortNum) throws Exception {
+		Properties props = new Properties();
+		props.load(new FileInputStream(propsResource));
+		comms = new UDPComms(hwIPAddr,hwPortNum);
+		comms.addNotificationSubscriber(this);
+		MatInterfaceModel model = new MatInterfaceModel(props);
+		mat = new MatInterface(comms,model);
+		comms.setMat(mat);
+		mat.checkHWSignature();
+		if (System.getProperty("active") != null) {
+			logger.info("init(): active mode - so will configure the HW");
+			mat.putIntoConfigMode();
+			configure(mat);
+			mat.syncClock(0);
+		} else {
+			logger.info("init(): passive mode - so will NOT configure the HW");
+		}
+		logger.info("-----");	
+		mat.requestHWStatus();		
 	}
 	
-	@Override
+
+	/**
+	 * Configure the algo - set parameters and wire up the cheetah blocks
+	 * 
+	 * @param mat - MAT API
+	 * @throws Exception
+	 */
 	protected void configure(MatApi mat) throws Exception {
 		Element sys = mat.getModel().getElement(0);
 		Element mfd = mat.getModel().getElement(30);
@@ -51,7 +116,7 @@ public class CheetahExample1 extends MatSystem{
 		logicSell.getAttribute("k1").setValue("0");	 	
 		logicSell.getInputs().get(0).connectTo(macd.getOutputs().get(2));
 		// Configure RMO
-		rmo.getAttribute("udp_ip").setValue("0C0A80105");	// 
+		rmo.getAttribute("udp_ip").setValue("0C0A80205");	// 
 		rmo.getAttribute("udp_port").setValue("3500");	// 
 		rmo.getAttribute("min_vol").setValue("100");	// 
 		rmo.getAttribute("max_vol").setValue("500");	// 
@@ -65,25 +130,51 @@ public class CheetahExample1 extends MatSystem{
 		mat.configureHW();
 	}
 
-	/** 
-	 * send mkt data to the HW
-	 * 
-	 * @param feed
-	 * @throws Exception
-	 */
-	@Override
-	protected void sendTradeBurst(MatApi mat, EventFeedInt feed) throws Exception {
-//		sendCmd(2,"start");
-		if (feed != null) {
-			feed.sendTradeBurst("resources/GLP_27667_1.csv",20,5,1);
+	private void sleep(int s) {
+		try {
+			Thread.sleep(s);
+		} catch (InterruptedException e) {
+			// ignore
 		}
-		Thread.sleep(5000);
 	}
 
 	@Override
-	protected void getFinalStatus() throws Exception {
-		reqAuditLogs(); 
-		reqStatus(); 
+	public void notifyEventLog(EventLog evt) {
+		logger.info("notifyEventLog(): " + evt);
+	}
+
+	@Override
+	public void notifyElementStatusUpdate(Collection<Element> cbs) {
+		logger.info("Status update received for " + cbs.size() + " CBs:");
+		for (Element cb : cbs) {
+			logger.info("Status Update: cb=" + cb.getId() +
+					" type=" + cb.getType() +
+					" state=" + cb.getElementStatus());	
+		}
+	}
+
+	@Override
+	public void notifyLkuAuditLogReceipt(Collection<LkuAuditLog> logs) {
+		for (LkuAuditLog log : logs) {
+			logger.info("notifyLkuAuditLogReceipt(): " + log);
+		}
+	}
+
+	@Override
+	public void notifyRtrAuditLogReceipt(Collection<RtrAuditLog> logs) {
+		for (RtrAuditLog log : logs) {
+			logger.info("notifyRtrAuditLogReceipt(): " + log);
+		}
+	}
+
+	@Override
+	public void notifyOrderReceipt(OrderLog order) {
+		logger.warn("notifyOrderReceipt(): " + order);
+	}
+
+	@Override
+	public void notifyUnifiedEventLog(List<TimeOrdered> logs) {
+		logger.error("notifyUnifiedEventLog(): - not supported");
 	}
 
 
@@ -91,7 +182,13 @@ public class CheetahExample1 extends MatSystem{
 		BasicConfigurator.configure();
 		logger.info("startup");
 		CheetahExample1 sys = new CheetahExample1();
-		sys.boot();
+		try {
+			sys.run();
+		} catch (Exception e) {
+			logger.error("Outer error catcher: " + e.getMessage());
+			e.printStackTrace();
+			sys.shutdown();
+		}		
 	}
 
 

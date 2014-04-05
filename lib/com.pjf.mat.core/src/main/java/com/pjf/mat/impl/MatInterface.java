@@ -166,19 +166,19 @@ public class MatInterface implements MatApi {
 	 */
 	@Override
 	public SignatureResult checkHWSignature() throws Exception {
-		long signatureSW = getSWSignature();
-		logger.info("SW Signature is " + Conversion.toHexLongString(signatureSW));
+		long paletteSignature = getSWSignature();
+		logger.info("Palette Signature is " + Conversion.toHexLongString(paletteSignature));
 		long signatureHW = comms.getHWSignature();
 		logger.info("Signatures HW=" + Conversion.toHexLongString(signatureHW) + 
-										" SW=" + Conversion.toHexLongString(signatureSW));
-		if (signatureHW != signatureSW) {
+										" Palette=" + Conversion.toHexLongString(paletteSignature));
+		if (signatureHW != paletteSignature) {
 			String msg = "Configuration signatatures dont match: Signatures HW=" + 
-			Conversion.toHexLongString(signatureHW) + " SW=" + Conversion.toHexLongString(signatureSW);
+			Conversion.toHexLongString(signatureHW) + " Palette=" + Conversion.toHexLongString(paletteSignature);
 			logger.error(msg);
 // FIXME - enable this throw once HW sig is returned ok
 //			throw new Exception(msg);
 		}
-		return new SignatureResult(signatureHW,signatureSW);
+		return new SignatureResult(signatureHW,paletteSignature);
 	}
 
 

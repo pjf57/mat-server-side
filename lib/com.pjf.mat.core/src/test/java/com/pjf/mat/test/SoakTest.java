@@ -180,12 +180,6 @@ public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
 	}
 	
 
-//	private void getFinalStatus() throws Exception {
-//		reqAuditLogs(); 
-//		reqStatus(); 
-//	}
-
-
 	public void notifyEventFeedState(String state, long totalSent) {
 		logger.info("notifyEventFeedState: state=" + state + ", total sent = " + totalSent);
 		if (state.equals("stopped")) {
