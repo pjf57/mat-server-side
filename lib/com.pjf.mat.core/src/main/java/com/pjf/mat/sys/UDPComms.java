@@ -144,4 +144,13 @@ public class UDPComms extends UDPSktComms implements Comms {
 	}
 
 
+	@Override
+	public void resetConfig(int elId) throws IOException {
+		EncodedConfigItemList cfg = new EncodedConfigItemList();
+		cfg.putSystemItem(elId,MatElementDefs.EL_C_RESET, 0, 0);
+		logger.info("resetConfig(): encoded " + cfg.getLength() + " bytes");
+		cxn.send(cfg.getData(),port);
+	}
+
+
 }

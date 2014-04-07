@@ -430,6 +430,11 @@ public class MatSim extends UDPSktComms implements SimHost, SimAccess, MatSimInt
 	public Comms getComms() {
 		return this;
 	}
+
+	@Override
+	public void resetConfig(int elId) throws IOException {
+		logger.warn("resetConfig for elID=" + elId);		
+	}
 	
 
 }

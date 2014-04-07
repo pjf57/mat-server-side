@@ -208,4 +208,9 @@ public class DummyComms extends BaseComms implements Comms {
 		return new HwStatus();
 	}
 
+	@Override
+	public void resetConfig(int elId) throws IOException {
+		logger.info("resetConfig for elID=" + elId);		
+	}
+
 }

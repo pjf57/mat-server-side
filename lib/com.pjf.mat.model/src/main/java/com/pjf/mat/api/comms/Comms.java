@@ -33,6 +33,7 @@ public interface Comms extends InMsgCallbackInt {
 	public void synchroniseClock(long syncOriginMs) throws Exception;
 	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb);
 	public void resetCounters() throws IOException;
+	public void resetConfig(int elId) throws IOException; // elId = id of element to reset
 	public void setMat(MatApi mat);
 	public CxnInt getCxn();
 }

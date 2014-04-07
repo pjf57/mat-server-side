@@ -38,6 +38,14 @@ public interface MatApi {
 	void putIntoConfigMode() throws Exception;
 
 	/**
+	 * Resets HW config for all CBs in the HW.
+	 * Assumes the CBs are already in configuration state
+	 * @throws Exception if unable to get all elements into config state
+	 * 
+	 */
+	void resetHWConfig() throws Exception;
+	
+	/**
 	 * Configure the HW by encoding the model and sending it to the HW
 	 * over the configured comms channel
 	 * 
@@ -123,6 +131,11 @@ public interface MatApi {
 	 */
 	public List<Attribute> recalcElAttrs(Element el) throws InstantiationException,
 			IllegalAccessException, ClassNotFoundException, Exception;
+
+	/**
+	 * Shutdown the host API
+	 */
+	void shutdown();
 
 
 }

@@ -116,7 +116,7 @@ public class MatInterface implements MatApi {
 		return "[mat: " + model.getElements().size() + " elements]";
 	}
 
-
+	@Override
 	public void shutdown() {
 		comms.shutdown();		
 	}
@@ -236,6 +236,14 @@ public class MatInterface implements MatApi {
 	@Override
 	public void loadDesign(JSONObject design) throws Exception {
 		DesignUtils.parseDesign(design,model);
+	}
+
+
+	@Override
+	public void resetHWConfig() throws Exception {
+		// reset all config
+		logger.info("resetHWConfig() resetting all config.");
+		comms.resetConfig(MatElementDefs.EL_ID_ALL);		
 	}
 
 

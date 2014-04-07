@@ -70,6 +70,10 @@ public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
 		public HwStatus getHWStatus() {
 			return null;
 		}
+
+		@Override
+		public void resetConfig(int elId) throws IOException {
+		}
 		
 	}
 	
