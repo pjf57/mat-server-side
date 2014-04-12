@@ -139,7 +139,7 @@ public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
 		rmo.getInputs().get(1).connectTo(logicSell.getOutputs().get(0));
 
 		// logger connections
-		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
+//		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
 		logger.info("mat is: " + mat);
 
 		mat.configureHW();

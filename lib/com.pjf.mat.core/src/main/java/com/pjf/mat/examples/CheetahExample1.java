@@ -23,17 +23,23 @@ import com.pjf.mat.sys.UDPComms;
 
 public class CheetahExample1 implements NotificationCallback {
 	private final static Logger logger = Logger.getLogger(CheetahExample1.class);
-	private MatInterface mat = null;
+	private MatApi mat = null;
 	private Comms comms = null;
 	private boolean running = true;
 	
 	private void run() throws Exception {
+		int runSeconds = 0;
 		// initialise model with specified palette
 		init("resources/mat.32v83.csp","192.168.2.9",2000);
 		logger.info("Example runtime processing");
 		while (running) {
 			sleep(1000);
 			mat.requestHWStatus();
+			runSeconds++;
+			if (runSeconds >= 10) {
+				logger.info("Time up - ending the run");
+				running = false;
+			}
 		}
 		shutdown();
 	}
@@ -62,14 +68,12 @@ public class CheetahExample1 implements NotificationCallback {
 		mat = new MatInterface(comms,model);
 		comms.setMat(mat);
 		mat.checkHWSignature();
-		if (System.getProperty("active") != null) {
-			logger.info("init(): active mode - so will configure the HW");
-			mat.putIntoConfigMode();
-			configure(mat);
-			mat.syncClock(0);
-		} else {
-			logger.info("init(): passive mode - so will NOT configure the HW");
-		}
+		logger.info("init(): configure the HW");
+		mat.putIntoConfigMode();
+		configure(mat);
+		logger.info("mat is: " + mat);
+		mat.configureHW();
+		mat.syncClock(0);
 		logger.info("-----");	
 		mat.requestHWStatus();		
 	}
@@ -81,7 +85,7 @@ public class CheetahExample1 implements NotificationCallback {
 	 * @param mat - MAT API
 	 * @throws Exception
 	 */
-	protected void configure(MatApi mat) throws Exception {
+	private void configure(MatApi mat) throws Exception {
 		Element sys = mat.getModel().getElement(0);
 		Element mfd = mat.getModel().getElement(30);
 		Element macd = mat.getModel().getElement(10);
@@ -125,9 +129,6 @@ public class CheetahExample1 implements NotificationCallback {
 
 		// logger connections
 		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
-		logger.info("mat is: " + mat);
-
-		mat.configureHW();
 	}
 
 	private void sleep(int s) {
