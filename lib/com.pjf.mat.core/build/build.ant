@@ -4,7 +4,7 @@
 	<property name="gitprj" location="${github}/mat-server-side\com.pjf.mat.core"/>	
 	<property name="gitwebsrc" location="${gitprj}/src/main"/>	
 	<property name="gitbase" location="C:/Users/pjf/Documents/GitHub/mat-server-side"/>
-	<property name="distr" location="${gitbase}/distr"/>	
+	<property name="distr" location="${gitbase}/distr/java"/>	
 
   <target name="dist"
         description="generate the distribution" >
