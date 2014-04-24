@@ -12,26 +12,35 @@ import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.api.comms.CheetahDatagram;
 import com.pjf.mat.api.comms.Comms;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.util.HwStatus;
 import com.pjf.mat.impl.element.SystemCmd;
-import com.pjf.mat.util.comms.UDPSktComms;
+import com.pjf.mat.util.comms.ReaderComms;
 
-public class UDPComms extends UDPSktComms implements Comms {
-	private final static Logger logger = Logger.getLogger(UDPComms.class);
+public class MATComms extends ReaderComms implements Comms {
+	private final static Logger logger = Logger.getLogger(MATComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
 	private int port;
 	private TimeoutSemaphore hwSigSem;
 
-	public UDPComms(String ip, int port) throws SocketException, UnknownHostException {
-		super(ip);
+	public MATComms(CxnInt cxn, int port) throws SocketException, UnknownHostException {
+		super();
 		this.port = port;
+		setCxn(cxn);
 		this.mat = null;
 		hwSigSem = new TimeoutSemaphore(0);
 		hwStatus = new HwStatus();
 	}
 
+	public MATComms(int port) throws SocketException, UnknownHostException {
+		super();
+		this.port = port;
+		this.mat = null;
+		hwSigSem = new TimeoutSemaphore(0);
+		hwStatus = new HwStatus();
+	}
 	
 	public void shutdown() {
 		super.shutdown();
@@ -40,21 +49,22 @@ public class UDPComms extends UDPSktComms implements Comms {
 	
 	@Override
 	public void sendConfig(Collection<Element> elements) throws Exception {
-		logger.info("Preparing to send config to ip:" + getIp() + " port:" + port);
+		logger.info("Preparing to send config to addr:" + getCxn().getAddress() + " port:" + port);
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
 		for (Element el : elements) {
 			hwEncodeConfig(el,cfg);
 		}
 		logger.info("sendConfig(): encoded " + cfg.getItemCount() + " items into " + cfg.getLength() + " bytes");
-		cxn.send(cfg.getData(),port);
+		cxn.send(new CheetahDatagram(port,cfg.getData()));
 	}
 	
+
 	@Override
 	public void sendCmd(Cmd cmd) throws IOException {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
 		cfg.putCmdItem(cmd.getParentID(),cmd.getConfigId(),cmd.getArg(), cmd.getData());
 		logger.debug("sendCmd(" + cmd.getFullName() + "): encoded " + cfg.getLength() + " bytes");
-		cxn.send(cfg.getData(),port);
+		cxn.send(new CheetahDatagram(port,cfg.getData()));
 	}
 
 
@@ -113,7 +123,7 @@ public class UDPComms extends UDPSktComms implements Comms {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
 		cfg.putCmdItem(0,MatElementDefs.EL_C_CLKSYNC_REQ | 0x80,0, 0);
 		logger.info("synchroniseClock(" + syncOriginMs + "): encoded " + cfg.getLength() + " bytes");
-		cxn.send(cfg.getData(),port);
+		cxn.send(new CheetahDatagram(port,cfg.getData()));
 	}
 
 
@@ -122,7 +132,7 @@ public class UDPComms extends UDPSktComms implements Comms {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
 		cfg.putCmdItem(0,MatElementDefs.EL_C_LKU_AUDIT_REQ | 0x80,0, 0);
 		logger.info("requestLkuAuditLogs(): encoded " + cfg.getLength() + " bytes");
-		cxn.send(cfg.getData(),port);
+		cxn.send(new CheetahDatagram(port,cfg.getData()));
 	}
 
 
@@ -131,7 +141,7 @@ public class UDPComms extends UDPSktComms implements Comms {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
 		cfg.putCmdItem(0,MatElementDefs.EL_C_RTR_AUDIT_REQ,0, 0);
 		logger.info("requestRtrAuditLogs(): encoded " + cfg.getLength() + " bytes");
-		cxn.send(cfg.getData(),port);
+		cxn.send(new CheetahDatagram(port,cfg.getData()));
 	}
 
 
@@ -140,7 +150,7 @@ public class UDPComms extends UDPSktComms implements Comms {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
 		cfg.putSystemItem(MatElementDefs.EL_ID_ALL,MatElementDefs.EL_C_RESET_CNTRS,0, 0);
 		logger.info("resetCounters(): encoded " + cfg.getLength() + " bytes");
-		cxn.send(cfg.getData(),port);
+		cxn.send(new CheetahDatagram(port,cfg.getData()));
 	}
 
 
@@ -149,7 +159,7 @@ public class UDPComms extends UDPSktComms implements Comms {
 		EncodedConfigItemList cfg = new EncodedConfigItemList();
 		cfg.putSystemItem(elId,MatElementDefs.EL_C_RESET, 0, 0);
 		logger.info("resetConfig(): encoded " + cfg.getLength() + " bytes");
-		cxn.send(cfg.getData(),port);
+		cxn.send(new CheetahDatagram(port,cfg.getData()));
 	}
 
 

@@ -12,18 +12,31 @@ public interface CxnInt {
 	 */
 	public void setLoopbackCallback(InMsgCallbackInt cb);
 
-	public void send(byte[] data, int port) throws IOException;
+	/**
+	 * Send data to a specific port
+	 * 
+	 * @param datagram datagram to send (data, destination port)
+	 * @throws IOException
+	 */
+	public void send(CheetahDatagram datagram) throws IOException;
 
 	/**
 	 * Receive one datagram. Abort if cxn is shutdown
+	 * Blocks until a datagram is received
 	 * 
-	 * @return
+	 * @return datagram with data and the source port
 	 * @throws IOException
 	 */
-	public RxPkt rcv() throws IOException;
+	public CheetahDatagram rcv() throws IOException;
 
+	/**
+	 * Close the connection
+	 */
 	public void close();
 
-	public String getIp();
+	/**
+	 * @return a string that identifies the transport address of the cxn
+	 */
+	public String getAddress();
 
 }

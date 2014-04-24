@@ -11,6 +11,7 @@ import org.apache.log4j.BasicConfigurator;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.Status;
+import com.pjf.mat.api.comms.CheetahDatagram;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.comms.InMsgCallbackInt;
 import com.pjf.mat.api.util.HwStatus;
@@ -19,12 +20,12 @@ import junit.framework.TestCase;
 
 
 public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
-	private UDPSktComms skt;
+	private ReaderComms skt;
 	
-	public class Skt extends UDPSktComms {
+	public class Skt extends ReaderComms {
 
-		public Skt(String ip) throws SocketException, UnknownHostException {
-			super(ip);
+		public Skt(CxnInt cxn) throws SocketException, UnknownHostException {
+			super(cxn);
 		}
 
 		@Override
@@ -80,14 +81,15 @@ public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
 	@Override
 	public void setUp() throws SocketException, UnknownHostException {
 		BasicConfigurator.configure();
-		skt = new Skt("192.168.0.7");
+		CxnInt cxn = new UDPCxn("192.168.0.7");		
+		skt = new Skt(cxn);
 		skt.subscribeIncomingMsgs(5000,this);
 	}
 	
 	public void testCxnSendReceive() throws IOException {
 		CxnInt cxn = skt.getCxn();
-		byte[] data = "Test Data".getBytes();
-		cxn.send(data, 5000);
+		CheetahDatagram data = new CheetahDatagram(5000,"Test Data".getBytes());		
+		cxn.send(data);
 	}
 
 	@Override

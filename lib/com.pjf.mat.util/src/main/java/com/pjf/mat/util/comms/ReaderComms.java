@@ -7,21 +7,20 @@ import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.comms.RxPkt;
+import com.pjf.mat.api.comms.CheetahDatagram;
 
 
 
 /**
- * Extends base comms by providing a UDP socket with reader
+ * Extends base comms by providing a reader
  * 
  * @author pjf
  *
  */
-public abstract class UDPSktComms extends BaseComms {
-	private final static Logger logger = Logger.getLogger(UDPSktComms.class);
+public abstract class ReaderComms extends BaseComms {
+	private final static Logger logger = Logger.getLogger(ReaderComms.class);
 	protected CxnInt cxn;
 	private final Reader reader;
-	private final String ip;
 	private int rspCnt;
 	
 	class Reader extends Thread {
@@ -37,7 +36,7 @@ public abstract class UDPSktComms extends BaseComms {
 			logger.info("Receiver starting");
 			try {
 				while (keepGoing) {
-					RxPkt pkt = cxn.rcv();
+					CheetahDatagram pkt = cxn.rcv();
 					if (keepGoing) {
 						logger.info("Got pkt");
 						rspCnt++;
@@ -58,15 +57,24 @@ public abstract class UDPSktComms extends BaseComms {
 		}
 	}
 	
-	public UDPSktComms(String ip) throws SocketException, UnknownHostException {
-		logger.info("starting up with IP = " + ip);
-		cxn = new UDPCxn(ip);
-		this.ip = ip;
+	public ReaderComms(CxnInt cxn) throws SocketException, UnknownHostException {
+		this.cxn = cxn;
 		rspCnt = 0;
 		this.reader = new Reader();
 		reader.start();
 	}
 	
+	public ReaderComms() throws SocketException, UnknownHostException {
+		this.cxn = null;
+		rspCnt = 0;
+		this.reader = new Reader();
+	}
+	
+	public void setCxn(CxnInt cxn) {
+		this.cxn = cxn;
+		reader.start();
+	}
+
 	
 	/**
 	 * Shutdown the reader thread
@@ -75,12 +83,6 @@ public abstract class UDPSktComms extends BaseComms {
 		reader.shutdown();
 	}
 	
-	/**
-	 * @return ip addr
-	 */
-	public String getIp() {
-		return ip;
-	}
 
 	/**
 	 * @return number of incoming pkts

@@ -7,6 +7,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import org.apache.log4j.Logger; 
 
+import com.pjf.mat.api.comms.CheetahDatagram;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.util.Conversion;
 import com.pjf.mat.util.data.DataSource;
@@ -97,7 +98,7 @@ public class SymbolEventFeed implements EventFeedInt {
 	}
 
 	public SymbolEventFeed(CxnInt cxn, int port) throws SocketException, UnknownHostException {
-		this.ip = cxn.getIp();
+		this.ip = cxn.getAddress();
 		this.port = port;
 		this.cxn = cxn;
 		this.cb = null;
@@ -170,7 +171,7 @@ public class SymbolEventFeed implements EventFeedInt {
 	 * @throws IOException 
 	 */
 	private void sendData(EncodedFeedItemList data) throws IOException {
-		cxn.send(data.getData(),port);
+		cxn.send(new CheetahDatagram(port,data.getData()));
 	}
 
 	@Override

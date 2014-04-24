@@ -25,7 +25,7 @@ import com.pjf.mat.api.logging.OrderLog;
 import com.pjf.mat.api.logging.RtrAuditLog;
 import com.pjf.mat.impl.MatInterface;
 import com.pjf.mat.impl.MatInterfaceModel;
-import com.pjf.mat.sys.UDPComms;
+import com.pjf.mat.sys.MATComms;
 import com.pjf.mat.util.comms.UDPCxn;
 
 public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
@@ -76,7 +76,8 @@ public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
 	private void init(String propsResource, String hwIPAddr, int hwPortNum) throws Exception {
 		Properties props = new Properties();
 		props.load(new FileInputStream(propsResource));
-		comms = new UDPComms(hwIPAddr,hwPortNum);
+		CxnInt cxn = new UDPCxn(hwIPAddr);
+		comms = new MATComms(cxn,hwPortNum);
 		comms.addNotificationSubscriber(this);
 		MatInterfaceModel model = new MatInterfaceModel(props);
 		mat = new MatInterface(comms,model);

@@ -1,10 +1,10 @@
 package com.pjf.mat.api.comms;
 
-public class RxPkt {
+public class CheetahDatagram {
 	private int port;
 	private byte[] data;
 	
-	public RxPkt(int port, byte[] data) {
+	public CheetahDatagram(int port, byte[] data) {
 		this.port = port;
 		this.data = data;
 	}

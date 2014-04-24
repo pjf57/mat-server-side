@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import com.pjf.mat.api.comms.RxPkt;
+import com.pjf.mat.api.comms.CheetahDatagram;
 import com.pjf.mat.util.comms.UDPCxn;
 
 
@@ -21,7 +21,7 @@ public class UDPTestStream {
 		public void run() {
 			while (true) {
 				try {
-					RxPkt pkt = cxn.rcv();
+					CheetahDatagram pkt = cxn.rcv();
 					String reply = new String(pkt.getData());
 					System.out.println("Got [" + reply + "] on port " + pkt.getPort());
 					received++;
@@ -49,7 +49,6 @@ public class UDPTestStream {
 			fixmsg.append(fix2);
 			System.out.println("Sending price tick " + price);
 			sent++;
-			cxn.fixSend(fixmsg.toString(), 2000, false);
 		}
 		System.out.println("--- Sent = " + sent);
 		Thread.sleep(2000);

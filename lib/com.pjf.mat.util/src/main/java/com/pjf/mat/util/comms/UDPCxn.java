@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.comms.InMsgCallbackInt;
-import com.pjf.mat.api.comms.RxPkt;
+import com.pjf.mat.api.comms.CheetahDatagram;
 
 
 public class UDPCxn implements CxnInt {
@@ -79,11 +79,10 @@ public class UDPCxn implements CxnInt {
     		this.loopbackCb = cb;
     	}
 
-    	/* (non-Javadoc)
-		 * @see com.pjf.mat.util.comms.CxnInt#send(byte[], int)
-		 */
     	@Override
-		public void send(byte[] data, int port) throws IOException {
+		public void send(CheetahDatagram datagram) throws IOException {
+    		byte[] data = datagram.getData();
+    		int port = datagram.getPort();
     		DatagramPacket pkt = new DatagramPacket(data, data.length, dstIP, port);
 			logger.debug("Msg sent (port=" + port + "):  [" + toHexString(data) + "]");
 			if (loopbackCb != null) {
@@ -94,19 +93,8 @@ public class UDPCxn implements CxnInt {
 			}
     	}
     	
-    	public void fixSend(String str, int port, boolean print) throws IOException {
-    		String s1 = str.replace('~','\001');
-    		byte[] data = s1.getBytes();
-    		DatagramPacket pkt = new DatagramPacket(data, data.length, dstIP, port);
-			logger.debug("Msg sent (port=" + port + "):  [" + toHexString(data) + "]");
-    		skt.send(pkt);   		
-    	}
-
-    	/* (non-Javadoc)
-		 * @see com.pjf.mat.util.comms.CxnInt#rcv()
-		 */
     	@Override
-		public RxPkt rcv() throws IOException {
+		public CheetahDatagram rcv() throws IOException {
   	      	byte[] buf = new byte[1500];
 	  	    DatagramPacket pkt = new DatagramPacket(buf, buf.length);
 	  	    boolean gotPkt = false;
@@ -134,7 +122,7 @@ public class UDPCxn implements CxnInt {
 				logger.info("Shutting down.");
 			}
 			sktInUse = false;
-		    return new RxPkt(port,data);
+		    return new CheetahDatagram(port,data);
     	}
     	
     	/* (non-Javadoc)
@@ -168,11 +156,8 @@ public class UDPCxn implements CxnInt {
     		return buf.toString();
     	}
 
-		/* (non-Javadoc)
-		 * @see com.pjf.mat.util.comms.CxnInt#getIp()
-		 */
 		@Override
-		public String getIp() {
+		public String getAddress() {
 			return dstIP.toString();
 		}
 

@@ -10,6 +10,7 @@ import com.pjf.mat.sim.model.TickDataBasicResult;
 import com.pjf.mat.sim.model.TickDataSymbolResult;
 import com.pjf.mat.sim.model.TickDataVolPriceResult;
 import com.pjf.mat.sim.types.Event;
+import com.pjf.mat.api.comms.CheetahDatagram;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.util.ConfigItem;
 
@@ -191,7 +192,8 @@ public class RMO extends BaseElement implements SimElement {
 		CxnInt cxn;
 		try {
 			cxn = host.getCxnOrLoopback(ip);
-			cxn.send(data, c_port);
+			CheetahDatagram dgram = new CheetahDatagram(c_port,data);
+			cxn.send(dgram);
 		} catch (Exception e) {
 			logger.error("Unable to get cxn or send data - " + e.getMessage());
 		}
