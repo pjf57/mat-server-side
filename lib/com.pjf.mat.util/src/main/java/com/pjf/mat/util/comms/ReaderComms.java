@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.comms.CheetahDatagram;
+import com.pjf.mat.api.comms.CFDatagram;
 
 
 
@@ -36,11 +36,11 @@ public abstract class ReaderComms extends BaseComms {
 			logger.info("Receiver starting");
 			try {
 				while (keepGoing) {
-					CheetahDatagram pkt = cxn.rcv();
+					CFDatagram pkt = cxn.rcv();
 					if (keepGoing) {
 						logger.info("Got pkt");
 						rspCnt++;
-						processIncomingMsg(pkt.getPort(),pkt.getData());
+						processIncomingMsg(pkt.getDstPort(),pkt.getData());
 					}
 				}
 			} catch (IOException e) {

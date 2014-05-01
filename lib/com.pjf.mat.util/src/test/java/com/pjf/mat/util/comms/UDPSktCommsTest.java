@@ -11,7 +11,7 @@ import org.apache.log4j.BasicConfigurator;
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.Status;
-import com.pjf.mat.api.comms.CheetahDatagram;
+import com.pjf.mat.api.comms.CFDatagram;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.comms.InMsgCallbackInt;
 import com.pjf.mat.api.util.HwStatus;
@@ -88,7 +88,7 @@ public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
 	
 	public void testCxnSendReceive() throws IOException {
 		CxnInt cxn = skt.getCxn();
-		CheetahDatagram data = new CheetahDatagram(5000,"Test Data".getBytes());		
+		CFDatagram data = new CFDatagram(5000,"Test Data".getBytes());		
 		cxn.send(data);
 	}
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import com.pjf.mat.api.comms.CheetahDatagram;
+import com.pjf.mat.api.comms.CFDatagram;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.util.comms.UDPCxn;
 
@@ -17,7 +17,7 @@ public class UDPTest {
 	}
 
 	public void go() throws IOException {
-		CheetahDatagram pkt = cxn.rcv();
+		CFDatagram pkt = cxn.rcv();
 		byte[] rep = pkt.getData();
 		String reply = new String(rep);
 		System.out.println("Got [" + reply + "]");

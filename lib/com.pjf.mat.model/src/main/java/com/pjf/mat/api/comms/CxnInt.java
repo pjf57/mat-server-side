@@ -18,7 +18,7 @@ public interface CxnInt {
 	 * @param datagram datagram to send (data, destination port)
 	 * @throws IOException
 	 */
-	public void send(CheetahDatagram datagram) throws IOException;
+	public void send(CFDatagram datagram) throws IOException;
 
 	/**
 	 * Receive one datagram. Abort if cxn is shutdown
@@ -27,7 +27,7 @@ public interface CxnInt {
 	 * @return datagram with data and the source port
 	 * @throws IOException
 	 */
-	public CheetahDatagram rcv() throws IOException;
+	public CFDatagram rcv() throws IOException;
 
 	/**
 	 * Close the connection

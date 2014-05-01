@@ -100,7 +100,6 @@ public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
 		Element sys = mat.getModel().getElement(0);
 		Element mfd = mat.getModel().getElement(30);
 		Element macd = mat.getModel().getElement(10);
-		Element lgr = mat.getModel().getElement(1);
 		Element rmo = mat.getModel().getElement(31);
 		Element logicBuy = mat.getModel().getElement(15);
 		Element logicSell = mat.getModel().getElement(17);

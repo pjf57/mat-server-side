@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import com.pjf.mat.api.comms.CheetahDatagram;
+import com.pjf.mat.api.comms.CFDatagram;
 import com.pjf.mat.util.comms.UDPCxn;
 
 
@@ -21,9 +21,9 @@ public class UDPTestStream {
 		public void run() {
 			while (true) {
 				try {
-					CheetahDatagram pkt = cxn.rcv();
+					CFDatagram pkt = cxn.rcv();
 					String reply = new String(pkt.getData());
-					System.out.println("Got [" + reply + "] on port " + pkt.getPort());
+					System.out.println("Got [" + reply + "] on port " + pkt.getDstPort());
 					received++;
 				} catch (IOException e) {
 					e.printStackTrace();

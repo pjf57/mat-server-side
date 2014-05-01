@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.comms.InMsgCallbackInt;
-import com.pjf.mat.api.comms.CheetahDatagram;
+import com.pjf.mat.api.comms.CFDatagram;
 
 
 public class UDPCxn implements CxnInt {
@@ -80,9 +80,9 @@ public class UDPCxn implements CxnInt {
     	}
 
     	@Override
-		public void send(CheetahDatagram datagram) throws IOException {
+		public void send(CFDatagram datagram) throws IOException {
     		byte[] data = datagram.getData();
-    		int port = datagram.getPort();
+    		int port = datagram.getDstPort();
     		DatagramPacket pkt = new DatagramPacket(data, data.length, dstIP, port);
 			logger.debug("Msg sent (port=" + port + "):  [" + toHexString(data) + "]");
 			if (loopbackCb != null) {
@@ -94,7 +94,7 @@ public class UDPCxn implements CxnInt {
     	}
     	
     	@Override
-		public CheetahDatagram rcv() throws IOException {
+		public CFDatagram rcv() throws IOException {
   	      	byte[] buf = new byte[1500];
 	  	    DatagramPacket pkt = new DatagramPacket(buf, buf.length);
 	  	    boolean gotPkt = false;
@@ -122,7 +122,7 @@ public class UDPCxn implements CxnInt {
 				logger.info("Shutting down.");
 			}
 			sktInUse = false;
-		    return new CheetahDatagram(port,data);
+		    return new CFDatagram(port,data);
     	}
     	
     	/* (non-Javadoc)
