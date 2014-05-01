@@ -36,7 +36,7 @@ import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.SystemServicesInt;
 import com.pjf.mat.util.comms.RComms;
 import com.pjf.mat.util.comms.UDPCxn;
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.logging.LkuAuditLog;
 import com.pjf.mat.api.logging.MatLogger;
@@ -430,7 +430,7 @@ public class MatSim extends RComms implements SimHost, SimAccess, MatSimInt {
 	}
 
 	@Override
-	public Comms getComms() {
+	public MATCommsApi getComms() {
 		return this;
 	}
 

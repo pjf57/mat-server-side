@@ -59,7 +59,35 @@ public class HwStatus {
 
 	@Override
 	public String toString() {
-		return "sig=" + hwSig + " cf_ver=" + cf_version + " mtp=" + microtickPeriod;		
+		return "sig=" + toHexLongString(hwSig) + " cf_ver=" + cf_version + " mtp=" + microtickPeriod;		
 	}
+
+	private String toHexLongString(long value) {
+		StringBuffer buf = new StringBuffer();
+		buf.append(toHexByteString((int) (value >> 56)));
+		buf.append(toHexByteString((int) (value >> 48)));
+		buf.append(toHexByteString((int) (value >> 40)));
+		buf.append(toHexByteString((int) (value >> 32)));
+		buf.append(toHexByteString((int) (value >> 24)));
+		buf.append(toHexByteString((int) (value >> 16)));
+		buf.append(toHexByteString((int) (value >> 8)));
+		buf.append(toHexByteString((int) (value)));
+		return buf.toString();
+	}
+
+	/**
+	 * @param data - byte
+	 * @return 2 char string hex representation
+	 */
+	private String toHexByteString(int data) {
+		StringBuffer buf = new StringBuffer();
+		char[] map = new char[] {'0', '1', '2', '3', '4', '5', '6', '7',
+								 '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+		int d = data & 0xff;
+		buf.append(map[(d >> 4) & 0xf]);
+		buf.append(map[d & 0xf]);
+		return buf.toString();
+	}
+
 
 }

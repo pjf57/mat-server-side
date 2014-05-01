@@ -13,14 +13,14 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.comms.CFDatagram;
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.util.HwStatus;
 import com.pjf.mat.impl.element.SystemCmd;
 import com.pjf.mat.util.TimeoutSemaphore;
 import com.pjf.mat.util.comms.RComms;
 
-public class MATComms extends RComms implements Comms {
+public class MATComms extends RComms implements MATCommsApi {
 	private final static Logger logger = Logger.getLogger(MATComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
 	private int port;

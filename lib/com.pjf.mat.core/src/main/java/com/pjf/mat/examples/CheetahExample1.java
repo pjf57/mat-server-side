@@ -14,7 +14,7 @@ import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.TimeOrdered;
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.logging.EventLog;
 import com.pjf.mat.api.logging.LkuAuditLog;
@@ -29,7 +29,7 @@ import com.pjf.mat.util.comms.UDPCxn;
 public class CheetahExample1 implements NotificationCallback {
 	private final static Logger logger = Logger.getLogger(CheetahExample1.class);
 	private MatApi mat = null;
-	private Comms comms = null;
+	private MATCommsApi comms = null;
 	private boolean running = true;
 	
 	private void run() throws Exception {

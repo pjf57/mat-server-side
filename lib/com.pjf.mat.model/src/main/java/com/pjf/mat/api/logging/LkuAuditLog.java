@@ -18,7 +18,7 @@ public class LkuAuditLog extends BaseLog {
 	private LkuResult result;
 	private final float data;
 	
-	private static final int CLK_TIME_NS = 8;	// microtick time
+	private static final int CLK_TIME_NS = 10;	// FIXME microtick time
 
 	public LkuAuditLog(Timestamp timestamp, Element requester,
 			int instrumentId, int tickref, int operation, Element responder, int rspTimeMicroticks,

@@ -11,12 +11,12 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.Status;
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.comms.InMsgCallbackInt;
 import com.pjf.mat.api.util.HwStatus;
 
-public class DummyComms implements Comms {
+public class DummyComms implements MATCommsApi {
 	private final static Logger logger = Logger.getLogger(DummyComms.class);
 	Random rng;
 	DummyStatusReader statusReader;

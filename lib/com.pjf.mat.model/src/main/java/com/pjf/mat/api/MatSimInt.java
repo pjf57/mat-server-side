@@ -2,7 +2,7 @@ package com.pjf.mat.api;
 
 import java.util.Collection;
 
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.MATCommsApi;
 
 /**
  * Generic interface to a MAT simulator
@@ -10,7 +10,7 @@ import com.pjf.mat.api.comms.Comms;
  * @author pjf
  *
  */
-public interface MatSimInt extends Comms  {
+public interface MatSimInt extends MATCommsApi  {
 
 	/**
 	 * instantiate all the simulation elements

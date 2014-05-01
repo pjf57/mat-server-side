@@ -20,6 +20,7 @@ public class UDPCxn implements CxnInt {
 
 		private static final int SKT_TMO_MS = 500;
 		private static final int SKT_RXBUF_SIZE = 200000;
+		private static final int MTU_SIZE = 1544;	// FIXME - make proper calc
 
 		private DatagramSocket skt;
     	private InetAddress dstIP;
@@ -159,6 +160,12 @@ public class UDPCxn implements CxnInt {
 		@Override
 		public String getAddress() {
 			return dstIP.toString();
+		}
+
+
+		@Override
+		public int getMtuSize() {
+			return MTU_SIZE;
 		}
 
 	}

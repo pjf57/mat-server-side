@@ -12,13 +12,13 @@ import com.pjf.mat.api.Status;
 import com.pjf.mat.api.util.HwStatus;
 
 /**
- * Interface for communications to Cheetah Framework in target HW
+ * MAT-oriented Interface for communications to Cheetah Framework in target HW
  * 
  * @author pjf
  *
  */
 
-public interface Comms extends InMsgCallbackInt {
+public interface MATCommsApi extends InMsgCallbackInt {
 	public void sendConfig(Collection<Element> collection) throws Exception;
 	public Status requestStatus() throws Exception;
 	public Status requestStatus(Element element) throws Exception;

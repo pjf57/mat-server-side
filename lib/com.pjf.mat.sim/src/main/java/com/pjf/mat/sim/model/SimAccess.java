@@ -1,7 +1,7 @@
 package com.pjf.mat.sim.model;
 
 import com.pjf.mat.api.Timestamp;
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.sim.ElementException;
 import com.pjf.mat.sim.types.Event;
 
@@ -45,7 +45,7 @@ public interface SimAccess {
 	/**
 	 * @return comms interface
 	 */
-	Comms getComms();
+	MATCommsApi getComms();
 
 
 }

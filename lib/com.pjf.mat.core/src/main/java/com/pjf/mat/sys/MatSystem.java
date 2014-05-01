@@ -17,7 +17,7 @@ import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatSimInt;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.TimeOrdered;
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.logging.EventLog;
 import com.pjf.mat.api.logging.LkuAuditLog;
@@ -34,7 +34,7 @@ import com.pjf.mat.util.comms.UDPCxn;
 public abstract class MatSystem implements SystemServicesInt {
 	protected final static Logger logger = Logger.getLogger(MatSystem.class);
 	private MatInterface mat = null;
-	private Comms comms = null;
+	private MATCommsApi comms = null;
 
 	private MatSimInt sim = null;
 	private EventFeedInt feed;

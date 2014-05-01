@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.comms.CFDatagram;
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.comms.InMsgCallbackInt;
 import com.pjf.mat.api.logging.EventLog;
@@ -34,7 +34,7 @@ import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.util.Conversion;
 import com.pjf.mat.util.ElementStatus;
 
-public abstract class RComms implements Comms {
+public abstract class RComms implements MATCommsApi {
 	private final static Logger logger = Logger.getLogger(RComms.class);
 	protected MatApi mat;
 	protected Collection<NotificationCallback> notificationSubscribers;

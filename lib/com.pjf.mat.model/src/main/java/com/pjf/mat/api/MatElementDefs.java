@@ -228,6 +228,7 @@ public class MatElementDefs {
 		return str;
 	}
 	
+	
 	public static String ElementTypeToString(int type) {
 		String typeStr ="";
 		switch(type) {
@@ -242,6 +243,8 @@ public class MatElementDefs {
 		case MatElementDefs.EL_TYP_LOGIC_4IP	: typeStr = "Logic_4IP";	break;
 		case MatElementDefs.EL_TYP_ARITH_4IP	: typeStr = "Arith_4IP";	break;
 		case MatElementDefs.EL_TYP_UDP_RAW_MKT	: typeStr = "UDPrawMKT";	break;
+		case MatElementDefs.EL_TYP_UDP_MFD_SYM	: typeStr = "UDPrawMKTSYM";	break;
+		case MatElementDefs.EL_TYP_MFD_SYM		: typeStr = "UDP_MFD_SYM";	break;
 		case MatElementDefs.EL_TYP_RMO			: typeStr = "RMO";			break;
 		default					: typeStr = "unknown(" + type + ")";		break;
 		}

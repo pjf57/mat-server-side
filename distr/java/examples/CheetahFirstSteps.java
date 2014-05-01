@@ -10,11 +10,13 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.TimeOrdered;
 import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.logging.EventLog;
 import com.pjf.mat.api.logging.LkuAuditLog;
 import com.pjf.mat.api.logging.OrderLog;
 import com.pjf.mat.api.logging.RtrAuditLog;
-import com.pjf.mat.sys.UDPComms;
+import com.pjf.mat.sys.MATComms;
+import com.pjf.mat.util.comms.UDPCxn;
 
 /**
  * First steps - request the HW Sig from the FPGA and print it out
@@ -28,7 +30,8 @@ public class CheetahFirstSteps implements NotificationCallback {
 	
 	private void run() throws Exception {
 		logger.info("Starting ...");
-		comms = new UDPComms("192.168.2.9",2000);
+		CxnInt cxn = new UDPCxn("192.168.2.9");
+		comms = new MATComms(cxn,2000);
 		comms.addNotificationSubscriber(this);
 		logger.info("Request Signature");
 		comms.getHWSignature();

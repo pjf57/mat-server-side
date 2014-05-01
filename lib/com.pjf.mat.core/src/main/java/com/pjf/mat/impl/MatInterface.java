@@ -16,7 +16,7 @@ import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.MatModel;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.Timestamp;
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.util.AttributeCalcInt;
 import com.pjf.mat.api.util.SignatureResult;
 import com.pjf.mat.impl.element.BasicCmd;
@@ -27,11 +27,11 @@ public class MatInterface implements MatApi {
 	private final static Logger logger = Logger.getLogger(MatInterface.class);
 	private static final String CALCULATOR_PKG = "com.pjf.mat.config.calculators";
 
-	private final Comms comms;
+	private final MATCommsApi comms;
 	private final MatModel model;
 	private long clockOriginMs;
 	
-	public MatInterface(Comms comms, MatModel model) throws Exception {
+	public MatInterface(MATCommsApi comms, MatModel model) throws Exception {
 		this.comms = comms;
 		this.model = model;
 	}

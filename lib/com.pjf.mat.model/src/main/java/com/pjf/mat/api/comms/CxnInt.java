@@ -39,4 +39,9 @@ public interface CxnInt {
 	 */
 	public String getAddress();
 
+	/**
+	 * @return max transmission unit size (bytes) - this is the MTU at the cxn data layer
+	 */
+	public int getMtuSize();
+
 }

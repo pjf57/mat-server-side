@@ -1,21 +1,21 @@
 package com.pjf.mat.examples;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.pjf.mat.api.Element;
-import com.pjf.mat.api.NotificationCallback;
-import com.pjf.mat.api.TimeOrdered;
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.CBRawStatus;
+import com.pjf.mat.api.comms.CFCallback;
+import com.pjf.mat.api.comms.CFCommsInt;
 import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.logging.EventLog;
-import com.pjf.mat.api.logging.LkuAuditLog;
-import com.pjf.mat.api.logging.OrderLog;
-import com.pjf.mat.api.logging.RtrAuditLog;
-import com.pjf.mat.sys.MATComms;
+import com.pjf.mat.api.comms.EvtLogRaw;
+import com.pjf.mat.api.comms.LkuAuditRawLog;
+import com.pjf.mat.api.comms.RtrAuditRawLog;
+import com.pjf.mat.api.util.HwStatus;
+import com.pjf.mat.util.Conversion;
+import com.pjf.mat.util.comms.CFComms;
 import com.pjf.mat.util.comms.UDPCxn;
 
 /**
@@ -24,68 +24,78 @@ import com.pjf.mat.util.comms.UDPCxn;
  * @author pjf
  *
  */
-public class CheetahFirstSteps implements NotificationCallback {
+public class CheetahFirstSteps implements CFCallback {
 	private final static Logger logger = Logger.getLogger(CheetahFirstSteps.class);
-	private Comms comms = null;
+	private CFCommsInt comms = null;
 	
 	private void run() throws Exception {
 		logger.info("Starting ...");
 		CxnInt cxn = new UDPCxn("192.168.2.9");
-		comms = new MATComms(cxn,2000);
-		comms.addNotificationSubscriber(this);
-		logger.info("Request Signature");
-		comms.getHWSignature();
-		logger.info("Request Status");
+		comms = new CFComms(cxn,2000);
+		comms.setCallback(this);
+		logger.info("Request Cheetah Framework Status");
+		comms.requestCFStatus();
+		Thread.sleep(1000);
+		logger.info("Request CB Status");
 		comms.requestStatus();
+		Thread.sleep(1000);
 		logger.info("Waiting ...");
 		Thread.sleep(5000);
+		comms.shutdown();
 		logger.info("Exiting");
 	}
 
 
 	@Override
-	public void notifyEventLog(EventLog evt) {
-		logger.info("notifyEventLog(): " + evt);
+	public void processCFStatus(HwStatus st) {
+		logger.info("processCFStatus(): " + st);
 	}
+
 
 	@Override
-	public void notifyElementStatusUpdate(Collection<Element> cbs) {
-		logger.info("Status update received for " + cbs.size() + " CBs:");
-		for (Element cb : cbs) {
-			logger.info("Status Update: cb=" + cb.getId() +
-					" type=" + cb.getType() +
-					" state=" + cb.getElementStatus());	
-		}
+	public void processCBStatus(List<CBRawStatus> statusList) {
+		logger.info("processCBStatus(): " + statusList.size() + " status reports received:");
+		for (CBRawStatus stat : statusList) {
+			logger.info("  " + stat);
+		}	
 	}
+
 
 	@Override
-	public void notifyLkuAuditLogReceipt(Collection<LkuAuditLog> logs) {
-		for (LkuAuditLog log : logs) {
-			logger.info("notifyLkuAuditLogReceipt(): " + log);
-		}
+	public void processEvtLogs(List<EvtLogRaw> logs) {
+		logger.info("processEvtLogs(): " + logs.size() + " logs received:");
+		for (EvtLogRaw log : logs) {
+			logger.info("  " + log);
+		}	
 	}
+
 
 	@Override
-	public void notifyRtrAuditLogReceipt(Collection<RtrAuditLog> logs) {
-		for (RtrAuditLog log : logs) {
-			logger.info("notifyRtrAuditLogReceipt(): " + log);
-		}
+	public void processLkuLogs(List<LkuAuditRawLog> logs) {
+		logger.info("processEvtLogs(): " + logs.size() + " logs received:");
+		for (LkuAuditRawLog log : logs) {
+			logger.info("  " + log);
+		}	
 	}
+
 
 	@Override
-	public void notifyOrderReceipt(OrderLog order) {
-		logger.warn("notifyOrderReceipt(): " + order);
+	public void processRtrLogs(List<RtrAuditRawLog> logs) {
+		logger.info("processEvtLogs(): " + logs.size() + " logs received:");
+		for (RtrAuditRawLog log : logs) {
+			logger.info("  " + log);
+		}	
 	}
+
 
 	@Override
-	public void notifyUnifiedEventLog(List<TimeOrdered> logs) {
-		logger.error("notifyUnifiedEventLog(): - not supported");
+	public void processUnknownMsg(int destPort, byte[] msg) {
+		logger.warn("processUnknownMsg(): port= " + destPort + " msg=" + Conversion.toHexString(msg));
 	}
-
 
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
-		logger.info("startup");
+		Logger.getRootLogger().setLevel(Level.INFO);
 		CheetahFirstSteps sys = new CheetahFirstSteps();
 		try {
 			sys.run();
@@ -94,6 +104,5 @@ public class CheetahFirstSteps implements NotificationCallback {
 			e.printStackTrace();
 		}		
 	}
-
 
 }
