@@ -149,7 +149,7 @@ public abstract class RComms implements Comms {
 
 	@Override
 	public CxnInt getCxn() {
-		return null;
+		return cxn;
 	}
 
 	protected class EncodedConfigItemList {

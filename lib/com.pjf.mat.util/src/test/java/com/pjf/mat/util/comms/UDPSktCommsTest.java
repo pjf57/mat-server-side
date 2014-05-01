@@ -20,9 +20,9 @@ import junit.framework.TestCase;
 
 
 public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
-	private ReaderComms skt;
+	private RComms skt;
 	
-	public class Skt extends ReaderComms {
+	public class Skt extends RComms {
 
 		public Skt(CxnInt cxn) throws SocketException, UnknownHostException {
 			super(cxn);

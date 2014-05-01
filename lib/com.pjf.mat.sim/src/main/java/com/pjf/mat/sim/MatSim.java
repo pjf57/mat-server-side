@@ -34,7 +34,7 @@ import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.model.TickdataResult;
 import com.pjf.mat.sim.types.Event;
 import com.pjf.mat.util.SystemServicesInt;
-import com.pjf.mat.util.comms.ReaderComms;
+import com.pjf.mat.util.comms.RComms;
 import com.pjf.mat.util.comms.UDPCxn;
 import com.pjf.mat.api.comms.Comms;
 import com.pjf.mat.api.comms.CxnInt;
@@ -47,7 +47,7 @@ import com.pjf.mat.sim.router.Router;
 import com.pjf.mat.api.LkuResult;
 
 
-public class MatSim extends ReaderComms implements SimHost, SimAccess, MatSimInt {
+public class MatSim extends RComms implements SimHost, SimAccess, MatSimInt {
 
 	private static final String SIM_VER = "SIM v1.01";
 

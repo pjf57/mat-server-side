@@ -8,16 +8,20 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
+import com.pjf.mat.api.MatApi;
+import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.CxnInt;
+import com.pjf.mat.api.comms.InMsgCallbackInt;
 import com.pjf.mat.api.util.HwStatus;
-import com.pjf.mat.util.comms.BaseComms;
 
-public class DummyComms extends BaseComms implements Comms {
+public class DummyComms implements Comms {
 	private final static Logger logger = Logger.getLogger(DummyComms.class);
 	Random rng;
 	DummyStatusReader statusReader;
 	DummyEventReader eventReader;
+	protected MatApi mat;
 
 	/**
 	 * Send random status updates
@@ -144,18 +148,11 @@ public class DummyComms extends BaseComms implements Comms {
 	@Override
 	public void sendConfig(Collection<Element> elements) throws Exception {
 		logger.info("Preparing to send config ...");
-		EncodedConfigItemList cfg = new EncodedConfigItemList();
-		for (Element el : elements) {
-			hwEncodeConfig(el,cfg);
-		}
-		logger.info("sendConfig(): encoded " + cfg.getItemCount() + " items into " + cfg.getLength() + " bytes");
 	}
 	
 	@Override
 	public void sendCmd(Cmd cmd) throws IOException {
-		EncodedConfigItemList cfg = new EncodedConfigItemList();
-		cfg.putCmdItem(cmd.getParent().getId(),cmd.getConfigId() | 0x80,0, 0);
-		logger.info("sendCmd(" + cmd.getFullName() + "): encoded " + cfg.getLength() + " bytes");
+		logger.info("sendCmd(" + cmd.getFullName() + ")");
 	}
 
 	@Override
@@ -211,6 +208,38 @@ public class DummyComms extends BaseComms implements Comms {
 	@Override
 	public void resetConfig(int elId) throws IOException {
 		logger.info("resetConfig for elID=" + elId);		
+	}
+
+	@Override
+	public void processIncomingMsg(int port, byte[] msg) {
+		logger.info("processIncomingMsg");		
+	}
+
+	@Override
+	public void addNotificationSubscriber(NotificationCallback subscriber) {
+		logger.info("addNotificationSubscriber");		
+	}
+
+	@Override
+	public void setHwStatus(HwStatus st) {
+		logger.info("setHwStatus");		
+	}
+
+	@Override
+	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb) {
+		logger.info("subscribeIncomingMsgs");		
+	}
+
+	@Override
+	public void setMat(MatApi mat) {
+		logger.info("setting Mat");
+		this.mat = mat;
+	}
+
+	@Override
+	public CxnInt getCxn() {
+		logger.info("getCxn");
+		return null;
 	}
 
 }
