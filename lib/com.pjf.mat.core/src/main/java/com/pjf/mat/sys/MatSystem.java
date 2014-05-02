@@ -155,10 +155,8 @@ public abstract class MatSystem implements SystemServicesInt {
 		} else if (System.getProperty("dummy") != null) {
 			comms = new DummyComms();
 		} else {
-			MATComms UComms = new MATComms(hwPortNum);
 			CxnInt cxn = new UDPCxn(hwIPAddr);
-			UComms.setCxn(cxn);
-			comms = UComms;
+			comms = new MATComms(cxn,hwPortNum);
 		}
 		comms.addNotificationSubscriber(notificationHandler);
 		MatInterfaceModel model = new MatInterfaceModel(props);

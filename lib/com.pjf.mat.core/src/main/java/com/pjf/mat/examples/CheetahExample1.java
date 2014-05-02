@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
@@ -50,6 +51,8 @@ public class CheetahExample1 implements NotificationCallback {
 				running = false;
 			}
 		}
+		// Move the HW to config mode so that it's not running anymore
+		mat.putIntoConfigMode();
 		shutdown();
 	}
 
@@ -168,6 +171,7 @@ public class CheetahExample1 implements NotificationCallback {
 
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.INFO);
 		logger.info("startup");
 		CheetahExample1 sys = new CheetahExample1();
 		try {

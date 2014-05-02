@@ -53,10 +53,30 @@ public interface CFCommsInt {
 	public void addCmdItem(int cbId, int cmdId, int arg, int val);
 
 	/**
+	 * Add a connection to the config buffer
+	 * 
+	 * @param srcCBId	- ID of source CB
+	 * @param srcOpPort	- output port number of source CB (0..n)
+	 * @param dstCBId	- ID of dest CB
+	 * @param dstIpPort - input port number of dest CB (0..n)
+	 */
+	public void addCxnItem(int srcCBId, int srcOpPort, int dstCBId, int dstIpPort);
+
+	/**
 	 * @return number of items that be loaded into the config buffer
 	 */
 	public int getConfigBufferSpace();
-	
+
+	/**
+	 * @return number of items in the config buffer
+	 */
+	public int getConfigBufferItemCount();
+
+	/**
+	 * @return number of items in the config buffer
+	 */
+	public int getConfigBufferLength();
+
 	/**
 	 * Send the config to the Cheetah Framework
 	 * 
@@ -128,7 +148,7 @@ public interface CFCommsInt {
 	 * 
 	 * @throws Exception if it was not possible to deliver the request
 	 */
-	public void resetConfig(int cbId) throws Exception;
+	public void resetCBConfig(int cbId) throws Exception;
 
 	/**
 	 * Synchronise the Cheetah Framwork clock with the server clock
@@ -148,5 +168,13 @@ public interface CFCommsInt {
 	 * @return underlying connection being used
 	 */
 	public CxnInt getCxn();
+
+	/**
+	 * Method for injecting incoming messages as if they came from the underlying connection.
+	 * 
+	 * @param destPort
+	 * @param msg
+	 */
+	public void handleIncomingMsg(int destPort, byte[] msg);
 
 }

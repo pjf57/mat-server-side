@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Element;
@@ -184,6 +185,7 @@ public class CheetahExample1mfd implements NotificationCallback {
 
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.INFO);
 		logger.info("startup");
 		CheetahExample1mfd sys = new CheetahExample1mfd();
 		try {

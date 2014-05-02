@@ -122,11 +122,27 @@ public class CFComms implements CFCommsInt, InMsgCallbackInt {
 	}
 
 	@Override
+	public void addCxnItem(int srcCBId, int srcOpPort, int dstCBId, int dstIpPort) {
+		int val = (dstIpPort << 16) | srcOpPort << 8 | srcCBId;
+		addSysConfigItem(dstCBId, MatElementDefs.EL_C_SRC_ROUTE, 0, val);
+	}
+
+	@Override
 	public int getConfigBufferSpace() {
 		int bytes = configBuf.getLength();
 		int bytesLeft = cxn.getMtuSize() - bytes;
 		int itemsLeft = bytesLeft / configBuf.getItemSize();
 		return itemsLeft;
+	}
+
+	@Override
+	public int getConfigBufferItemCount() {
+		return configBuf.getItemCount();
+	}
+
+	@Override
+	public int getConfigBufferLength() {
+		return configBuf.getLength();
 	}
 
 	@Override
@@ -169,7 +185,7 @@ public class CFComms implements CFCommsInt, InMsgCallbackInt {
 	}
 
 	@Override
-	public void resetConfig(int cbId) throws Exception {
+	public void resetCBConfig(int cbId) throws Exception {
 		EncodedConfigItemList buf = new EncodedConfigItemList();
 		buf.putSystemItem(cbId, MatElementDefs.EL_C_RESET, 0, 0);
 		cxn.send(new CFDatagram(CFPort,buf.getData()));		
@@ -190,6 +206,10 @@ public class CFComms implements CFCommsInt, InMsgCallbackInt {
 			itemCount = 0;
 			upto = 1;
 			data = new byte[cxn.getMtuSize()];
+		}
+
+		public int getItemCount() {
+			return itemCount;
 		}
 
 		public int getItemSize() {
@@ -269,7 +289,7 @@ public class CFComms implements CFCommsInt, InMsgCallbackInt {
 			default: logger.error("Unkown status message received on status port: [" + Conversion.toHexString(msg)); break;
 			}
 		} else {
-			logger.info("Unkown message received on port " + destPort +	" [" + Conversion.toHexString(msg));
+			logger.info("Unkown message received on port " + destPort +	" [" + Conversion.toHexString(msg) + "]");
 			callback.processUnknownMsg(destPort,msg);
 		}
 	}
@@ -451,6 +471,13 @@ public class CFComms implements CFCommsInt, InMsgCallbackInt {
 		System.arraycopy(data, start, buf, 0, end-start+1);
 		return Conversion.toHexString(buf);
 	}
+
+	@Override
+	public void handleIncomingMsg(int destPort, byte[] msg) {
+		processIncomingMsg(destPort,msg);
+	}
+
+
 
 
 }

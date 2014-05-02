@@ -1,7 +1,6 @@
 package com.pjf.mat.api.comms;
 
 
-import java.io.IOException;
 import java.util.Collection;
 
 import com.pjf.mat.api.Cmd;
@@ -32,8 +31,8 @@ public interface MATCommsApi extends InMsgCallbackInt {
 	public HwStatus getHWStatus();
 	public void synchroniseClock(long syncOriginMs) throws Exception;
 	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb);
-	public void resetCounters() throws IOException;
-	public void resetConfig(int elId) throws IOException; // elId = id of element to reset
+	public void resetCounters() throws Exception;
+	public void resetConfig(int elId) throws Exception; // elId = id of element to reset
 	public void setMat(MatApi mat);
 	public CxnInt getCxn();
 }
