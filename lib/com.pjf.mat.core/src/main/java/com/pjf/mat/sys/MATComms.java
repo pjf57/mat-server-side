@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -249,7 +250,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 
 	@Override
 	public void processCBStatus(List<CBRawStatus> statusList) {
-		Set<Element> cbsUpdated = new HashSet<Element>();
+		Set<Element> cbsUpdated = new LinkedHashSet<Element>();
 		for (CBRawStatus rs : statusList) {
 			Element cb = processNewStatusUpdate(rs);
 			if (cb != null) {

@@ -39,7 +39,7 @@ public class ElementStatus implements Status{
 
 	@Override
 	public String getRunState() {
-		return Integer.toBinaryString(el_state);
+		return Integer.toString(el_state);
 	}
 
 	@Override
