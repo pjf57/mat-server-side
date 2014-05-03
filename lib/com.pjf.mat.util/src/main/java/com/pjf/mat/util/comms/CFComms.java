@@ -16,13 +16,13 @@ import com.pjf.mat.api.comms.CFDatagram;
 import com.pjf.mat.api.comms.CFCommsInt;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.comms.EvtLogRaw;
-import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.api.comms.LkuAuditRawLog;
 import com.pjf.mat.api.comms.RtrAuditRawLog;
 import com.pjf.mat.api.util.HwStatus;
 import com.pjf.mat.util.Conversion;
 
-public class CFComms implements CFCommsInt, InMsgCallbackInt {
+public class CFComms implements CFCommsInt, LoopbackInt {
 	private final static Logger logger = Logger.getLogger(CFComms.class);
 	private int CFPort;				// comms port of the Cheetah Framework in HW
 	private CFCallback callback;
@@ -52,7 +52,7 @@ public class CFComms implements CFCommsInt, InMsgCallbackInt {
 				while (keepGoing) {
 					CFDatagram pkt = cxn.rcv();
 					if (keepGoing) {
-						processIncomingMsg(pkt.getDstPort(),pkt.getData());
+						injectLoopbackMsg(pkt.getDstPort(),pkt.getData());
 					}
 				}
 			} catch (IOException e) {
@@ -271,7 +271,7 @@ public class CFComms implements CFCommsInt, InMsgCallbackInt {
 	 * @param msg - the raw message
 	 */
 	@Override
-	public void processIncomingMsg(int destPort, byte[] msg) {
+	public void injectLoopbackMsg(int destPort, byte[] msg) {
 		logger.debug("--> RX MSG (destPort=" + destPort + ") " + toHexString(msg,0,msg.length-1));
 		if (destPort == MatElementDefs.CS_PORT_LOGGER) {
 			byte cmd = msg[0];
@@ -474,7 +474,7 @@ public class CFComms implements CFCommsInt, InMsgCallbackInt {
 
 	@Override
 	public void handleIncomingMsg(int destPort, byte[] msg) {
-		processIncomingMsg(destPort,msg);
+		injectLoopbackMsg(destPort,msg);
 	}
 
 

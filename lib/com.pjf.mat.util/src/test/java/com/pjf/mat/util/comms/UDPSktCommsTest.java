@@ -4,7 +4,7 @@ package com.pjf.mat.util.comms;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import java.util.Collection;
+import java.util.List;
 
 import org.apache.log4j.BasicConfigurator;
 
@@ -13,13 +13,13 @@ import com.pjf.mat.api.Element;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.comms.CFDatagram;
 import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.api.util.HwStatus;
 
 import junit.framework.TestCase;
 
 
-public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
+public class UDPSktCommsTest extends TestCase implements LoopbackInt {
 	private RComms skt;
 	
 	public class Skt extends RComms {
@@ -29,7 +29,7 @@ public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
 		}
 
 		@Override
-		public void sendConfig(Collection<Element> collection) throws Exception {
+		public void sendConfig(List<Element> collection) throws Exception {
 		}
 
 		@Override
@@ -93,7 +93,7 @@ public class UDPSktCommsTest extends TestCase implements InMsgCallbackInt {
 	}
 
 	@Override
-	public void processIncomingMsg(int port, byte[] msg) {
+	public void injectLoopbackMsg(int port, byte[] msg) {
 		System.out.println("Received msg on port " + port + ", " + msg.length + " bytes.");
 	}
 

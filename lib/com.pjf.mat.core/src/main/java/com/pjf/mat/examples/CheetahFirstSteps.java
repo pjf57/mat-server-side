@@ -19,7 +19,7 @@ import com.pjf.mat.util.comms.CFComms;
 import com.pjf.mat.util.comms.UDPCxn;
 
 /**
- * First steps - request the HW Sig from the FPGA and print it out
+ * First steps - request the HW Sig from the FPGA and print it out, request CB status, and print.
  * 
  * @author pjf
  *

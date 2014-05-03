@@ -15,7 +15,7 @@ import com.pjf.mat.api.Attribute;
 import com.pjf.mat.api.comms.CFDatagram;
 import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.api.logging.EventLog;
 import com.pjf.mat.api.logging.LkuAuditLog;
 import com.pjf.mat.api.logging.OrderLog;
@@ -38,7 +38,7 @@ public abstract class RComms implements MATCommsApi {
 	private final static Logger logger = Logger.getLogger(RComms.class);
 	protected MatApi mat;
 	protected Collection<NotificationCallback> notificationSubscribers;
-	protected Map<Integer,InMsgCallbackInt> inMsgSubscribers;
+	protected Map<Integer,LoopbackInt> inMsgSubscribers;
 	protected HwStatus hwStatus;
 	protected CxnInt cxn;
 	private final Reader reader;
@@ -67,7 +67,7 @@ public abstract class RComms implements MATCommsApi {
 					if (keepGoing) {
 						logger.info("Got pkt");
 						rspCnt++;
-						processIncomingMsg(pkt.getDstPort(),pkt.getData());
+						injectLoopbackMsg(pkt.getDstPort(),pkt.getData());
 					}
 				}
 			} catch (IOException e) {
@@ -91,7 +91,7 @@ public abstract class RComms implements MATCommsApi {
 	 */
 	public RComms(CxnInt cxn) {
 		notificationSubscribers = new ArrayList<NotificationCallback>();
-		inMsgSubscribers = new HashMap<Integer,InMsgCallbackInt>();
+		inMsgSubscribers = new HashMap<Integer,LoopbackInt>();
 		hwStatus = new HwStatus();
 		this.cxn = cxn;
 		rspCnt = 0;
@@ -103,7 +103,7 @@ public abstract class RComms implements MATCommsApi {
 	 */
 	public RComms() {
 		notificationSubscribers = new ArrayList<NotificationCallback>();
-		inMsgSubscribers = new HashMap<Integer,InMsgCallbackInt>();
+		inMsgSubscribers = new HashMap<Integer,LoopbackInt>();
 		hwStatus = new HwStatus();
 		this.cxn = null;
 		rspCnt = 0;
@@ -142,7 +142,7 @@ public abstract class RComms implements MATCommsApi {
 	}
 
 	@Override
-	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb) {
+	public void subscribeIncomingMsgs(int port, LoopbackInt cb) {
 		inMsgSubscribers.put(new Integer(port), cb);
 		logger.info("subscribeIncomingMsgs() " + cb + " subscribed to port " + port); 
 	}
@@ -240,12 +240,12 @@ public abstract class RComms implements MATCommsApi {
 	 * @param msg - the raw message
 	 */
 	@Override
-	public void processIncomingMsg(int port, byte[] msg) {
+	public void injectLoopbackMsg(int port, byte[] msg) {
 		logger.debug("--> RX MSG (port=" + port + ") " + toHexString(msg,0,msg.length-1));
-		InMsgCallbackInt cb = inMsgSubscribers.get(new Integer(port));
+		LoopbackInt cb = inMsgSubscribers.get(new Integer(port));
 		if (cb != null) {
 			// send the message to the subscriber
-			cb.processIncomingMsg(port,msg);
+			cb.injectLoopbackMsg(port,msg);
 		} else {
 			// process the message here
 			if (port == MatElementDefs.CS_RMO_ORDER_PORT) {

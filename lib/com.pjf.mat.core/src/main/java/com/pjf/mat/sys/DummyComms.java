@@ -1,7 +1,7 @@
 package com.pjf.mat.sys;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
@@ -13,7 +13,7 @@ import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.api.util.HwStatus;
 
 public class DummyComms implements MATCommsApi {
@@ -67,7 +67,7 @@ public class DummyComms implements MATCommsApi {
 					rep[9] = (byte) (cnt & 0xff);
 					
 					if (keepGoing) {
-						processIncomingMsg(1,rep);
+						injectLoopbackMsg(1,rep);
 					}
 				}
 			} catch (Exception e) {
@@ -121,7 +121,7 @@ public class DummyComms implements MATCommsApi {
 					rep[9] = (byte) (data & 0xff);
 					
 					if (keepGoing) {
-						processIncomingMsg(1,rep);
+						injectLoopbackMsg(1,rep);
 					}
 				}
 			} catch (Exception e) {
@@ -146,7 +146,7 @@ public class DummyComms implements MATCommsApi {
 	}
 	
 	@Override
-	public void sendConfig(Collection<Element> elements) throws Exception {
+	public void sendConfig(List<Element> elements) throws Exception {
 		logger.info("Preparing to send config ...");
 	}
 	
@@ -211,7 +211,7 @@ public class DummyComms implements MATCommsApi {
 	}
 
 	@Override
-	public void processIncomingMsg(int port, byte[] msg) {
+	public void injectLoopbackMsg(int port, byte[] msg) {
 		logger.info("processIncomingMsg");		
 	}
 
@@ -226,7 +226,7 @@ public class DummyComms implements MATCommsApi {
 	}
 
 	@Override
-	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb) {
+	public void subscribeIncomingMsgs(int port, LoopbackInt cb) {
 		logger.info("subscribeIncomingMsgs");		
 	}
 

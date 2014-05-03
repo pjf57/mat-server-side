@@ -10,7 +10,7 @@ public interface CxnInt {
 	 * 
 	 * @param cb	callback object
 	 */
-	public void setLoopbackCallback(InMsgCallbackInt cb);
+	public void setLoopbackCallback(LoopbackInt cb);
 
 	/**
 	 * Send data to a specific port

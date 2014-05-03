@@ -11,7 +11,7 @@ import java.net.UnknownHostException;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.api.comms.CFDatagram;
 
 
@@ -20,14 +20,14 @@ public class UDPCxn implements CxnInt {
 
 		private static final int SKT_TMO_MS = 500;
 		private static final int SKT_RXBUF_SIZE = 200000;
-		private static final int MTU_SIZE = 1544;	// FIXME - make proper calc
+		private static final int MTU_SIZE = 1500-20-8;	// Eth MU - IP HDR - UDP HDR
 
 		private DatagramSocket skt;
     	private InetAddress dstIP;
     	private final int LOCAL_PORT = 3500;
     	private boolean shutdown;
     	private boolean sktInUse;
-    	private InMsgCallbackInt loopbackCb = null;
+    	private LoopbackInt loopbackCb = null;
 
     	public UDPCxn(long dstIPadr) throws SocketException, UnknownHostException {
 			byte[] target = new byte[4];
@@ -75,7 +75,7 @@ public class UDPCxn implements CxnInt {
 		 * @see com.pjf.mat.util.comms.CxnInt#setLoopbackCallback(com.pjf.mat.api.InMsgCallbackInt)
 		 */
     	@Override
-		public void setLoopbackCallback(InMsgCallbackInt cb) {
+		public void setLoopbackCallback(LoopbackInt cb) {
     		logger.info("Loopback mode set to " + cb);
     		this.loopbackCb = cb;
     	}
@@ -88,7 +88,7 @@ public class UDPCxn implements CxnInt {
 			logger.debug("Msg sent (port=" + port + "):  [" + toHexString(data) + "]");
 			if (loopbackCb != null) {
 				// perform the loopback
-				loopbackCb.processIncomingMsg(port, data);
+				loopbackCb.injectLoopbackMsg(port, data);
 			} else {
 				skt.send(pkt);
 			}
