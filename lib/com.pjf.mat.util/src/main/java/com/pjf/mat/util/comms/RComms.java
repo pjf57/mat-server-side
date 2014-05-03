@@ -141,7 +141,6 @@ public abstract class RComms implements MATCommsApi {
 		this.mat = mat;
 	}
 
-	@Override
 	public void subscribeIncomingMsgs(int port, LoopbackInt cb) {
 		inMsgSubscribers.put(new Integer(port), cb);
 		logger.info("subscribeIncomingMsgs() " + cb + " subscribed to port " + port); 
@@ -239,7 +238,6 @@ public abstract class RComms implements MATCommsApi {
 	 * @param port - UDP port on which data was received
 	 * @param msg - the raw message
 	 */
-	@Override
 	public void injectLoopbackMsg(int port, byte[] msg) {
 		logger.debug("--> RX MSG (port=" + port + ") " + toHexString(msg,0,msg.length-1));
 		LoopbackInt cb = inMsgSubscribers.get(new Integer(port));

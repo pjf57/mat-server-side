@@ -10,10 +10,8 @@ import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
 import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.NotificationCallback;
-import com.pjf.mat.api.Status;
 import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.api.util.HwStatus;
 
 public class DummyComms implements MATCommsApi {
@@ -156,9 +154,8 @@ public class DummyComms implements MATCommsApi {
 	}
 
 	@Override
-	public Status requestStatus() {
+	public void requestStatus() {
 		logger.info("Requesting status all.");
-		return null;
 	}
 
 	@Override
@@ -169,9 +166,8 @@ public class DummyComms implements MATCommsApi {
 	}
 
 	@Override
-	public Status requestStatus(Element element) throws Exception {
+	public void requestStatus(Element element) throws Exception {
 		logger.info("Requesting status for " + element);
-		return null;
 	}
 
 	@Override
@@ -223,11 +219,6 @@ public class DummyComms implements MATCommsApi {
 	@Override
 	public void setHwStatus(HwStatus st) {
 		logger.info("setHwStatus");		
-	}
-
-	@Override
-	public void subscribeIncomingMsgs(int port, LoopbackInt cb) {
-		logger.info("subscribeIncomingMsgs");		
 	}
 
 	@Override

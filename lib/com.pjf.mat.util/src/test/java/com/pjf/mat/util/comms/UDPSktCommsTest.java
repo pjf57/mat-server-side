@@ -10,7 +10,6 @@ import org.apache.log4j.BasicConfigurator;
 
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.Element;
-import com.pjf.mat.api.Status;
 import com.pjf.mat.api.comms.CFDatagram;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.comms.LoopbackInt;
@@ -33,13 +32,11 @@ public class UDPSktCommsTest extends TestCase implements LoopbackInt {
 		}
 
 		@Override
-		public Status requestStatus() throws Exception {
-			return null;
+		public void requestStatus() throws Exception {
 		}
 
 		@Override
-		public Status requestStatus(Element element) throws Exception {
-			return null;
+		public void requestStatus(Element element) throws Exception {
 		}
 
 		@Override

@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -27,7 +26,6 @@ import com.pjf.mat.api.comms.CFCallback;
 import com.pjf.mat.api.comms.CFCommsInt;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.comms.EvtLogRaw;
-import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.api.comms.LkuAuditRawLog;
 import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.RtrAuditRawLog;
@@ -51,7 +49,6 @@ public class MATComms implements MATCommsApi, CFCallback {
 	private int port;
 	private MatApi mat;
 	private Collection<NotificationCallback> notificationSubscribers;
-	private Map<Integer,LoopbackInt> inMsgSubscribers;
 	private HwStatus hwStatus;
 	private TimeoutSemaphore hwSigSem;
 
@@ -93,12 +90,6 @@ public class MATComms implements MATCommsApi, CFCallback {
 	@Override
 	public void setMat(MatApi mat) {
 		this.mat = mat;
-	}
-
-	@Override
-	public void subscribeIncomingMsgs(int port, LoopbackInt cb) {
-		inMsgSubscribers.put(new Integer(port), cb);
-		logger.info("subscribeIncomingMsgs() " + cb + " subscribed to port " + port); 
 	}
 
 	@Override
@@ -195,9 +186,8 @@ public class MATComms implements MATCommsApi, CFCallback {
 
 
 	@Override
-	public Status requestStatus() throws Exception {
+	public void requestStatus() throws Exception {
 		cfComms.requestStatus();
-		return null;
 	}
 
 	@Override
@@ -219,9 +209,8 @@ public class MATComms implements MATCommsApi, CFCallback {
 	}
 
 	@Override
-	public Status requestStatus(Element element) throws Exception {
-		cfComms.sendSingleCmd(MatElementDefs.EL_ID_SYSTEM_CONTROL, MatElementDefs.EL_C_STATUS_REQ, 0, element.getId());
-		return null;
+	public void requestStatus(Element cb) throws Exception {
+		cfComms.sendSingleCmd(MatElementDefs.EL_ID_SYSTEM_CONTROL, MatElementDefs.EL_C_STATUS_REQ, 0, cb.getId());
 	}
 
 
@@ -423,13 +412,10 @@ public class MATComms implements MATCommsApi, CFCallback {
 
 
 	@Override
-	public void resetConfig(int elId) throws Exception {
+	public void resetConfig(int cbId) throws Exception {
 		logger.info("resetConfig()");
-		cfComms.resetCBConfig(elId);
+		cfComms.resetCBConfig(cbId);
 	}
-
-
-
 
 	/**
 	 * Notify subscribers of a list of LKU audit logs

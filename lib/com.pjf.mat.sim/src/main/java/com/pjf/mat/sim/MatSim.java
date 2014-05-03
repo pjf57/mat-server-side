@@ -21,7 +21,6 @@ import com.pjf.mat.api.InputPort;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.MatSimInt;
 import com.pjf.mat.api.NotificationCallback;
-import com.pjf.mat.api.Status;
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.sim.element.ElementFactory;
 import com.pjf.mat.sim.model.BaseState;
@@ -145,23 +144,21 @@ public class MatSim extends RComms implements SimHost, SimAccess, MatSimInt {
 	}
 
 	@Override
-	public Status requestStatus() throws Exception {
+	public void requestStatus() throws Exception {
 		for (SimElement se : simElements.values()) {
 			se.getStatus();
 		}
 		BaseState rbs = router.getBaseState();
 		int rcnt = router.getCount();
 		publishElementStatusUpdate(0, "Router",rbs.toString(),0,rcnt);
-		return null;
 	}
 
 	@Override
-	public Status requestStatus(Element element) throws Exception {
+	public void requestStatus(Element element) throws Exception {
 		SimElement se = getSimElement(element.getId());
 		if (se != null) {
 			se.getStatus();
 		}
-		return null;
 	}
 
 	@Override

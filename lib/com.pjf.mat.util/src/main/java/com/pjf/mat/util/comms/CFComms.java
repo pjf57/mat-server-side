@@ -289,7 +289,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			default: logger.error("Unkown status message received on status port: [" + Conversion.toHexString(msg)); break;
 			}
 		} else {
-			logger.info("Unkown message received on port " + destPort +	" [" + Conversion.toHexString(msg) + "]");
+			logger.debug("Unkown message received on port " + destPort +	" [" + Conversion.toHexString(msg) + "]");
 			callback.processUnknownMsg(destPort,msg);
 		}
 	}
