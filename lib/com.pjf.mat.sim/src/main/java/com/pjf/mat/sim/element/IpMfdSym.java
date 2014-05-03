@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
 import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.api.util.ConfigItem;
 import com.pjf.mat.sim.bricks.BaseElement;
 import com.pjf.mat.sim.model.SimElement;
@@ -28,7 +28,7 @@ import com.pjf.mat.util.data.TickData;
  * @author pjf
  *
  */
-public class IpMfdSym extends BaseElement implements SimElement, InMsgCallbackInt {
+public class IpMfdSym extends BaseElement implements SimElement, LoopbackInt {
 	private final static Logger logger = Logger.getLogger(IpMfdSym.class);
 	private static final int LATENCY = 3;	// network (microticks)
 	private OpConfig c_trade;				// output handling for trade events
@@ -130,7 +130,7 @@ public class IpMfdSym extends BaseElement implements SimElement, InMsgCallbackIn
 	}
 
 	@Override
-	public void processIncomingMsg(int port, byte[] msg) {
+	public void injectLoopbackMsg(int port, byte[] msg) {
 		logger.info("processIncomingMsg() from port " + port);
 		if (started) {
 			int numEvts = msg[0];

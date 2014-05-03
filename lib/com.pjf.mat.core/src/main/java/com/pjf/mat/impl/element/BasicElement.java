@@ -17,10 +17,9 @@ import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.api.Status;
 import com.pjf.mat.util.ElementStatus;
 
-public class BasicElement implements Element {
+public class BasicElement extends BasicItem implements Element {
 	private final static Logger logger = Logger.getLogger(BasicElement.class);
 
-	private final int id;
 	private final String type;
 	private final int hwType;					// the HW ID for this type
 	private List<InputPort> inputs;
@@ -37,7 +36,7 @@ public class BasicElement implements Element {
 	 * @param type
 	 */
 	public BasicElement(int id, String type, int hwType) {
-		this.id = id;
+		super(id);
 		this.type = type;
 		this.hwType = hwType;
 		this.inputs = new ArrayList<InputPort>();
@@ -57,7 +56,7 @@ public class BasicElement implements Element {
 	 * @throws Exception 
 	 */
 	public BasicElement(int id, String elType, Element type) throws Exception {
-		this.id = id;
+		super(id);
 		this.type = elType;
 		this.hwType = type.getHWType();
 		this.inputs = cloneInputsFromType(type);
@@ -108,11 +107,6 @@ public class BasicElement implements Element {
 		return list;
 	}
 
-	@Override
-	public int getId() {
-		return id;
-	}
-	
 	@Override
 	public String getType() {
 		return type;
@@ -177,7 +171,7 @@ public class BasicElement implements Element {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer("[");
-		buf.append("id="); buf.append(id);
+		buf.append("id="); buf.append(getId());
 		buf.append(" type="); buf.append(type);
 		try {
 			buf.append(" Inputs:");
@@ -225,21 +219,21 @@ public class BasicElement implements Element {
 
 	@Override
 	public int hashCode() {
-		return ( 31 * id + (31 * type.hashCode()) * 17 ) * 17;
+		return ( 31 * getId() + (31 * type.hashCode()) * 17 ) * 17;
 	}
 	
 	@Override
 	public boolean equals(Object object) {
 		if (!(object instanceof Element)) return false;
 		Element other = (Element) object;
-		return id == other.getId() 
+		return getId() == other.getId() 
 				&& ((type != null && type.equals(other.getType()))
 					|| other.getType() == null);		
 	}
 
 	@Override
 	public String getShortName() {
-		return Integer.toString(id) + "/" + getType();
+		return Integer.toString(getId()) + "/" + getType();
 	}
 
 	@Override
@@ -273,4 +267,6 @@ public class BasicElement implements Element {
 		}
 		return ret;
 	}
+
+
 }

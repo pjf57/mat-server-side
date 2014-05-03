@@ -5,36 +5,30 @@ import com.pjf.mat.api.OutputPort;
 import com.pjf.mat.util.Conversion;
 
 
-public class BasicOutputPort implements OutputPort {
-	protected final int id;
+public class BasicOutputPort extends BasicItem implements OutputPort {
 	protected final String name;
 	protected final String type;
 	protected final Element parent;
 
 	public BasicOutputPort(Element parent, int id, String name, String type) {
+		super(id);
 		this.parent = parent;
-		this.id = id;
 		this.name = name;
 		this.type = type;
 	}
 
 
 	public BasicOutputPort(Element parent, OutputPort op) {
+		super(op.getId());
 		this.parent = parent;
-		this.id = op.getId();
 		this.name = op.getName();
 		this.type = op.getType();
 	}
 
 	@Override
 	public OutputPort clone(Element newParent) {
-		BasicOutputPort op = new BasicOutputPort(newParent, id, name, type);
+		BasicOutputPort op = new BasicOutputPort(newParent, getId(), name, type);
 		return op;
-	}
-
-	@Override
-	public int getId() {
-		return id;
 	}
 
 	@Override
@@ -45,7 +39,7 @@ public class BasicOutputPort implements OutputPort {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
-		buf.append(id);
+		buf.append(getId());
 		buf.append(':'); buf.append(name);
 		return buf.toString();
 	}

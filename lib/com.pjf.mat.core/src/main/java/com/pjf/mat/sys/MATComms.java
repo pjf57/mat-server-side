@@ -27,7 +27,7 @@ import com.pjf.mat.api.comms.CFCallback;
 import com.pjf.mat.api.comms.CFCommsInt;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.comms.EvtLogRaw;
-import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.api.comms.LkuAuditRawLog;
 import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.RtrAuditRawLog;
@@ -46,11 +46,12 @@ import com.pjf.mat.util.comms.CFComms;
 public class MATComms implements MATCommsApi, CFCallback {
 	private final static Logger logger = Logger.getLogger(MATComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
+	private static final int MIN_CFG_SPACE = 10;		// auto send when room for less than this many config items
 	private CFCommsInt cfComms = null;
 	private int port;
 	private MatApi mat;
 	private Collection<NotificationCallback> notificationSubscribers;
-	private Map<Integer,InMsgCallbackInt> inMsgSubscribers;
+	private Map<Integer,LoopbackInt> inMsgSubscribers;
 	private HwStatus hwStatus;
 	private TimeoutSemaphore hwSigSem;
 
@@ -95,7 +96,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 	}
 
 	@Override
-	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb) {
+	public void subscribeIncomingMsgs(int port, LoopbackInt cb) {
 		inMsgSubscribers.put(new Integer(port), cb);
 		logger.info("subscribeIncomingMsgs() " + cb + " subscribed to port " + port); 
 	}
@@ -118,10 +119,15 @@ public class MATComms implements MATCommsApi, CFCallback {
 
 
 	@Override
-	public void sendConfig(Collection<Element> elements) throws Exception {
+	public void sendConfig(List<Element> elements) throws Exception {
 		logger.info("Preparing to send config to addr:" + getCxn().getAddress() + " port:" + port);
 		cfComms.resetConfigBuffer();
 		for (Element cb : elements) {
+			if (cfComms.getConfigBufferSpace() < MIN_CFG_SPACE) {
+				logger.info("sendConfig(): Buf nearly full, autosending " + cfComms.getConfigBufferItemCount() + " config items");
+				cfComms.sendConfig();
+				cfComms.resetConfigBuffer();
+			}
 			hwEncodeConfig(cb);
 		}
 		// put config done for all CBs
@@ -426,20 +432,20 @@ public class MATComms implements MATCommsApi, CFCallback {
 
 
 	/**
-	 * Notify subscribers of a collection of LKU audit logs
+	 * Notify subscribers of a list of LKU audit logs
 	 * @param logs
 	 */
-	private void notifyLkuAuditLogsReceipt(Collection<LkuAuditLog> logs) {
+	private void notifyLkuAuditLogsReceipt(List<LkuAuditLog> logs) {
 		for (NotificationCallback subscriber : notificationSubscribers) {
 			subscriber.notifyLkuAuditLogReceipt(logs);
 		}
 	}
 
 	/**
-	 * Notify subscribers of a collection of LKU audit logs
+	 * Notify subscribers of a list of LKU audit logs
 	 * @param logs
 	 */
-	private void notifyRtrAuditLogsReceipt(Collection<RtrAuditLog> logs) {
+	private void notifyRtrAuditLogsReceipt(List<RtrAuditLog> logs) {
 		for (NotificationCallback subscriber : notificationSubscribers) {
 			subscriber.notifyRtrAuditLogReceipt(logs);
 		}
@@ -484,7 +490,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 	}
 
 	@Override
-	public void processIncomingMsg(int port, byte[] msg) {
+	public void injectLoopbackMsg(int port, byte[] msg) {
 		cfComms.handleIncomingMsg(port,msg);
 	}
 

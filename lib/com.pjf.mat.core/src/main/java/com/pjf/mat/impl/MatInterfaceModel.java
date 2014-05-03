@@ -1,7 +1,9 @@
 package com.pjf.mat.impl;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -44,8 +46,10 @@ public class MatInterfaceModel implements MatModel {
 	}
 
 	@Override
-	public Collection<Element> getElements() {
-		return elements.values();
+	public List<Element> getElements() {
+		List<Element> list = new ArrayList<Element>(elements.values());
+		Collections.sort(list);
+		return list;
 	}
 
 	@Override

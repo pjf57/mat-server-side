@@ -15,7 +15,7 @@ public class FloatOutputPort extends BasicOutputPort {
 
 	@Override
 	public OutputPort clone(Element newParent) {
-		FloatOutputPort op = new FloatOutputPort(newParent, id, name, type);
+		FloatOutputPort op = new FloatOutputPort(newParent, getId(), name, type);
 		return op;
 	}
 	

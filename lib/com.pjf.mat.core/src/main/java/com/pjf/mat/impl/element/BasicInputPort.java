@@ -1,34 +1,29 @@
 package com.pjf.mat.impl.element;
 
 import com.pjf.mat.api.InputPort;
+import com.pjf.mat.api.Item;
 import com.pjf.mat.api.OutputPort;
 
-public class BasicInputPort implements InputPort {
-	private final int id;
+public class BasicInputPort extends BasicItem implements InputPort {
 	private final String name;
 	private final String type;
 	private OutputPort src;
 
 
 	public BasicInputPort(int id, String name, String type) {
-		this.id = id;
+		super(id);
 		this.name = name;
 		this.type = type;
 		this.src = null;
 	}
 
 	public BasicInputPort(InputPort ip) {
-		this.id = ip.getId();
+		super(ip.getId());
 		this.name = ip.getName();
 		this.type = ip.getType();
 		this.src = null;
 	}
 
-
-	@Override
-	public int getId() {
-		return id;
-	}
 
 	@Override
 	public String getName() {
@@ -59,7 +54,7 @@ public class BasicInputPort implements InputPort {
 	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
-		buf.append(id);
+		buf.append(getId());
 		buf.append(':'); buf.append(name);
 		if (src != null) {
 			buf.append("<="); buf.append(src.getParent().getId());
@@ -67,4 +62,10 @@ public class BasicInputPort implements InputPort {
 		}
 		return buf.toString();
 	}
+	
+	@Override
+	public int compareTo(Item other) {
+		return this.getId() - other.getId();
+	}
+
 }

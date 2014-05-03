@@ -109,7 +109,7 @@ public class MatSim extends RComms implements SimHost, SimAccess, MatSimInt {
 	 * Transfer the configuration to the simulation elements
 	 */
 	@Override
-	public void sendConfig(Collection<Element> collection) throws Exception {
+	public void sendConfig(List<Element> collection) throws Exception {
 		for (Element el : collection) {
 			// set attributes
 			for (Attribute attr : el.getAttributes()) {

@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.sim.model.LookupResult;
 import com.pjf.mat.sim.model.SimHost;
 import com.pjf.mat.sim.model.TickdataResult;
@@ -77,7 +77,7 @@ public class SimTestCase extends TestCase implements SimHost {
 	}
 
 	@Override
-	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb) {
+	public void subscribeIncomingMsgs(int port, LoopbackInt cb) {
 		// TODO Auto-generated method stub
 		
 	}

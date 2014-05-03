@@ -15,7 +15,7 @@ public class IntegerOutputPort extends BasicOutputPort {
 
 	@Override
 	public OutputPort clone() {
-		IntegerOutputPort op = new IntegerOutputPort(parent, id, name, type);
+		IntegerOutputPort op = new IntegerOutputPort(parent, getId(), name, type);
 		return op;
 	}
 	

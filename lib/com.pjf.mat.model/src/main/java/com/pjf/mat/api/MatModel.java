@@ -1,6 +1,6 @@
 package com.pjf.mat.api;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -8,9 +8,9 @@ import java.util.Set;
 public interface MatModel {
 
 	/**
-	 * @return collection of mutable elements
+	 * @return list of mutable elements in CB ID order
 	 */
-	public Collection<Element> getElements(); 
+	public List<Element> getElements(); 
 
 	/**
 	 * @return mutable element for this id or null

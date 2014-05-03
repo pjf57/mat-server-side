@@ -5,7 +5,7 @@ import java.net.UnknownHostException;
 
 import com.pjf.mat.api.Timestamp;
 import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.comms.InMsgCallbackInt;
+import com.pjf.mat.api.comms.LoopbackInt;
 import com.pjf.mat.sim.types.Event;
 
 /**
@@ -95,7 +95,7 @@ public interface SimHost {
 	 * @param port	port to listen to
 	 * @param cb	message handler
 	 */
-	public void subscribeIncomingMsgs(int port, InMsgCallbackInt cb);
+	public void subscribeIncomingMsgs(int port, LoopbackInt cb);
 	
 	/**
 	 * get a UDP connection, either a loopback or normal
