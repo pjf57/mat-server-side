@@ -1,6 +1,8 @@
 package com.pjf.mat.examples;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import com.pjf.marketsim.EventFeedInt;
 import com.pjf.mat.api.Element;
@@ -12,7 +14,7 @@ public class CheetahExample3 extends MatSystem{
 	@Override
 	protected void start() throws Exception {
 		// initialise model with specified palette
-		init("resources/mat.32v83.csp","192.168.1.9",2000);
+		init("resources/mat.32v83.csp","192.168.2.9",2000);
 	}
 	
 	@Override
@@ -89,6 +91,7 @@ public class CheetahExample3 extends MatSystem{
 
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.INFO);
 		logger.info("startup");
 		CheetahExample3 sys = new CheetahExample3();
 		sys.boot();

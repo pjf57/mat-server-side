@@ -66,7 +66,7 @@ public class UDPCxn implements CxnInt {
     		skt.setSoTimeout(SKT_TMO_MS);
     		skt.setReceiveBufferSize(SKT_RXBUF_SIZE);
     		int rxBufSize = skt.getReceiveBufferSize();
-    		logger.info("initialise(): rx buffer size set to " + rxBufSize);
+    		logger.info("initialise(): ip=" + dstIP + ", buffer size set to " + rxBufSize);
     		shutdown = false;
     		sktInUse = false;
 		}

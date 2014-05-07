@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.pjf.mat.api.Cmd;
@@ -14,7 +15,7 @@ import com.pjf.mat.api.MatApi;
 import com.pjf.mat.api.MatElementDefs;
 import com.pjf.mat.api.NotificationCallback;
 import com.pjf.mat.api.TimeOrdered;
-import com.pjf.mat.api.comms.Comms;
+import com.pjf.mat.api.comms.MATCommsApi;
 import com.pjf.mat.api.comms.CxnInt;
 import com.pjf.mat.api.logging.EventLog;
 import com.pjf.mat.api.logging.LkuAuditLog;
@@ -29,7 +30,7 @@ import com.pjf.mat.util.comms.UDPCxn;
 public class CheetahExample1 implements NotificationCallback {
 	private final static Logger logger = Logger.getLogger(CheetahExample1.class);
 	private MatApi mat = null;
-	private Comms comms = null;
+	private MATCommsApi comms = null;
 	private boolean running = true;
 	
 	private void run() throws Exception {
@@ -50,6 +51,8 @@ public class CheetahExample1 implements NotificationCallback {
 				running = false;
 			}
 		}
+		// Move the HW to config mode so that it's not running anymore
+		mat.putIntoConfigMode();
 		shutdown();
 	}
 
@@ -168,6 +171,7 @@ public class CheetahExample1 implements NotificationCallback {
 
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
+		Logger.getRootLogger().setLevel(Level.INFO);
 		logger.info("startup");
 		CheetahExample1 sys = new CheetahExample1();
 		try {
