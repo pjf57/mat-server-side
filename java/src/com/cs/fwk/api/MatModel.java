@@ -38,4 +38,9 @@ public interface MatModel {
 	 */
 	public Set<String> getTypes();
 
+	/**
+	 * @return version of API
+	 */
+	public String getApiVersion();
+
 }

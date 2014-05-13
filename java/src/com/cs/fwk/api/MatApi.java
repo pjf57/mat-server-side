@@ -137,5 +137,9 @@ public interface MatApi {
 	 */
 	void shutdown();
 
+	/**
+	 * @return version of API
+	 */
+	public String getApiVersion();
 
 }

@@ -75,8 +75,6 @@ public class CheetahExample1mfd implements NotificationCallback {
 		logger.info("init(): configure the HW");
 		mat.putIntoConfigMode();
 		configure(mat);
-		logger.info("mat is: " + mat);
-		mat.configureHW();
 		mat.syncClock(0);
 		logger.info("-----");	
 		mat.requestHWStatus();		
@@ -133,6 +131,10 @@ public class CheetahExample1mfd implements NotificationCallback {
 
 		// logger connections
 		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
+		
+		// Push config to FPGA
+		logger.info("mat is: " + mat);
+		mat.configureHW();
 	}
 
 	private void sleep(int s) {

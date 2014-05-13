@@ -137,4 +137,9 @@ public interface MATCommsApi extends LoopbackInt {
 	 * Shutdown the comms interface to the HW
 	 */
 	public void shutdown();
+
+	/**
+	 * @return version of API
+	 */
+	public String getApiVersion();
 }

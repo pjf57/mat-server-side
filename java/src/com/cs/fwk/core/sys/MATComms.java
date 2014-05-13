@@ -42,6 +42,9 @@ import com.cs.fwk.util.comms.CFComms;
 
 
 public class MATComms implements MATCommsApi, CFCallback {
+
+	private static final String COMMS_VER = "01.00";
+
 	private final static Logger logger = Logger.getLogger(MATComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
 	private static final int MIN_CFG_SPACE = 10;		// auto send when room for less than this many config items
@@ -478,6 +481,11 @@ public class MATComms implements MATCommsApi, CFCallback {
 	@Override
 	public void injectLoopbackMsg(int port, byte[] msg) {
 		cfComms.handleIncomingMsg(port,msg);
+	}
+
+	@Override
+	public String getApiVersion() {
+		return COMMS_VER;
 	}
 
 }

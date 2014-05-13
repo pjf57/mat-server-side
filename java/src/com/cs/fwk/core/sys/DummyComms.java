@@ -16,6 +16,7 @@ import com.cs.fwk.api.util.HwStatus;
 
 public class DummyComms implements MATCommsApi {
 	private final static Logger logger = Logger.getLogger(DummyComms.class);
+	private static final String COMMS_VER = "C0D.01";
 	Random rng;
 	DummyStatusReader statusReader;
 	DummyEventReader eventReader;
@@ -231,6 +232,11 @@ public class DummyComms implements MATCommsApi {
 	public CxnInt getCxn() {
 		logger.info("getCxn");
 		return null;
+	}
+
+	@Override
+	public String getApiVersion() {
+		return COMMS_VER;
 	}
 
 }

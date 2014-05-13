@@ -34,6 +34,7 @@ import com.cs.fwk.util.attr.UserDefAttribute;
 
 public class MatInterfaceModel implements MatModel {
 	private final static Logger logger = Logger.getLogger(MatInterfaceModel.class);
+	private static final String MODEL_VER = "01.00";
 	protected final Properties props;
 	protected Map<Integer,Element> elements;	// holds the actual configured elements
 	protected Map<String,Element> types;		// holds the different element types (key=type)
@@ -329,12 +330,6 @@ public class MatInterfaceModel implements MatModel {
 	public long getSWSignature() {
 		int id = 0;
 		Element el;
-// TODO - remove once CRC matchs with HW
-//		long crc = 0;
-//		while ((el = getElement(id)) != null) {
-//			crc = crc40(crc,el.getHWType());
-//			id++;
-//		}
 		long crc = 1;
 		while ((el = getElement(id)) != null) {
 			crc += el.getHWType() * (id+1) * 1237;
@@ -348,6 +343,11 @@ public class MatInterfaceModel implements MatModel {
 	@Override
 	public Properties getProperties() {
 		return this.props;
+	}
+
+	@Override
+	public String getApiVersion() {
+		return MODEL_VER;
 	}
 
 }
