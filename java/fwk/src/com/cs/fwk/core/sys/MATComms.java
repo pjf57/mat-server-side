@@ -5,9 +5,11 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -27,6 +29,7 @@ import com.cs.fwk.api.comms.CFCommsInt;
 import com.cs.fwk.api.comms.CxnInt;
 import com.cs.fwk.api.comms.EvtLogRaw;
 import com.cs.fwk.api.comms.LkuAuditRawLog;
+import com.cs.fwk.api.comms.LoopbackInt;
 import com.cs.fwk.api.comms.MATCommsApi;
 import com.cs.fwk.api.comms.RtrAuditRawLog;
 import com.cs.fwk.api.logging.EventLog;
@@ -43,7 +46,7 @@ import com.cs.fwk.util.comms.CFComms;
 
 public class MATComms implements MATCommsApi, CFCallback {
 
-	private static final String COMMS_VER = "01.00";
+	private static final String COMMS_VER = "01.01";
 
 	private final static Logger logger = Logger.getLogger(MATComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
@@ -54,6 +57,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 	private Collection<NotificationCallback> notificationSubscribers;
 	private HwStatus hwStatus;
 	private TimeoutSemaphore hwSigSem;
+	private Map<Integer,LoopbackInt> inMsgSubscribers;
 
 	public MATComms(CxnInt cxn, int port) throws SocketException, UnknownHostException {
 		notificationSubscribers = new ArrayList<NotificationCallback>();
@@ -63,6 +67,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 		this.mat = null;
 		hwSigSem = new TimeoutSemaphore(0);
 		hwStatus = new HwStatus();
+		inMsgSubscribers = new HashMap<Integer,LoopbackInt>();
 	}
 
 	public MATComms(int port) throws SocketException, UnknownHostException {
@@ -71,6 +76,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 		this.mat = null;
 		hwSigSem = new TimeoutSemaphore(0);
 		hwStatus = new HwStatus();
+		inMsgSubscribers = new HashMap<Integer,LoopbackInt>();
 	}
 
 	/**
@@ -489,7 +495,25 @@ public class MATComms implements MATCommsApi, CFCallback {
 
 	@Override
 	public void injectLoopbackMsg(int port, byte[] msg) {
-		cfComms.handleIncomingMsg(port,msg);
+		LoopbackInt cb = inMsgSubscribers.get(new Integer(port));
+		if (cb != null) {
+			// send the message to the subscriber
+			logger.debug("injectLoopbackMsg() forwarding injected msg on port " + port + " to " + cb);
+			cb.injectLoopbackMsg(port,msg);
+		} else {
+			cfComms.handleIncomingMsg(port,msg);
+		}
+	}
+
+	/**
+	 * Subscribe to incoming messages on a particular dest port
+	 * 
+	 * @param port - port to subscribe to
+	 * @param cb - callback to handle incoming messages
+	 */
+	public void subscribeIncomingMsgs(int port, LoopbackInt cb) {
+		inMsgSubscribers.put(new Integer(port), cb);
+		logger.info("subscribeIncomingMsgs() " + cb + " subscribed to port " + port); 
 	}
 
 	@Override

@@ -25,7 +25,6 @@ import com.cs.fwk.api.Timestamp;
 import com.cs.fwk.api.comms.CBRawStatus;
 import com.cs.fwk.api.comms.CxnInt;
 import com.cs.fwk.api.comms.EvtLogRaw;
-import com.cs.fwk.api.comms.LoopbackInt;
 import com.cs.fwk.api.comms.MATCommsApi;
 import com.cs.fwk.api.logging.LkuAuditLog;
 import com.cs.fwk.api.logging.MatLogger;
@@ -97,6 +96,7 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 		logger.info("starting with simSpeed = " + simSpeed);
 		clk = new Clock(this,simSpeed,logger);
 		nextTickref = 1;
+		subscribeIncomingMsgs(6000, this);
 	}
 
 
@@ -458,11 +458,11 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 	public String getApiVersion() {
 		return SIM_VER;
 	}
-
+	
 	@Override
-	public void subscribeIncomingMsgs(int port, LoopbackInt cb) {
-		logger.error("subscribe");
-		// TODO Auto-generated method stub		
-	}	
+	public String toString() {
+		return "MATSim ver " + getApiVersion();
+	}
+
 
 }
