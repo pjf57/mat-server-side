@@ -106,7 +106,7 @@ public class UDPCxn implements CxnInt {
 			while (!gotPkt  &&  !shutdown) {
 				try {
 					skt.receive(pkt);
-					logger.info("Got PKT");
+					logger.debug("Got PKT");
 					gotPkt = true;
 				    int len = pkt.getLength();
 				    byte[] rd = pkt.getData();

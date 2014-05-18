@@ -172,7 +172,7 @@ public class SoakTest implements NotificationCallback, EventFeedCallbackInt {
 		int gapMs = 1;
 		SymbolEventFeed feed = new SymbolEventFeed(cxn,port);
 		feed.setCb(this);
-		String fpath = "src/test/resources/" + file;
+		String fpath = "testresources/" + file;
 		feed.sendTradeBurst(fpath,bursts,ticksPerPkt,gapMs);
 		if (!ip.equals("direct")) {
 			// only close if we opened this cxn especially
