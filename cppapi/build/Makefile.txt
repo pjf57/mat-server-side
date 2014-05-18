@@ -1,0 +1,23 @@
+INCLUDES=-I../include/Interfaces -I../include/Implementation -I../include/Util
+SRCDIR=../src
+CC=g++
+
+
+test: CFDatagram.o UDPCxn.o Logger.o Test.o 
+	$(CC) -g -o ccapi CFDatagram.o UDPCxn.o Logger.o Test.o
+
+clean:
+	rm -f *.o ccapi
+
+CFDatagram.o: $(SRCDIR)/CFDatagram.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/CFDatagram.cpp
+
+UDPCxn.o: $(SRCDIR)/UDPCxn.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/UDPCxn.cpp
+
+Logger.o: $(SRCDIR)/Logger.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/Logger.cpp
+
+Test.o: $(SRCDIR)/Test.cpp
+	$(CC) $(INCLUDES) -c $(SRCDIR)/Test.cpp
+
