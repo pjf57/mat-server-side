@@ -1,9 +1,8 @@
 #include <iostream>
 #include <String>
-#include "CFDatagram.h"
 using namespace std;
 
-class Cnx {
+class LoopbackInt {
   public:
     virtual void setLoopbackCallback() =0; 
     virtual void send(const CFDatagram& p_datagram)=0;
