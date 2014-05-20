@@ -5,3 +5,5 @@ target
 bin
 .DS_Store
 *.skb
+*.o
+*.exe
