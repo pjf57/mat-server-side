@@ -20,7 +20,7 @@ UDPCxn::~UDPCxn()
 	
 //
 //
-void UDPCxn::setLoopbackCallback()
+void UDPCxn::setLoopbackCallback(LoopbackInt &p_LoopbackInt)
 {
 }
  

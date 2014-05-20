@@ -1,10 +1,21 @@
 INCLUDES=-I../include/Interfaces -I../include/Implementation -I../include/Util
 SRCDIR=../src
+
 CC=g++
 
+OBJECTS= CFDatagram.o \
+	 UDPCxn.o \
+	 Logger.o \
+	 CFComms.o \
+	 CFCallback.o \
+	 Reader.o \
+	 HwStatus.o \
+	 EncodeConfigItemList.o \
+	 Test.o
 
-test: CFDatagram.o UDPCxn.o Logger.o Test.o 
-	$(CC) -g -o ccapi CFDatagram.o UDPCxn.o Logger.o Test.o
+
+test:   $(OBJECTS)
+	$(CC) -g -o ccapi $(OBJECTS)
 
 clean:
 	rm -f *.o ccapi
@@ -17,6 +28,23 @@ UDPCxn.o: $(SRCDIR)/UDPCxn.cpp
 
 Logger.o: $(SRCDIR)/Logger.cpp 
 	$(CC) $(INCLUDES) -c $(SRCDIR)/Logger.cpp
+
+CFComms.o: $(SRCDIR)/CFComms.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/CFComms.cpp
+
+CFCallback.o: $(SRCDIR)/CFComms.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/CFCallback.cpp
+
+Reader.o: $(SRCDIR)/CFComms.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/Reader.cpp
+
+HwStatus.o: $(SRCDIR)/CFComms.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/HwStatus.cpp
+
+EncodeConfigItemList.o: $(SRCDIR)/CFComms.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/EncodeConfigItemList.cpp
+
+
 
 Test.o: $(SRCDIR)/Test.cpp
 	$(CC) $(INCLUDES) -c $(SRCDIR)/Test.cpp

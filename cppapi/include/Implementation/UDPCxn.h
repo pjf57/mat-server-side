@@ -1,11 +1,13 @@
 
-#include "Cnx.h"
+
 #include <iostream>
 #include <String>
+#include "CxnInt.h"
+
 
 using namespace std;
 
-class UDPCxn : public Cnx {
+class UDPCxn : public CxnInt {
   private:
 	string m_Address;
 	//DatagramSocket m_skt;
@@ -32,8 +34,8 @@ class UDPCxn : public Cnx {
 
 
     // these functions implement the interface
-    void setLoopbackCallback(); 
-    void send(const CFDatagram& p_datagram);
+    void setLoopbackCallback(LoopbackInt&); 
+    void send(const CFDatagram&);
 	CFDatagram* rcv();
 	void close();
 	const string& getAddress();

@@ -11,7 +11,7 @@ int main ()
   logger.log(logger.Info,"Creating a UDP connection.");
   
   UDPCxn l_UDPCxn;
-  Cnx *l_Cnx = &l_UDPCxn;
+  CxnInt *l_Cnx = &l_UDPCxn;
   CFDatagram *l_CFDatagram = l_Cnx->rcv();
   
   
