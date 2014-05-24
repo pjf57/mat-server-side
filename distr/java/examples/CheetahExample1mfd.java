@@ -1,4 +1,4 @@
-package com.pjf.mat.examples;
+package com.cs.fwk.core.examples;
 
 import java.io.FileInputStream;
 import java.util.Collection;
@@ -9,20 +9,20 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.pjf.mat.api.Element;
-import com.pjf.mat.api.MatApi;
-import com.pjf.mat.api.NotificationCallback;
-import com.pjf.mat.api.TimeOrdered;
-import com.pjf.mat.api.comms.MATCommsApi;
-import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.logging.EventLog;
-import com.pjf.mat.api.logging.LkuAuditLog;
-import com.pjf.mat.api.logging.OrderLog;
-import com.pjf.mat.api.logging.RtrAuditLog;
-import com.pjf.mat.impl.MatInterface;
-import com.pjf.mat.impl.MatInterfaceModel;
-import com.pjf.mat.sys.MATComms;
-import com.pjf.mat.util.comms.UDPCxn;
+import com.cs.fwk.api.Element;
+import com.cs.fwk.api.MatApi;
+import com.cs.fwk.api.NotificationCallback;
+import com.cs.fwk.api.TimeOrdered;
+import com.cs.fwk.api.comms.MATCommsApi;
+import com.cs.fwk.api.comms.CxnInt;
+import com.cs.fwk.api.logging.EventLog;
+import com.cs.fwk.api.logging.LkuAuditLog;
+import com.cs.fwk.api.logging.OrderLog;
+import com.cs.fwk.api.logging.RtrAuditLog;
+import com.cs.fwk.core.impl.MatInterface;
+import com.cs.fwk.core.impl.MatInterfaceModel;
+import com.cs.fwk.core.sys.MATComms;
+import com.cs.fwk.util.comms.UDPCxn;
 
 public class CheetahExample1mfd implements NotificationCallback {
 	private final static Logger logger = Logger.getLogger(CheetahExample1mfd.class);
@@ -75,8 +75,6 @@ public class CheetahExample1mfd implements NotificationCallback {
 		logger.info("init(): configure the HW");
 		mat.putIntoConfigMode();
 		configure(mat);
-		logger.info("mat is: " + mat);
-		mat.configureHW();
 		mat.syncClock(0);
 		logger.info("-----");	
 		mat.requestHWStatus();		
@@ -117,11 +115,11 @@ public class CheetahExample1mfd implements NotificationCallback {
 		// Configure logic 1
 		logicBuy.getAttribute("Z").setValue("P");
 		logicBuy.getAttribute("P").setValue("A>K1");
-		logicBuy.getAttribute("k1").setValue("0.05");
+		logicBuy.getAttribute("k1").setValue("0.15");
 		logicBuy.getInputs().get(0).connectTo(macd.getOutputs().get(2));
 		logicSell.getAttribute("Z").setValue("P");
 		logicSell.getAttribute("P").setValue("A<K1");
-		logicSell.getAttribute("k1").setValue("0");	 	
+		logicSell.getAttribute("k1").setValue("-0.06");	 	
 		logicSell.getInputs().get(0).connectTo(macd.getOutputs().get(2));
 		// Configure RMO
 		rmo.getAttribute("udp_ip").setValue("0C0A80205");	// 
@@ -133,6 +131,10 @@ public class CheetahExample1mfd implements NotificationCallback {
 
 		// logger connections
 		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
+		
+		// Push config to FPGA
+		logger.info("mat is: " + mat);
+		mat.configureHW();
 	}
 
 	private void sleep(int s) {

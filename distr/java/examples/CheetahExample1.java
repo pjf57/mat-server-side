@@ -1,4 +1,4 @@
-package com.pjf.mat.examples;
+package com.cs.fwk.core.examples;
 
 import java.io.FileInputStream;
 import java.util.Collection;
@@ -9,23 +9,23 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.pjf.mat.api.Cmd;
-import com.pjf.mat.api.Element;
-import com.pjf.mat.api.MatApi;
-import com.pjf.mat.api.MatElementDefs;
-import com.pjf.mat.api.NotificationCallback;
-import com.pjf.mat.api.TimeOrdered;
-import com.pjf.mat.api.comms.MATCommsApi;
-import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.logging.EventLog;
-import com.pjf.mat.api.logging.LkuAuditLog;
-import com.pjf.mat.api.logging.OrderLog;
-import com.pjf.mat.api.logging.RtrAuditLog;
-import com.pjf.mat.impl.MatInterface;
-import com.pjf.mat.impl.MatInterfaceModel;
-import com.pjf.mat.impl.element.BasicCmd;
-import com.pjf.mat.sys.MATComms;
-import com.pjf.mat.util.comms.UDPCxn;
+import com.cs.fwk.api.Cmd;
+import com.cs.fwk.api.Element;
+import com.cs.fwk.api.MatApi;
+import com.cs.fwk.api.MatElementDefs;
+import com.cs.fwk.api.NotificationCallback;
+import com.cs.fwk.api.TimeOrdered;
+import com.cs.fwk.api.comms.MATCommsApi;
+import com.cs.fwk.api.comms.CxnInt;
+import com.cs.fwk.api.logging.EventLog;
+import com.cs.fwk.api.logging.LkuAuditLog;
+import com.cs.fwk.api.logging.OrderLog;
+import com.cs.fwk.api.logging.RtrAuditLog;
+import com.cs.fwk.core.impl.MatInterface;
+import com.cs.fwk.core.impl.MatInterfaceModel;
+import com.cs.fwk.core.impl.element.BasicCmd;
+import com.cs.fwk.core.sys.MATComms;
+import com.cs.fwk.util.comms.UDPCxn;
 
 public class CheetahExample1 implements NotificationCallback {
 	private final static Logger logger = Logger.getLogger(CheetahExample1.class);

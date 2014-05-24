@@ -1,4 +1,4 @@
-package com.pjf.mat.examples;
+package com.cs.fwk.core.examples;
 
 import java.util.List;
 
@@ -6,17 +6,17 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.pjf.mat.api.comms.CBRawStatus;
-import com.pjf.mat.api.comms.CFCallback;
-import com.pjf.mat.api.comms.CFCommsInt;
-import com.pjf.mat.api.comms.CxnInt;
-import com.pjf.mat.api.comms.EvtLogRaw;
-import com.pjf.mat.api.comms.LkuAuditRawLog;
-import com.pjf.mat.api.comms.RtrAuditRawLog;
-import com.pjf.mat.api.util.HwStatus;
-import com.pjf.mat.util.Conversion;
-import com.pjf.mat.util.comms.CFComms;
-import com.pjf.mat.util.comms.UDPCxn;
+import com.cs.fwk.api.comms.CBRawStatus;
+import com.cs.fwk.api.comms.CFCallback;
+import com.cs.fwk.api.comms.CFCommsInt;
+import com.cs.fwk.api.comms.CxnInt;
+import com.cs.fwk.api.comms.EvtLogRaw;
+import com.cs.fwk.api.comms.LkuAuditRawLog;
+import com.cs.fwk.api.comms.RtrAuditRawLog;
+import com.cs.fwk.api.util.HwStatus;
+import com.cs.fwk.util.Conversion;
+import com.cs.fwk.util.comms.CFComms;
+import com.cs.fwk.util.comms.UDPCxn;
 
 /**
  * First steps - request the HW Sig from the FPGA and print it out, request CB status, and print.

@@ -1,0 +1,32 @@
+<project name="CheetahFramework" default="dist" basedir="C:\Users\pjf\Documents\GitHub\mat-server-side">
+  <!-- set global properties for this build -->
+<property name="github" location="C:/Users/pjf/Documents/GitHub"/>
+<property name="gitprj" location="${github}/mat-server-side\CheetahFramwork"/>	
+<property name="gitwebsrc" location="${gitprj}/src"/>	
+<property name="gitbase" location="C:/Users/pjf/Documents/GitHub/mat-server-side"/>
+<property name="distr" location="${gitbase}/distr/java"/>	
+
+  <target name="dist"
+        description="generate the distribution" >
+   <echo message= "Project Root: ${basedir}" />
+   <echo message= "gitbase: ${gitbase}" />
+   <echo message= "Distributing to: ${distr}" />
+    <!-- Jar up all the class files -->
+  
+    <jar destfile="${distr}/lib/cheetahfwk.jar">
+      <fileset dir="${gitbase}/java/fwk/bin" />
+    </jar>
+
+    <!-- copy external libs -->
+   <copy todir="${distr}/extlib" overwrite="true">
+   	<fileset dir="${gitbase}/java/fwk/lib"> <include name="*.jar"/> </fileset>
+   </copy>
+
+    <!-- copy examples -->
+  <copy todir="${distr}/examples">
+  	<fileset dir="${gitbase}/java/fwk/src/com/cs/fwk/core/examples"/>
+  </copy>
+
+  </target>
+
+</project>

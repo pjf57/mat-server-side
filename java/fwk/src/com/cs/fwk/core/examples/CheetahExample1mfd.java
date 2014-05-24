@@ -115,11 +115,11 @@ public class CheetahExample1mfd implements NotificationCallback {
 		// Configure logic 1
 		logicBuy.getAttribute("Z").setValue("P");
 		logicBuy.getAttribute("P").setValue("A>K1");
-		logicBuy.getAttribute("k1").setValue("0.05");
+		logicBuy.getAttribute("k1").setValue("0.15");
 		logicBuy.getInputs().get(0).connectTo(macd.getOutputs().get(2));
 		logicSell.getAttribute("Z").setValue("P");
 		logicSell.getAttribute("P").setValue("A<K1");
-		logicSell.getAttribute("k1").setValue("0");	 	
+		logicSell.getAttribute("k1").setValue("-0.06");	 	
 		logicSell.getInputs().get(0).connectTo(macd.getOutputs().get(2));
 		// Configure RMO
 		rmo.getAttribute("udp_ip").setValue("0C0A80205");	// 

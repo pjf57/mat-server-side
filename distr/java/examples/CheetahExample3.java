@@ -1,13 +1,14 @@
-package com.pjf.mat.examples;
+package com.cs.fwk.core.examples;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.pjf.marketsim.EventFeedInt;
-import com.pjf.mat.api.Element;
-import com.pjf.mat.api.MatApi;
-import com.pjf.mat.sys.MatSystem;
+
+import com.cs.fwk.api.Element;
+import com.cs.fwk.api.MatApi;
+import com.cs.fwk.core.marketsim.EventFeedInt;
+import com.cs.fwk.core.sys.MatSystem;
 
 public class CheetahExample3 extends MatSystem{
 
