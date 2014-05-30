@@ -52,7 +52,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 				while (keepGoing) {
 					CFDatagram pkt = cxn.rcv();
 					if (keepGoing) {
-						injectLoopbackMsg(pkt.getDstPort(),pkt.getData());
+						handleIncomingMsg(pkt.getDstPort(),pkt.getData());
 					}
 				}
 			} catch (IOException e) {
@@ -265,32 +265,44 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	}
 
 
+	@Override
+	public void injectLoopbackMsg(int destPort, byte[] msg) {
+		handleIncomingMsg(destPort,msg);
+	}
+		
+		
+		
 	/**
 	 * Process a message that has been received from the MAT
 	 * @param destPort - UDP port on which data was received
 	 * @param msg - the raw message
 	 */
 	@Override
-	public void injectLoopbackMsg(int destPort, byte[] msg) {
+	public void handleIncomingMsg(int destPort, byte[] msg) {
 		logger.debug("--> RX MSG (destPort=" + destPort + ") " + toHexString(msg,0,msg.length-1));
-		if (destPort == MatElementDefs.CS_PORT_LOGGER) {
-			byte cmd = msg[0];
-			switch (cmd) {
-			case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg); break;
-			default: logger.error("Unkown log message received on logger port: [" + Conversion.toHexString(msg)); break;
+		byte cmd = msg[0];
+		boolean isVersioned = (cmd & 0x80) != 0;
+		cmd = (byte) (cmd & 0x7f);
+		try {
+			if (destPort == MatElementDefs.CS_PORT_LOGGER) {
+				switch (cmd) {
+				case MatElementDefs.ST_TX_EVTLOG: processEventLogMsg(msg,isVersioned); break;
+				default: logger.error("Unkown log message received on logger port: [" + Conversion.toHexString(msg)); break;
+				}
+			} else if (destPort == MatElementDefs.CS_PORT_STATUS) {
+				switch (cmd) {
+				case MatElementDefs.ST_TX_HWSIG: processCFStatusMsg(msg,isVersioned); break;
+				case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg,isVersioned);	break;
+				case MatElementDefs.ST_TX_LKUAUDIT: processLkuAuditLogMsg(msg,isVersioned); break;
+				case MatElementDefs.ST_TX_RTRAUDIT: processRtrAuditLogMsg(msg,isVersioned); break;
+				default: logger.error("Unkown status message received on status port: [" + Conversion.toHexString(msg)); break;
+				}
+			} else {
+				logger.debug("Unkown message received on port " + destPort +	" [" + Conversion.toHexString(msg) + "]");
+				callback.processUnknownMsg(destPort,msg);
 			}
-		} else if (destPort == MatElementDefs.CS_PORT_STATUS) {
-			byte cmd = msg[0];
-			switch (cmd) {
-			case MatElementDefs.ST_TX_HWSIG: processCFStatusMsg(msg); break;
-			case MatElementDefs.ST_TX_STATUS: processStatusMsg(msg);	break;
-			case MatElementDefs.ST_TX_LKUAUDIT: processLkuAuditLogMsg(msg); break;
-			case MatElementDefs.ST_TX_RTRAUDIT: processRtrAuditLogMsg(msg); break;
-			default: logger.error("Unkown status message received on status port: [" + Conversion.toHexString(msg)); break;
-			}
-		} else {
-			logger.debug("Unkown message received on port " + destPort +	" [" + Conversion.toHexString(msg) + "]");
-			callback.processUnknownMsg(destPort,msg);
+		} catch (Exception e) {
+			logger.error("handleIncomingMsg(): " + e.getMessage() +	" [" + Conversion.toHexString(msg) + "]");
 		}
 	}
 
@@ -298,8 +310,13 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	/**
 	 * Process CF Status received
 	 * @param msg
+	 * @param isVersioned - indicates that the msg is versioned
+	 * @throws Exception 
 	 */
-	private void processCFStatusMsg(byte[] msg) {
+	private void processCFStatusMsg(byte[] msg, boolean isVersioned) throws Exception {
+		if (isVersioned) {
+			throw new Exception("processCFStatusMsg() - versioning not supported");
+		}
 		long hwSig = Conversion.getLongFromBytes(msg,1,8);
 		int microtickPeriod = 0;
 		if (msg.length >= 11) {
@@ -325,8 +342,13 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	 * Process a CB status message. May contain one or more status elements
 	 * 
 	 * @param msg	- message, starting from cmd byte
+	 * @param isVersioned - indicates that the msg is versioned
+	 * @throws Exception 
 	 */
-	private void processStatusMsg(byte[] msg) {
+	private void processStatusMsg(byte[] msg, boolean isVersioned) throws Exception {
+		if (isVersioned) {
+			throw new Exception("processStatusMsg() - versioning not supported");
+		}
 		byte items = msg[1];
 		int upto = 2;
 		List<CBRawStatus> statusList = new ArrayList<CBRawStatus>();
@@ -358,7 +380,17 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 		}
 	}
 
-	private void processEventLogMsg(byte[] msg) {
+	/**
+	 * Process a CB evtlog message. May contain one or more logs
+	 * 
+	 * @param msg	- message, starting from cmd byte
+	 * @param isVersioned - indicates that the msg is versioned
+	 * @throws Exception 
+	 */
+	private void processEventLogMsg(byte[] msg, boolean isVersioned) throws Exception {
+		if (isVersioned) {
+			throw new Exception("processEventLogMsg() - versioning not supported");
+		}
 		byte items = msg[1];
 		int upto = 2;
 		int mtp = hwStatus.getMicrotickPeriod();
@@ -386,11 +418,23 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 
 	/**
 	 * @param msg
+	 * @param isVersioned - indicates that the msg is versioned
 	 * |#items|ts(48bit)|RQ_EL_ID|instr|lku_op|RSP_EL_ID|rsp time|rslt|data(32bit)| .. next ..|
+	 * @throws Exception 
 	 */
-	private void processLkuAuditLogMsg(byte[] msg) {
-		byte items = msg[1];
-		int upto = 2;
+	private void processLkuAuditLogMsg(byte[] msg, boolean isVersioned) throws Exception {
+		int version = 0;
+		int upto = 1;
+		if (isVersioned) {
+			version = msg[upto++];
+			switch (version) {
+			case 0: break;
+			case 2: break;
+			default: throw new Exception("processLkuAuditLogMsg() - version " + version + " not supported");
+			}
+		}
+		byte items = msg[upto];
+		upto++;
 		int mtp = hwStatus.getMicrotickPeriod();
 		List<LkuAuditRawLog> logs = new ArrayList<LkuAuditRawLog>();
 		while (items-- > 0) {
@@ -401,6 +445,10 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			int instrId = msg[upto++];
 			int tickref = msg[upto++] & 0xFF;
 			int op = msg[upto++];
+			int arg = 0;
+			if (version == 2) {
+				arg = msg[upto++];
+			}
 			int responderId = msg[upto++];
 			int rspTime = msg[upto++];
 			int resultCode = msg[upto++];
@@ -416,7 +464,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			case 3:	rslt = LkuResult.TIMEOUT;	break;
 			}
 			LkuAuditRawLog log = new LkuAuditRawLog(new Timestamp(timestamp,mtp),requesterId,instrId,
-					tickref,op,responderId,rspTime,rslt,fdata);
+					tickref,op,arg,responderId,rspTime,rslt,fdata);
 			logs.add(log);
 		}
 		logger.debug("processLkuAuditLogMsg(): received " + logs.size() + " logs");
@@ -429,9 +477,14 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	
 	/**
 	 * @param msg
+	 * @param isVersioned - indicates that the msg is versioned
 	 * |#items|ts(48bit)|src|takers(32 bit map)|instr|data(32bit)|qtime|delivery time| .. next ..|
+	 * @throws Exception 
 	 */
-	private void processRtrAuditLogMsg(byte[] msg) {
+	private void processRtrAuditLogMsg(byte[] msg, boolean isVersioned) throws Exception {
+		if (isVersioned) {
+			throw new Exception("processRtrAuditLogMsg() - versioning not supported");
+		}
 		logger.debug("Received RTR audit message with " + msg.length + " bytes.");
 		byte items = msg[1];
 		int upto = 2;
@@ -472,10 +525,6 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 		return Conversion.toHexString(buf);
 	}
 
-	@Override
-	public void handleIncomingMsg(int destPort, byte[] msg) {
-		injectLoopbackMsg(destPort,msg);
-	}
 
 
 

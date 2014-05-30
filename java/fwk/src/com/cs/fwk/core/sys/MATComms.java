@@ -46,7 +46,7 @@ import com.cs.fwk.util.comms.CFComms;
 
 public class MATComms implements MATCommsApi, CFCallback {
 
-	private static final String COMMS_VER = "01.01";
+	private static final String COMMS_VER = "01.02";
 
 	private final static Logger logger = Logger.getLogger(MATComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
@@ -344,7 +344,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 			Element requester = mat.getModel().getElement(rl.getRequesterId());
 			Element responder = mat.getModel().getElement(rl.getResponderId());
 			LkuAuditLog log = new LkuAuditLog(rl.getTimestamp(),requester,rl.getInstrumentId(),
-					rl.getTickref(), rl.getOperation(), responder, rl.getRspTimeMicroticks(), rl.getResult(), rl.getData());
+					rl.getTickref(), rl.getOperation(), rl.getArg(), responder, rl.getRspTimeMicroticks(), rl.getResult(), rl.getData());
 			logs.add(log);
 		}
 		notifyLkuAuditLogsReceipt(logs);

@@ -13,6 +13,7 @@ import com.cs.fwk.api.Timestamp;
  */
 public class LkuAuditLog extends BaseLog {
 	private final int operation;
+	private final int arg;
 	private final Element responder;		// element that responded, or null
 	private final int rspTimeMicroticks;
 	private LkuResult result;
@@ -21,10 +22,11 @@ public class LkuAuditLog extends BaseLog {
 	private static final int CLK_TIME_NS = 10;	// FIXME microtick time
 
 	public LkuAuditLog(Timestamp timestamp, Element requester,
-			int instrumentId, int tickref, int operation, Element responder, int rspTimeMicroticks,
+			int instrumentId, int tickref, int operation, int arg, Element responder, int rspTimeMicroticks,
 			LkuResult result, float data) {
 		super(timestamp,instrumentId,tickref,requester);
 		this.operation = operation;
+		this.arg = arg;
 		this.responder = responder;
 		this.rspTimeMicroticks = rspTimeMicroticks;
 		this.result = result;
@@ -44,7 +46,11 @@ public class LkuAuditLog extends BaseLog {
 	public int getOperation() {
 		return operation;
 	}
-	
+
+	public int getArg() {
+		return arg;
+	}
+
 	public Element getResponder() {
 		return responder;
 	}
@@ -70,6 +76,7 @@ public class LkuAuditLog extends BaseLog {
 		buf.append(",instr="); buf.append(getInstrumentId());
 		buf.append(",tickref="); buf.append(getTickref());
 		buf.append(",op="); buf.append(MatElementDefs.LkuOpToString(operation));
+		buf.append(",arg="); buf.append(getArg());
 		if (result.equals(LkuResult.TIMEOUT)) {
 			buf.append(" TIMEOUT after "); buf.append(rspTimeMicroticks*CLK_TIME_NS); buf.append("ns"); 
 			buf.append(" Data="); buf.append(data);

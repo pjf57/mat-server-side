@@ -15,6 +15,7 @@ public class LkuAuditRawLog {
 	private final int instrumentId;
 	private final int tickref;
 	private final int operation;
+	private final int arg;
 	private final int requesterId;
 	private final int responderId;
 	private final int rspTimeMicroticks;
@@ -24,13 +25,14 @@ public class LkuAuditRawLog {
  	private static final int CLK_TIME_NS = 10;	// FIXME microtick time
 
 	public LkuAuditRawLog(Timestamp timestamp, int requesterId,
-			int instrumentId, int tickref, int operation, int responderId, int rspTimeMicroticks,
-			LkuResult result, float data) {
+			int instrumentId, int tickref, int operation, int arg, int responderId, 
+			int rspTimeMicroticks, LkuResult result, float data) {
 		this.timestamp = timestamp;
 		this.instrumentId = instrumentId;
 		this.tickref = tickref;
 		this.requesterId = requesterId;
 		this.operation = operation;
+		this.arg = arg;
 		this.responderId = responderId;
 		this.rspTimeMicroticks = rspTimeMicroticks;
 		this.result = result;
@@ -51,6 +53,10 @@ public class LkuAuditRawLog {
 
 	public int getOperation() {
 		return operation;
+	}
+
+	public int getArg() {
+		return arg;
 	}
 
 	public int getRequesterId() {
@@ -79,10 +85,10 @@ public class LkuAuditRawLog {
 
 	@Override
 	public String toString() {
-		return "LkuAuditRawLog [timestamp=" + timestamp + ", instrumentId="
-				+ instrumentId + ", tickref=" + tickref + ", operation="
-				+ operation + ", requesterId=" + requesterId + ", responderId="
-				+ responderId + ", rspTimeMicroticks=" + rspTimeMicroticks
+		return "LkuAuditRawLog [timestamp=" + timestamp + ", instrumentId="	+ instrumentId +
+				", tickref=" + tickref + ", operation="	+ operation + ", arg="	+ arg +
+				", requesterId=" + requesterId + ", responderId=" + responderId +
+				", rspTimeMicroticks=" + rspTimeMicroticks
 				+ ", result=" + result + ", data=" + data + "]";
 	}
 

@@ -286,7 +286,8 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 		int lookupTime = (int) (endTime.getMicroticks() - startTime.getMicroticks());
 		LkuResult resultCode = result.getLkuResult();
 		Element sourceEl = mat.getModel().getElement(source);
-		lkuAuditLogger.addLog(startTime,sourceEl,instrumentId,tickref,lookupKey,
+		int arg = 0;
+		lkuAuditLogger.addLog(startTime,sourceEl,instrumentId,tickref,lookupKey, arg, 
 				responder,resultCode,result.getFloatData(),lookupTime);
 		logger.debug(logstr + " returned " + result);
 		return result;
