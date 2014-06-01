@@ -23,6 +23,7 @@ public class MatElementDefs {
 	public static final int EL_TYP_ATR			= 0x61;
 	public static final int EL_TYP_ADX			= 0x62;
 	public static final int EL_TYP_RMO			= 0x70;
+	public static final int EL_TYP_SIB			= 0x80;
 
 //	--------------------------------
 //	-- Standard communications ports
@@ -202,7 +203,16 @@ public class MatElementDefs {
 	public static final int EL_RMO_C_MAX_POSN	 	= 0x07; // set max position
 	// CMDS
 	public static final int EL_RMO_C_RESET_POSN		= 0x03; // Reset instrument positions
-	
+
+//	------------------------------
+//	-- SIB
+//	------------------------------
+	public static final int EL_SIB_C_LEG_DATA		= 0x01; // set leg data parameter
+	public static final int EL_SIB_C_OPCFG 			= 0x02; // set output config parameter
+
+	public static final int EL_SIB_L_LEGID			= 0x14; // lookup leg ID
+	public static final int EL_SIB_L_LEGDATA		= 0x15; // lookup leg data
+
 
 // ---------------------- utilities ----------------------------------------
 	

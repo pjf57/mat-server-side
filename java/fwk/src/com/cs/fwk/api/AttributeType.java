@@ -2,17 +2,11 @@ package com.cs.fwk.api;
 
 /** @model */
 public enum AttributeType {
-	
-	/** @model name="str" */
-	STR, 
-	/** @model name="int" */
-	INT, 
-	/** @model name="float" */
-	FLOAT, 
-	/** @model name="hex" */
-	HEX,
-	/** @model name="userder" */
-	USERDEF,
-	/** @model name="enum" */
-	ENUM;
+	STR, 		// String
+	INT, 		// Decimal Integer
+	FLOAT, 		// Floating Point
+	HEX,		// Hex Integer
+	USERDEF,	// User Defined
+	ENUM,		// Enumeration
+	GRID;		// List of Map
 }

@@ -35,6 +35,24 @@ public class ConfigItem {
 	}
 
 	/**
+	 * Construct config item with raw config data & arg
+	 * 
+	 * 
+	 * @param elementId - element to configure
+	 * @param sysType	- the type of config
+	 * @param itemId	- item
+	 * @param arg		- arg
+	 * @param rawData	- raw data
+	 */
+	public ConfigItem(int elementId, AttrSysType sysType, int itemId, int arg, int rawData) {
+		this.elementId = elementId;
+		this.sysType = sysType;
+		this.rawData = rawData;
+		this.itemId = itemId;
+		this.arg = arg;
+	}
+
+	/**
 	 * Construct config item with float data
 	 * 
 	 * @param elementId - element to configure

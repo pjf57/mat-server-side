@@ -26,6 +26,8 @@ import com.cs.fwk.core.impl.element.FloatOutputPort;
 import com.cs.fwk.core.impl.element.IntegerOutputPort;
 import com.cs.fwk.util.attr.EnumAttribute;
 import com.cs.fwk.util.attr.FloatAttribute;
+import com.cs.fwk.util.attr.GridAttribute;
+import com.cs.fwk.util.attr.GridColumnSpec;
 import com.cs.fwk.util.attr.HexAttribute;
 import com.cs.fwk.util.attr.IntegerAttribute;
 import com.cs.fwk.util.attr.StringAttribute;
@@ -160,29 +162,8 @@ public class MatInterfaceModel implements MatModel {
 					}
 				}
 				int configId = Integer.parseInt(attrConfigS);
-				if (attrType.equals("int")) {
-					attr = new IntegerAttribute(type,attrName,configId,sysType,defaultS,order,calcS);
-					type.addAttribute(attr);
-				} else if (attrType.equals("hex")) {
-					attr = new HexAttribute(type,attrName,configId,sysType,defaultS,order,calcS);
-					type.addAttribute(attr);
-				} else if (attrType.equals("string")) {
-					attr = new StringAttribute(type,attrName,configId,sysType,defaultS,order,calcS);
-					type.addAttribute(attr);
-				} else if (attrType.equals("float")) {
-					attr = new FloatAttribute(type,attrName,configId,sysType,defaultS,order,calcS);
-					type.addAttribute(attr);
-				} else if (attrType.equals("enum")) {
-					attr = loadEnumAttribute(type,a,attrName,configId,sysType,defaultS,order,calcS);			
-					type.addAttribute(attr);
-				} else if (attrType.startsWith("string:")) {
-					String converter = attrType.split(":")[1];
-					attr = new UserDefAttribute(type,attrName,configId,converter,sysType,defaultS,order,calcS);
-					type.addAttribute(attr);
-				} else {
-					logger.error("Unrecognized attribute type: " + attrType);
-					throw new Exception("Unrecognized attribute type: " + attrType);
-				}
+				attr = createAttribute(type,a,attrType,attrName,configId,sysType,defaultS,order,calcS);
+				type.addAttribute(attr);				
 				an++;
 			}			
 		}
@@ -251,6 +232,98 @@ public class MatInterfaceModel implements MatModel {
 		return type;
 	}
 
+
+	/**
+	 * Create an attribute according to its type
+	 * 
+	 * @param type 		- parent type which will contain the attribute
+	 * @param prefix	- property prefix of the form: type1.attr2
+	 * @param attrType	- type of the attribute
+	 * @param attrName
+	 * @param configId
+	 * @param sysType
+	 * @param defaultS
+	 * @param order
+	 * @param calcS
+	 * @return newly created attribute
+	 * @throws Exception 
+	 */
+	private Attribute createAttribute(BasicElement type, String prefix, String attrType, String attrName,
+			int configId, AttrSysType sysType, String defaultS, int order,
+			String calcS) throws Exception {
+		Attribute attr = null;
+		if (attrType.equals("int")) {
+			attr = new IntegerAttribute(type,attrName,configId,sysType,defaultS,order,calcS);
+		} else if (attrType.equals("hex")) {
+			attr = new HexAttribute(type,attrName,configId,sysType,defaultS,order,calcS);
+		} else if (attrType.equals("string")) {
+			attr = new StringAttribute(type,attrName,configId,sysType,defaultS,order,calcS);
+		} else if (attrType.equals("float")) {
+			attr = new FloatAttribute(type,attrName,configId,sysType,defaultS,order,calcS);
+		} else if (attrType.equals("enum")) {
+			attr = loadEnumAttribute(type,prefix,attrName,configId,sysType,defaultS,order,calcS);			
+			type.addAttribute(attr);
+		} else if (attrType.startsWith("string:")) {
+			String converter = attrType.split(":")[1];
+			attr = new UserDefAttribute(type,attrName,configId,converter,sysType,defaultS,order,calcS);
+		} else if (attrType.startsWith("grid/")) {
+			int restIdx = attrType.indexOf('/');
+			String gridSpec = attrType.substring(restIdx+1);
+			attr = createGridAttribute(type,gridSpec, attrName,configId,sysType,defaultS,order,calcS);
+		} else {
+			logger.error("Unrecognized attribute type: " + attrType);
+			throw new Exception("Unrecognized attribute type: " + attrType);
+		}
+		return attr;
+	}
+
+	/**
+	 * Parse a type string and create a grid attribute
+	 * 
+	 * type13.attr4.type=grid/Symbol:string,Instr_id:int/SymbolGridEncode
+	 * 
+	 * @param type		- parent type which will contain the attribute
+	 * @param gridSpec	- specification for grid (the type string following the "grid/" part
+	 * @param attrName
+	 * @param configId
+	 * @param sysType
+	 * @param defaultS
+	 * @param order
+	 * @param calcS
+	 * @return grid attribute
+	 * @throws Exception if error parsing the gridspec or creating the attr
+	 */
+	private Attribute createGridAttribute(BasicElement type, String gridSpec, String attrName,
+			int configId, AttrSysType sysType, String defaultS, int order,
+			String calcS) throws Exception {
+		// Split gridspec into columdef part and encoder part
+		String[] parts = gridSpec.split("/");
+		if (parts.length != 2) {
+			throw new Exception("createGridAttribute() - bad gridspec for attr " + attrName + " [" + gridSpec + "]");
+		}
+		String colSpec = parts[0];
+		String converter = parts[1];
+		// parse the colspec
+		List<GridColumnSpec> gcs = new ArrayList<GridColumnSpec>();
+		String[] cols = colSpec.split(",");
+		if (cols.length == 0) {
+			throw new Exception("createGridAttribute() - zero cols for gridspec " + attrName + " [" + gridSpec + "]");		
+		}
+		int cn = 0;
+		for (String cs : cols) {
+			String[] csa = cs.split(":");	// split name:type
+			if (csa.length != 2) {
+				throw new Exception("createGridAttribute() - bad format for colspec on " + attrName + " [" + cs + "]");		
+			}
+			GridColumnSpec s = new GridColumnSpec(csa[0],csa[1],cn);			
+			gcs.add(s);
+			cn++;
+		}
+		// now create the attr
+		Attribute attr = new GridAttribute(type, attrName, configId, converter, sysType, order, null, gcs);
+		logger.debug("Created: " + attr.toString());
+		return attr;
+	}
 
 	/**
 	 * Create an enum attribute and load its values list from the properties file
