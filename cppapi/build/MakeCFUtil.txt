@@ -1,0 +1,27 @@
+COMMSRCDIR=../src/Comms
+HOSTSRCDIR=../src/Host
+TESTSRCDIR=../src/Test
+LIBOUTDIR=../libs
+TESTOUTDIR=../test
+OBJDIR=Objects/CFUtil
+SRCDIR=../src/Util
+
+
+INCLUDES=-I../include/Comms -I../include/Host -I../include/Util
+
+LIBS= -L$(LIBOUTDIR)
+
+
+CC=g++
+
+
+UTILLIBOBJECTS=\
+	 $(OBJDIR)/Logger.o
+
+cfutillib: $(UTILLIBOBJECTS)
+	ar rcs $(LIBOUTDIR)/libcfutil.a $(UTILLIB$(OBJDIR))
+
+
+$(OBJDIR)/Logger.o: $(SRCDIR)/Logger.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/Logger.cpp -o $(OBJDIR)/Logger.o
+

@@ -1,0 +1,54 @@
+SRCDIR=../src/Comms
+LIBOUTDIR=../libs
+OBJDIR=Objects/Comms
+
+
+INCLUDES=-I../include/Comms -I../include/Host -I../include/Util
+
+LIBS= -L$(LIBOUTDIR)
+
+
+CC=g++
+
+COMMSLIBOBJECTS= \
+	 $(OBJDIR)/CFDatagram.o \
+	 $(OBJDIR)/UDPCxn.o \
+	 $(OBJDIR)/CFComms.o \
+	 $(OBJDIR)/Reader.o \
+	 $(OBJDIR)/HwStatus.o \
+	 $(OBJDIR)/EncodeConfigItemList.o \
+	 $(OBJDIR)/DatagramSocket.o \
+	 $(OBJDIR)/InetAddress.o \
+
+
+
+commslib: $(COMMSLIBOBJECTS) 
+	ar rcs $(LIBOUTDIR)/libcomms.a $(COMMSLIB$(OBJDIR))
+
+
+$(OBJDIR)/CFDatagram.o: $(SRCDIR)/CFDatagram.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/CFDatagram.cpp -o $(OBJDIR)/CFDatagram.o
+
+$(OBJDIR)/UDPCxn.o: $(SRCDIR)/UDPCxn.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/UDPCxn.cpp -o $(OBJDIR)/UDPCxn.o
+
+
+$(OBJDIR)/CFComms.o: $(SRCDIR)/CFComms.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/CFComms.cpp -o $(OBJDIR)/CFComms.o
+
+$(OBJDIR)/Reader.o: $(SRCDIR)/Reader.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/Reader.cpp -o $(OBJDIR)/Reader.o
+
+$(OBJDIR)/HwStatus.o: $(SRCDIR)/HwStatus.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/HwStatus.cpp -o $(OBJDIR)/HwStatus.o
+
+$(OBJDIR)/EncodeConfigItemList.o: $(SRCDIR)/EncodeConfigItemList.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/EncodeConfigItemList.cpp -o $(OBJDIR)/EncodeConfigItemList.o
+
+$(OBJDIR)/DatagramSocket.o: $(SRCDIR)/DatagramSocket.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/DatagramSocket.cpp -o $(OBJDIR)/DatagramSocket.o
+
+$(OBJDIR)/InetAddress.o: $(SRCDIR)/InetAddress.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/InetAddress.cpp -o $(OBJDIR)/InetAddress.o
+
+

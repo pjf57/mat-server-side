@@ -1,0 +1,70 @@
+
+SRCDIR=../src/Host
+LIBOUTDIR=../libs
+OBJDIR=Objects/HostImpl
+
+
+INCLUDES=-I../include/Comms -I../include/Host -I../include/Util
+
+LIBS= -L$(LIBOUTDIR)
+
+
+CC=g++
+
+
+HOSTLIBOBJECTS= \
+	$(OBJDIR)/Status.o \
+	$(OBJDIR)/CBRawStatus.o \
+	$(OBJDIR)/EvtLogRaw.o \
+	$(OBJDIR)/LkuAuditRawLog.o \
+	$(OBJDIR)/RtrAuditRawLog.o \
+	$(OBJDIR)/MATComms.o \
+	$(OBJDIR)/MATInterface.o \
+	$(OBJDIR)/NotificationCallback.o \
+	$(OBJDIR)/BasicElement.o \
+	$(OBJDIR)/MATInterfaceModel.o
+
+
+hostlib: $(HOSTLIBOBJECTS)
+	ar rcs $(LIBOUTDIR)/libhostimpl.a $(HOSTLIB$(OBJDIR))
+
+$(OBJDIR)/Status.o: $(SRCDIR)/Status.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/Status.cpp -o $(OBJDIR)/Status.o
+
+$(OBJDIR)/CBRawStatus.o: $(SRCDIR)/CBRawStatus.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/CBRawStatus.cpp -o $(OBJDIR)/CBRawStatus.o
+
+$(OBJDIR)/EvtLogRaw.o: $(SRCDIR)/EvtLogRaw.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/EvtLogRaw.cpp -o $(OBJDIR)/EvtLogRaw.o
+
+$(OBJDIR)/LkuAuditRawLog.o: $(SRCDIR)/LkuAuditRawLog.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/LkuAuditRawLog.cpp -o $(OBJDIR)/LkuAuditRawLog.o
+
+$(OBJDIR)/RtrAuditRawLog.o: $(SRCDIR)/RtrAuditRawLog.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/RtrAuditRawLog.cpp -o $(OBJDIR)/RtrAuditRawLog.o
+
+$(OBJDIR)/MATComms.o: $(SRCDIR)/MATComms.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/MATComms.cpp -o $(OBJDIR)/MATComms.o
+
+$(OBJDIR)/MATInterface.o: $(SRCDIR)/MATInterface.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/MATInterface.cpp -o $(OBJDIR)/MATInterface.o
+
+$(OBJDIR)/NotificationCallback.o: $(SRCDIR)/NotificationCallback.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/NotificationCallback.cpp -o $(OBJDIR)/NotificationCallback.o
+
+$(OBJDIR)/BasicElement.o: $(SRCDIR)/BasicElement.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/BasicElement.cpp -o $(OBJDIR)/BasicElement.o
+
+$(OBJDIR)/MATInterfaceModel.o: $(SRCDIR)/MATInterfaceModel.cpp 
+	$(CC) $(INCLUDES) -c $(SRCDIR)/MATInterfaceModel.cpp -o $(OBJDIR)/MATInterfaceModel.o
+
+
+
+
+
+
+
+
+
+
+
