@@ -1,4 +1,4 @@
-package com.cs.fwk.util.attr;
+package com.cs.fwk.api.gridattr;
 
 /**
  * holds a specification for a grid column

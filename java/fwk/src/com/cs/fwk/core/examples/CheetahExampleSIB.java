@@ -17,6 +17,7 @@ import com.cs.fwk.api.NotificationCallback;
 import com.cs.fwk.api.TimeOrdered;
 import com.cs.fwk.api.comms.MATCommsApi;
 import com.cs.fwk.api.comms.CxnInt;
+import com.cs.fwk.api.gridattr.GridAttribute;
 import com.cs.fwk.api.logging.EventLog;
 import com.cs.fwk.api.logging.LkuAuditLog;
 import com.cs.fwk.api.logging.OrderLog;
@@ -25,7 +26,6 @@ import com.cs.fwk.core.impl.MatInterface;
 import com.cs.fwk.core.impl.MatInterfaceModel;
 import com.cs.fwk.core.impl.element.BasicCmd;
 import com.cs.fwk.core.sys.MATComms;
-import com.cs.fwk.util.attr.GridAttribute;
 import com.cs.fwk.util.comms.UDPCxn;
 
 public class CheetahExampleSIB implements NotificationCallback {
@@ -125,7 +125,7 @@ public class CheetahExampleSIB implements NotificationCallback {
 
 		// configure SIB
 		sib.getAttribute("OPCFG").setValue("0123");
-		GridAttribute sibGrid = (GridAttribute) sib.getAttribute("SynthInstr");
+		GridAttribute sibGrid = sib.getGridAttribute("SynthInstr");
 		sibGrid.add(new String[]{"20","3","4","2",""});
 		sibGrid.add(new String[]{"21","5","6","3",""});
 		// connect mfd.2 to sib.0 and tg1.0 to sib.1

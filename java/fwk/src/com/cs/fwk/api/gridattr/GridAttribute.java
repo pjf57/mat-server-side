@@ -1,4 +1,4 @@
-package com.cs.fwk.util.attr;
+package com.cs.fwk.api.gridattr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +73,13 @@ public class GridAttribute implements Attribute, Cloneable {
 		return attr;
 	}
 
+	/**
+	 * @param colName
+	 * @return colspec for name, or null
+	 */
+	public List<GridColumnSpec> getColumnSpecs() {
+		return colSpecs;
+	}
 
 	/**
 	 * @return short value description as number of rows
@@ -245,7 +252,7 @@ public class GridAttribute implements Attribute, Cloneable {
 	 * 
 	 * @param row (0..n)
 	 * @return row data for the specified row
-	 * @throws Exception
+	 * @throws Exception if row is out of range
 	 */
 	public GridRowData getRow(int row) throws Exception {
 		if (row < 0  ||  row >= rowData.size()) {

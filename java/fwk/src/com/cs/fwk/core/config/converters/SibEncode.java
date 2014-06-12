@@ -8,10 +8,10 @@ import java.util.Map;
 import com.cs.fwk.api.AttrSysType;
 import com.cs.fwk.api.Attribute;
 import com.cs.fwk.api.MatElementDefs;
+import com.cs.fwk.api.gridattr.GridAttribute;
+import com.cs.fwk.api.gridattr.GridRowData;
 import com.cs.fwk.api.util.AttrConfigGenerator;
 import com.cs.fwk.api.util.ConfigItem;
-import com.cs.fwk.util.attr.GridAttribute;
-import com.cs.fwk.util.attr.GridRowData;
 
 /**
  * Encode config for a grid based Synthetic Instrument list

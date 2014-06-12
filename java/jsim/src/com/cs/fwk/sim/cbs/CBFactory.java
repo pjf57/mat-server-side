@@ -4,7 +4,7 @@ import com.cs.fwk.sim.model.SimElement;
 import com.cs.fwk.sim.model.SimHost;
 import com.cs.fwk.api.MatElementDefs;
 
-public class ElementFactory {
+public class CBFactory {
 
 	/**
 	 * Factory to create an element
@@ -30,6 +30,7 @@ public class ElementFactory {
 		case MatElementDefs.EL_TYP_ADX:			el = new ADX(id,host);			break;
 		case MatElementDefs.EL_TYP_MFD_SYM:		el = new IpMfdSym(id,host);		break;
 		case MatElementDefs.EL_TYP_RMO:			el = new RMO(id,host);			break;
+		case MatElementDefs.EL_TYP_SIB:			el = new SIB(id,host);			break;
 		case MatElementDefs.EL_TYP_UDP_RAW_MKT:	// not supported in sim
 		default:
 		}

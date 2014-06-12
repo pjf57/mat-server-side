@@ -1,4 +1,4 @@
-package com.cs.fwk.util.attr;
+package com.cs.fwk.api.gridattr;
 
 import java.util.ArrayList;
 import java.util.List;

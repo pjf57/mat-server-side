@@ -32,7 +32,7 @@ import com.cs.fwk.api.logging.RtrAuditLog;
 import com.cs.fwk.api.util.ConfigItem;
 import com.cs.fwk.api.util.HwStatus;
 import com.cs.fwk.core.sys.MATComms;
-import com.cs.fwk.sim.cbs.ElementFactory;
+import com.cs.fwk.sim.cbs.CBFactory;
 import com.cs.fwk.sim.model.BaseState;
 import com.cs.fwk.sim.model.ClockTick;
 import com.cs.fwk.sim.model.LookupResult;
@@ -110,7 +110,7 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 		// instantiate the elements according to the project requirements
 		for (Element el : prjElements) {
 			if (el.getId() != 0) {
-				SimElement se = ElementFactory.create(el.getId(),el.getHWType(),this);
+				SimElement se = CBFactory.create(el.getId(),el.getHWType(),this);
 				if (se != null) {
 					simElements.put(new Integer(el.getId()),se);
 				} else {

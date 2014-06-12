@@ -15,6 +15,7 @@ import com.cs.fwk.api.Element;
 import com.cs.fwk.api.InputPort;
 import com.cs.fwk.api.OutputPort;
 import com.cs.fwk.api.Status;
+import com.cs.fwk.api.gridattr.GridAttribute;
 import com.cs.fwk.util.ElementStatus;
 
 public class BasicElement extends BasicItem implements Element {
@@ -129,6 +130,12 @@ public class BasicElement extends BasicItem implements Element {
 			throw new Exception("Attribute [" + name + "] doesnt exist on CB " + getShortName());
 		}
 		return attr;
+	}
+
+	@Override
+	public GridAttribute getGridAttribute(String name) throws Exception {
+		Attribute attr = getAttribute(name);
+		return (GridAttribute) attr;
 	}
 
 	@Override
@@ -267,6 +274,7 @@ public class BasicElement extends BasicItem implements Element {
 		}
 		return ret;
 	}
+
 
 
 }

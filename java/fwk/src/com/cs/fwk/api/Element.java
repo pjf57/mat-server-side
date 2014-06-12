@@ -3,6 +3,8 @@ package com.cs.fwk.api;
 import java.util.Collection;
 import java.util.List;
 
+import com.cs.fwk.api.gridattr.GridAttribute;
+
 /**
  * Defines and Element in the model. For example, a Cheetah Block
  * 
@@ -80,7 +82,16 @@ public interface Element extends Item {
 	 * @throws Exception if attribute not found
 	 */
 	public Attribute getAttribute(String name) throws Exception;
-	
+
+	/**
+	 * Select a grid type attribute by name
+	 * 
+	 * @param name of the attr
+	 * @return the selected attribute
+	 * @throws Exception if attribute not found
+	 */
+	public GridAttribute getGridAttribute(String name) throws Exception;
+
 	/**
 	 * Select an output by name
 	 * 
