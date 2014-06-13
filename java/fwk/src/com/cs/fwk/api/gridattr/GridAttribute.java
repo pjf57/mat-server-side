@@ -43,7 +43,7 @@ public class GridAttribute implements Attribute, Cloneable {
 		this.order = order;
 		this.calcSpec = calcSpec;
 		this.colSpecs = colSpecs;
-		this.rowData = new ArrayList<GridRowData>();
+		clearGrid();
 	}
 
 
@@ -101,7 +101,7 @@ public class GridAttribute implements Attribute, Cloneable {
 
 	@Override
 	public AttributeType getType() {
-		return AttributeType.USERDEF;
+		return AttributeType.GRID;
 	}
 
 	@Override
@@ -232,12 +232,19 @@ public class GridAttribute implements Attribute, Cloneable {
 	 * @param values - array of values in correct order
 	 * @throws Exception if the values cannot be set
 	 */
-	public void add(String[] values) throws Exception {
+	public void addRow(String[] values) throws Exception {
 		if (values.length != colSpecs.size()) {
 			throw new Exception("add(" + values + "): expected " + colSpecs.size() + " values");
 		}		
 		GridRowData row = new GridRowData(values);
 		rowData.add(row);		
+	}
+	
+	/**
+	 * Clear all data from the grid
+	 */
+	public void clearGrid() {
+		this.rowData = new ArrayList<GridRowData>();		
 	}
 
 

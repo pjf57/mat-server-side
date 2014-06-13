@@ -119,15 +119,15 @@ public class CheetahExampleSIB implements NotificationCallback {
 		mfd.getAttribute("trade").setValue("0");
 		mfd.getAttribute("bid").setValue("1");
 		mfd.getAttribute("ask").setValue("2");
-		GridAttribute symGrid = (GridAttribute) mfd.getAttribute("symbols");
-		symGrid.add(new String[]{"IBM","3"});
-		symGrid.add(new String[]{"APPL","4"});		
+		GridAttribute symGrid = mfd.getGridAttribute("symbols");
+		symGrid.addRow(new String[]{"IBM","3"});
+		symGrid.addRow(new String[]{"APPL","4"});		
 
 		// configure SIB
 		sib.getAttribute("OPCFG").setValue("0123");
 		GridAttribute sibGrid = sib.getGridAttribute("SynthInstr");
-		sibGrid.add(new String[]{"20","3","4","2",""});
-		sibGrid.add(new String[]{"21","5","6","3",""});
+		sibGrid.addRow(new String[]{"20","3","4","2",""});
+		sibGrid.addRow(new String[]{"21","5","6","3",""});
 		// connect mfd.2 to sib.0 and tg1.0 to sib.1
 		sib.getInputs().get(0).connectTo(mfd.getOutputs().get(2));
 		sib.getInputs().get(1).connectTo(tg1.getOutputs().get(0));

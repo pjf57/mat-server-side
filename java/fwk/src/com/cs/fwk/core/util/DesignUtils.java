@@ -5,9 +5,12 @@ import org.apache.log4j.Logger;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import com.cs.fwk.api.Attribute;
+import com.cs.fwk.api.AttributeType;
 import com.cs.fwk.api.Element;
 import com.cs.fwk.api.MatElementDefs;
 import com.cs.fwk.api.MatModel;
+import com.cs.fwk.api.gridattr.GridAttribute;
 
 public class DesignUtils {
 	private final static Logger logger = Logger.getLogger(DesignUtils.class);
@@ -32,7 +35,26 @@ public class DesignUtils {
 			JSONObject attr = attrList.getJSONObject(a);
 			String name = attr.getString("name");
 			String val = attr.getString("val");
-			el.getAttribute(name).setValue(val);
+			Attribute elAttr = el.getAttribute(name);
+			elAttr.setValue(val);
+			if (elAttr.getType().equals(AttributeType.GRID)) {
+				GridAttribute ga = (GridAttribute) elAttr;
+				// get grid values from the JSON design element
+				JSONArray jrows = attr.getJSONArray("gridVals");
+				if (jrows == null) {
+					throw new Exception("gridVals missing on: " + el.getShortName() + ":" + name);
+				}
+				// copy grid vals across
+				ga.clearGrid();
+				for (int r=0; r<jrows.size(); r++) {
+					JSONArray jrow = jrows.getJSONArray(r);
+					String[] data = new String[jrow.size()];
+					for (int c=0; c<jrow.size(); c++) {
+						data[c] = jrow.getString(c);
+					}
+					ga.addRow(data);
+				}
+			}
 		}
 		return el;
 	}
