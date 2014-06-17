@@ -222,7 +222,18 @@ public class GridAttribute implements Attribute, Cloneable {
 			buf.append(gcs.getType());
 			first = false;
 		}
+		buf.append("],vals:[");
+
+		first = true;
+		for (GridRowData rds : rowData) {
+			if (!first) {
+				buf.append(",");
+			}
+			buf.append(rds);
+			first = false;
+		}
 		buf.append("]");
+		
 		return buf.toString();		
 	}
 

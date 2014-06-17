@@ -38,5 +38,20 @@ public class GridRowData {
 	public void set(int idx, String value) {
 		data.set(idx,value);
 	}
+	
+	@Override
+	public String toString() {
+		StringBuffer buf = new StringBuffer("[");
+		boolean first = true;
+		for (String s : data) {
+			if (!first) {
+				buf.append(",");
+			}
+			buf.append(s);
+			first = false;
+		}
+		buf.append("]");
+		return buf.toString();
+	}
 
 }
