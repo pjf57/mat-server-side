@@ -225,7 +225,8 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			data[upto++] = (byte) ((value >> 8) & 0xff);
 			data[upto++] = (byte) (value & 0xff);
 			itemCount++;
-			logger.debug("cfg.put(el=" + id + " cfgId=" + configId + " data=0x" + Integer.toHexString(value) +
+			logger.debug("cfg.put(el=" + id + " cfgId=" + configId + " arg=" + arg +
+					" data=0x" + Integer.toHexString(value) +
 					") msg = [" + toHexString(data,upto-6,upto-1) + "]");			
 		}
 		
