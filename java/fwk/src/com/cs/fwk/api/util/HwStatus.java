@@ -8,7 +8,7 @@ package com.cs.fwk.api.util;
  */
 public class HwStatus {
 	private long hwSig;
-	private int microtickPeriod;
+	private int microtickPeriod;	// picoseconds
 	private String cf_version;
 
 	/**
@@ -25,7 +25,7 @@ public class HwStatus {
 	 * Create hw status from parameters
 	 * 
 	 * @param hwSig
-	 * @param microtickPeriod
+	 * @param microtickPeriod (ps)
 	 * @param cf_version
 	 */
 	public HwStatus(long hwSig, int microtickPeriod, String cf_version) {
@@ -59,7 +59,7 @@ public class HwStatus {
 
 	@Override
 	public String toString() {
-		return "sig=" + toHexLongString(hwSig) + " cf_ver=" + cf_version + " mtp=" + microtickPeriod;		
+		return "sig=" + toHexLongString(hwSig) + " cf_ver=" + cf_version + " mtp=" + microtickPeriod + " ps";		
 	}
 
 	private String toHexLongString(long value) {

@@ -213,7 +213,7 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 
 	@Override
 	public long getHWSignature() throws Exception {
-		HwStatus st = new HwStatus(mat.getSWSignature(),10,SIM_VER);
+		HwStatus st = new HwStatus(mat.getSWSignature(),10000,SIM_VER);
 		setHwStatus(st);
 		return getHWStatus().getHwSig();
 	}
