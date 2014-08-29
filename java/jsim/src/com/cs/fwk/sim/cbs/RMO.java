@@ -185,10 +185,7 @@ public class RMO extends BaseElement implements SimElement {
 		data[upto++] = (byte) ((orderVol >> 8) & 0xff);
 		data[upto++] = (byte) (orderVol & 0xff);
 		// send it
-		String ip = "" + c_ip;
-		if (c_ip == 0) {
-			ip = "direct";
-		}
+		String ip = cvt_ip_int_to_addr(c_ip);
 		CxnInt cxn;
 		try {
 			cxn = host.getCxnOrLoopback(ip);
@@ -197,6 +194,31 @@ public class RMO extends BaseElement implements SimElement {
 		} catch (Exception e) {
 			logger.error("Unable to get cxn or send data - " + e.getMessage());
 		}
+	}
+
+	/**
+	 * Convert an int ip value to ip address
+	 * either "direct" if hex ip is zero, or to a dotted ip string.
+	 * 
+	 * @param intIp - int representation of ip, or 0
+	 * @return string
+	 */
+	private String cvt_ip_int_to_addr(int intIp) {
+		long d[] = new long[4];
+		String s = "direct";
+		if  (intIp != 0) {
+			long v = intIp;
+			v &= 0xffffffffL;
+			d[3] = v & 0xffL;
+			v /= 256;
+			d[2] = v & 0xffL;
+			v /= 256;
+			d[1] = v & 0xffL;
+			v /= 256;
+			d[0] = v & 0xffL;
+			s = "" + d[0] + '.' + d[1] + '.' + d[2] + '.' + d[3];
+		}
+		return s;
 	}
 
 	@Override
