@@ -64,6 +64,11 @@ public class RtrAuditLog extends BaseLog {
 	}
 
 	@Override
+	public String getDispValue() {
+		return "" + data;
+	}
+
+	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("Router:");

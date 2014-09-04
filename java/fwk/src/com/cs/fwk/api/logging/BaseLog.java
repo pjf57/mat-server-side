@@ -120,6 +120,18 @@ public class BaseLog implements TimeOrdered {
 		}
 		return s;
 	}
+	
+	/**
+	 * @return source element name or ""
+	 */
+	public int getSourceElementId() {
+		int id = 0;
+		if (srcElement != null) {
+			id = srcElement.getId();
+		}
+		return id;
+	}
+
 
 	/**
 	 * @return source port name or ""
