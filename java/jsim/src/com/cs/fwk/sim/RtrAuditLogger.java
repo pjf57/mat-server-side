@@ -64,13 +64,13 @@ public class RtrAuditLogger {
 	 * @param lookupTime
 	 */
 	public void addLog(Timestamp timestamp, Element source, int srcPort, Set<Element> takers, 
-			int instrument_id, int tickref, int qTime, int deltime, float data) {
+			int instrument_id, int tickref, int qTime, int deltime, int rawData) {
 		OutputPort op = null;
 		if (source != null) {
 			op = source.getOutputs().get(srcPort);
 		}		
 		RtrAuditLog log = new RtrAuditLog(timestamp, source, op, takers, 
-				instrument_id, tickref, qTime, deltime, data);
+				instrument_id, tickref, qTime, deltime, rawData);
 		if (source == null) {
 			logger.error("addLog() - source element is null [" + log + "]");
 		}

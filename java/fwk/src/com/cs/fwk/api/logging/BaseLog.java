@@ -73,6 +73,10 @@ public class BaseLog implements TimeOrdered {
 		return timestamp;
 	}
 
+	/**
+	 * 
+	 * @return source port or null
+	 */
 	public OutputPort getSourcePort() {
 		return sourcePort;
 	}
@@ -145,6 +149,7 @@ public class BaseLog implements TimeOrdered {
 		}
 		return s;
 	}
+	
 
 	/**
 	 * Template method

@@ -59,7 +59,14 @@ public class BasicOutputPort extends BasicItem implements OutputPort {
 
 	@Override
 	public String dataToString(int data) {
-		return "0x" + Conversion.toHexIntString(data);
+		// handle special values 0 and 1 as boolean, otherwise hex
+		String val = "0x" + Conversion.toHexIntString(data);
+		if (data == 0) {
+			val = "FALSE";
+		} else if (data == 1) {
+			val = "TRUE";
+		}
+		return val;
 	}
 	
 

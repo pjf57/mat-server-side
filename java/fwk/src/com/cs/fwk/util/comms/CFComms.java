@@ -502,13 +502,12 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			int instrId = msg[upto++];
 			int tickref = msg[upto++] & 0xFF;
 			int data = Conversion.getIntFromBytes(msg,upto,4);
-			float fdata = Float.intBitsToFloat(data);
 			upto +=4;
 			int qTime = msg[upto++];
 			int delTime = msg[upto++];
 			// resolve format of incoming binary data
 			RtrAuditRawLog log = new RtrAuditRawLog(new Timestamp(timestamp,mtp),sourceId,
-					sourcePort,takerBitmap,instrId,tickref,qTime,delTime,fdata);
+					sourcePort,takerBitmap,instrId,tickref,qTime,delTime,data);
 			logs.add(log);
 		}
 		logger.debug("processRtrAuditLogMsg(): received " + logs.size() + " logs");

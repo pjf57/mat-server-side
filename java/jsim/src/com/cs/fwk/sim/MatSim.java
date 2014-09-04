@@ -323,7 +323,7 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 			Element source = mat.getModel().getElement(evt.getSrc());
 			rtrAuditLogger.addLog(evt.getTimestamp(),source,evt.getSrcPort(),takers,
 					evt.getInstrument_id(),evt.getTickref(), (int) qtime, (int) deltime, 
-					evt.getFloatData());
+					evt.getRawData());
 		}
 	}
 

@@ -5,6 +5,7 @@ import java.util.Set;
 import com.cs.fwk.api.Element;
 import com.cs.fwk.api.OutputPort;
 import com.cs.fwk.api.Timestamp;
+import com.cs.fwk.util.Conversion;
 
 /**
  * Container for one Router Audit Log entry
@@ -13,7 +14,7 @@ import com.cs.fwk.api.Timestamp;
  *
  */
 public class RtrAuditLog extends BaseLog {
-	private final float data;
+	private final int rawData;
 	private final Set<Element> takers;		// element that took the event
 	private final int qTimeMicroticks;		// queueing time
 	private final int delTimeMicroticks;	// delivery time
@@ -34,11 +35,11 @@ public class RtrAuditLog extends BaseLog {
 	 * @param fdata 
 	 */
 	public RtrAuditLog(Timestamp timestamp, Element source, OutputPort sourcePort, Set<Element> takers, 
-			int instrumentId, int tickref, int qTime, int deltime, float data) {
+			int instrumentId, int tickref, int qTime, int deltime, int rawData) {
 		super(timestamp,instrumentId,tickref,source,sourcePort);
 		this.qTimeMicroticks = qTime;
 		this.delTimeMicroticks = deltime;
-		this.data = data;
+		this.rawData = rawData;
 		this.takers = takers;
 	}
 
@@ -47,8 +48,8 @@ public class RtrAuditLog extends BaseLog {
 		return "RTR";
 	}
 
-	public float getData() {
-		return data;
+	public int getRawData() {
+		return rawData;
 	}
 
 	public Set<Element> getTakers() {
@@ -65,7 +66,12 @@ public class RtrAuditLog extends BaseLog {
 
 	@Override
 	public String getDispValue() {
-		return "" + data;
+		String val = "0x" + Conversion.toHexIntString(rawData);;
+		OutputPort srcPort = getSourcePort();
+		if (srcPort != null) {
+			val = srcPort.dataToString(rawData);
+		}
+		return val;
 	}
 
 	@Override
@@ -77,7 +83,7 @@ public class RtrAuditLog extends BaseLog {
 		buf.append(getSourcePort().getName());
 		buf.append(",instr="); buf.append(getInstrumentId());
 		buf.append(",tickref="); buf.append(getTickref());
-		buf.append(" Data="); buf.append(data);
+		buf.append(" Data="); buf.append(rawData);
 		buf.append(" Takers:[ ");
 		for (Element el : takers) {
 			buf.append(getShortName(el));
@@ -102,7 +108,7 @@ public class RtrAuditLog extends BaseLog {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Float.floatToIntBits(data);
+		result = prime * result + rawData;
 		return result;
 	}
 
@@ -115,7 +121,7 @@ public class RtrAuditLog extends BaseLog {
 		if (getClass() != obj.getClass())
 			return false;
 		RtrAuditLog other = (RtrAuditLog) obj;
-		if (Float.floatToIntBits(data) != Float.floatToIntBits(other.data))
+		if (rawData != Float.floatToIntBits(other.rawData))
 			return false;
 		if (!super.equals(obj)) {
 			return false;

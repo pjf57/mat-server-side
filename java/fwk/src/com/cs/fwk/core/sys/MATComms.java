@@ -361,7 +361,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 				op = source.getOutputs().get(rl.getSourcePort());
 			}
 			RtrAuditLog log = new RtrAuditLog(rl.getTimestamp(),source,op,takers,
-					rl.getInstrumentId(),rl.getTickref(),rl.getqTimeMicroticks(),rl.getDelTimeMicroticks(),rl.getData());
+					rl.getInstrumentId(),rl.getTickref(),rl.getqTimeMicroticks(),rl.getDelTimeMicroticks(),rl.getRawData());
 			if (source == null) {
 				logger.error("processRtrAuditLogMsg() - source element is null [" + log + "], sourceId=" + rl.getSourceId());
 			}

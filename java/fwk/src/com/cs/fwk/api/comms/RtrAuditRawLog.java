@@ -14,7 +14,7 @@ public class RtrAuditRawLog {
 	private final int sourcePort;
 	private final int instrumentId;
 	private final int tickref;
-	private final float data;
+	private final int rawData;
 	private final int takerSet;		// set of CB Ids that took the event
 	private final int qTimeMicroticks;		// queueing time
 	private final int delTimeMicroticks;	// delivery time
@@ -22,7 +22,7 @@ public class RtrAuditRawLog {
 	private static final int CLK_TIME_NS = 10;	// microtick time
 
 	public RtrAuditRawLog(Timestamp timestamp, int sourceId, int sourcePort, int takerSet, 
-			int instrumentId, int tickref, int qTime, int deltime, float data) {
+			int instrumentId, int tickref, int qTime, int deltime, int rawData) {
 		this.timestamp = timestamp;
 		this.instrumentId = instrumentId;
 		this.tickref = tickref;
@@ -30,7 +30,7 @@ public class RtrAuditRawLog {
 		this.sourcePort = sourcePort;
 		this.qTimeMicroticks = qTime;
 		this.delTimeMicroticks = deltime;
-		this.data = data;
+		this.rawData = rawData;
 		this.takerSet = takerSet;
 	}
 
@@ -54,8 +54,8 @@ public class RtrAuditRawLog {
 		return tickref;
 	}
 
-	public float getData() {
-		return data;
+	public int getRawData() {
+		return rawData;
 	}
 
 	public int getTakerSet() {
@@ -78,7 +78,7 @@ public class RtrAuditRawLog {
 	public String toString() {
 		return "RtrAuditRawLog [timestamp=" + timestamp + ", sourceId="
 				+ sourceId + ", sourcePort=" + sourcePort + ", instrumentId="
-				+ instrumentId + ", tickref=" + tickref + ", data=" + data
+				+ instrumentId + ", tickref=" + tickref + ", data=" + rawData
 				+ ", takerSet=" + takerSet + ", qTimeMicroticks="
 				+ qTimeMicroticks + ", delTimeMicroticks=" + delTimeMicroticks
 				+ "]";
