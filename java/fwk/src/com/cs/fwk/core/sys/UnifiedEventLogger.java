@@ -19,14 +19,19 @@ import com.cs.fwk.api.Timestamp;
  */
 public class UnifiedEventLogger {	
 	private final static int windowMs = 100;
-	private final static Logger logger = Logger.getLogger(UnifiedEventLogger.class);
 	private static final long IDLE_TIME_FLUSH_MS = 1000;
+	private static final long MAX_TIME_INTERFLUSH_MS = 2000;
+
+	private final static Logger logger = Logger.getLogger(UnifiedEventLogger.class);
 	private final PriorityBlockingQueue<TimeOrdered> store;
 	private final PumpWorker pumper;
 	private NotificationCallback notificationHandler;
 	private Timestamp lastAddedTs;	// timestamp of event last added
 	private boolean showLogs;
 	private long lastRealtimeAddedMs = 0;
+	private long idleTimeFlushMs = IDLE_TIME_FLUSH_MS;
+	private long maxTimeInterFlushMs = MAX_TIME_INTERFLUSH_MS;
+	private long lastFlushTime;
 
 	class PumpWorker extends Thread {
 		private boolean running;
@@ -72,15 +77,44 @@ public class UnifiedEventLogger {
 		lastAddedTs = event.getTimestamp();
 		lastRealtimeAddedMs = System.currentTimeMillis();
 	}
+
+	/**
+	 * Set a new value for the idle timeout flushing
+	 * 
+	 * @param timeMs
+	 */
+	public void setIdleTimeFlush(long timeMs) {
+		logger.info("setIdleTimeFlush() changed from " + idleTimeFlushMs + " to " + timeMs);
+		idleTimeFlushMs = timeMs;
+	}
+	
+	/**
+	 * Set a new value for the max time between flushing
+	 * 
+	 * @param timeMs
+	 */
+	public void setMaxTimeInterFlushMs(long timeMs) {
+		logger.info("setMaxTimeInterFlushMs() changed from " + maxTimeInterFlushMs + " to " + timeMs);
+		maxTimeInterFlushMs = timeMs;
+	}
+	
+	
+	
 	
 	/**
 	 * Pump out all events that are windowMs earlier than the latest one written
 	 */
 	private void pump() {
+		if (store.size() > 0) {
+			long bufferTimeMs = System.currentTimeMillis() - lastFlushTime;
+			if (bufferTimeMs > maxTimeInterFlushMs) {
+				flush();
+			}
+		}
 		if (lastRealtimeAddedMs != 0) {
 			if (!store.isEmpty()) {
 				long msSinceLastAdd = System.currentTimeMillis() - lastRealtimeAddedMs;
-				if (msSinceLastAdd > IDLE_TIME_FLUSH_MS) {
+				if (msSinceLastAdd > idleTimeFlushMs) {
 					flush();
 				}
 			}
@@ -113,8 +147,10 @@ public class UnifiedEventLogger {
 	}
 	
 	public void flush(){
+		lastFlushTime = System.currentTimeMillis();
 		List<TimeOrdered> logs = new ArrayList<TimeOrdered>();
 		store.drainTo(logs);
+		logger.info("flush() - " + logs.size() + "logs");
 		notificationHandler.notifyUnifiedEventLog(logs);		
 	}
 	
