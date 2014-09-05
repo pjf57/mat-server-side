@@ -18,7 +18,7 @@ import com.cs.fwk.api.Timestamp;
  *
  */
 public class UnifiedEventLogger {	
-	private final static int windowMs = 100;
+	private final static int windowMs = 50;
 	private static final long IDLE_TIME_FLUSH_MS = 1000;
 	private static final long MAX_TIME_INTERFLUSH_MS = 2000;
 
