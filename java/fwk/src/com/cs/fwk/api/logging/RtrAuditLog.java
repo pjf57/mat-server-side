@@ -83,7 +83,7 @@ public class RtrAuditLog extends BaseLog {
 		buf.append(getSourcePort().getName());
 		buf.append(",instr="); buf.append(getInstrumentId());
 		buf.append(",tickref="); buf.append(getTickref());
-		buf.append(" Data="); buf.append(rawData);
+		buf.append(" Data="); buf.append("0x" + Conversion.toHexIntString(rawData));
 		buf.append(" Takers:[ ");
 		for (Element el : takers) {
 			buf.append(getShortName(el));

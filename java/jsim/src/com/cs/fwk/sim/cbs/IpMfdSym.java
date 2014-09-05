@@ -159,11 +159,13 @@ public class IpMfdSym extends BaseElement implements SimElement, LoopbackInt {
 		u += 8;
 		int priceInt = Conversion.getIntFromBytes(msg,u,4);
 		u += 4;
-		int priceNdp = msg[12];
+		int priceNdp = msg[u];
+		u++;
 		int volInt = Conversion.getIntFromBytes(msg,u,4);
 		u += 4;
 		float price = priceInt;
-		price = price / (10^priceNdp);
+		float factor = (float)Math.pow(10.0,priceNdp);
+		price = price / factor;
 		float vol = volInt;
 		TickData td;
 		try {
