@@ -46,11 +46,13 @@ import com.cs.fwk.util.comms.CFComms;
 
 public class MATComms implements MATCommsApi, CFCallback {
 
-	private static final String COMMS_VER = "01.02";
+	private static final String COMMS_VER = "01.03";
 
 	private final static Logger logger = Logger.getLogger(MATComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
 	private static final int MIN_CFG_SPACE = 10;		// auto send when room for less than this many config items
+	private static final int ZCFILTER = 10;				// number of empty status reports before logging
+	
 	private CFCommsInt cfComms = null;
 	private int port;
 	protected MatApi mat;
@@ -58,6 +60,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 	private HwStatus hwStatus;
 	private TimeoutSemaphore hwSigSem;
 	private Map<Integer,LoopbackInt> inMsgSubscribers;
+	private int numZeroCnt = 0;
 
 	public MATComms(CxnInt cxn, int port) throws SocketException, UnknownHostException {
 		notificationSubscribers = new ArrayList<NotificationCallback>();
@@ -263,9 +266,18 @@ public class MATComms implements MATCommsApi, CFCallback {
 				}
 			}			
 		}
-		logger.info("processStatusMsg(): received status for " + statusList.size() + " CBs, with " +
-				cbsUpdated.size() + " changed.");
+		if (cbsUpdated.size() == 0) {
+			numZeroCnt++;
+			if ((numZeroCnt % ZCFILTER) == 0) {
+				logger.info("processStatusMsg(): received " + ZCFILTER + " status msgs for " + statusList.size() + " CBs, with " +
+						cbsUpdated.size() + " changed.");
+				numZeroCnt = 0;
+			}
+		}
 		if (cbsUpdated.size() > 0) {
+			numZeroCnt = 0;
+			logger.info("processStatusMsg(): received status for " + statusList.size() + " CBs, with " +
+					cbsUpdated.size() + " changed.");
 			notifyElementStatusUpdate(cbsUpdated);
 		}
 	}
