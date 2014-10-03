@@ -160,5 +160,29 @@ public class Conversion {
 		buf[idx++] = (byte) (intval & 0xff);
 	}
 
+	/**
+	 * Convert an array to a string
+	 *
+	 * @param arr
+	 * @return String of form [o1 o2 o3]
+	 */
+	public static String arrayToString(Object[] arr) {
+		StringBuffer buf = new StringBuffer("[");
+		int num = 0;
+		for (Object obj:arr) {
+			if (obj == null) {
+				buf.append("null");
+			} else {
+				buf.append(obj.toString());
+			}
+			num++;
+			if (num < arr.length) {
+				buf.append(' ');
+			}
+		}
+		buf.append(']');
+		return buf.toString();
+	}
+
 
 }

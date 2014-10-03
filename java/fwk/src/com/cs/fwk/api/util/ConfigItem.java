@@ -157,7 +157,7 @@ public class ConfigItem {
 	public String toString() {
 		return "[elid=" + elementId + 
 		",cfgId=" + sysType + ":" + itemId + 
-		",data=" + toHexIntString(rawData) + "]";
+		",arg=" + arg + ",data=" + toHexIntString(rawData) + "]";
 	}
 
 	/**

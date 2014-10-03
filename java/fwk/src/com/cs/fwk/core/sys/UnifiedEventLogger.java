@@ -150,7 +150,7 @@ public class UnifiedEventLogger {
 		lastFlushTime = System.currentTimeMillis();
 		List<TimeOrdered> logs = new ArrayList<TimeOrdered>();
 		store.drainTo(logs);
-		logger.info("flush() - " + logs.size() + "logs");
+		logger.info("flush() - " + logs.size() + " logs");
 		notificationHandler.notifyUnifiedEventLog(logs);		
 	}
 	

@@ -38,6 +38,27 @@ public class Event implements Comparable<Event> {
 		this.timestamp = timestamp;
 		tag = -1;
 	}
+	
+	/**
+	 * Create event with int data and specified port
+	 * 
+	 * @param timestamp
+	 * @param src
+	 * @param instrument_id
+	 * @param tickref
+	 * @param rawData
+	 */
+	public Event(Timestamp timestamp, int src, int port, int instrument_id, int tickref, int rawData) {
+		this.rawData = rawData;
+		this.src = src;
+		this.srcPort = port;
+		this.instrument_id = instrument_id;
+		this.tickref = tickref;
+		this.isFloat = false;
+		this.timestamp = timestamp;
+		tag = -1;
+	}
+
 
 	/**
 	 * Create event with float data and port 0
