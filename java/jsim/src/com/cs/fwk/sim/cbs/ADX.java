@@ -132,7 +132,7 @@ public class ADX extends BaseElement implements SimElement {
 
 
 	@Override
-	public LookupResult lookupBehaviour(int instrumentId, int tickref, int lookupKey) throws Exception {
+	public LookupResult lookupBehaviour(int instrumentId, int arg, int tickref, int lookupKey) throws Exception {
 		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		switch (lookupKey) {
 		case MatElementDefs.EL_ADX_L_ADX:

@@ -234,7 +234,7 @@ public abstract class BaseElement implements SimElement {
 	}
 
 	/**
-	 * Lookup a value from the lookup bus
+	 * Lookup a value from the lookup bus (with zero arg)
 	 * 
 	 * @param instrumentId
 	 * @param tickref
@@ -244,10 +244,25 @@ public abstract class BaseElement implements SimElement {
 	 * @throws Exception if an error occurred
 	 */
 	protected LookupResult lookup(int instrumentId, int tickref, int lookupKey, int target) throws Exception {
-		LookupResult result = host.lookup(elementId, instrumentId, tickref, lookupKey, target);
+		LookupResult result = host.lookup(elementId, instrumentId, 0, tickref, lookupKey, target);
 		return result;
 	}
 
+	/**
+	 * Lookup a value from the lookup bus (with specified arg)
+	 * 
+	 * @param instrumentId
+	 * @param arg
+	 * @param tickref
+	 * @param lookupKey
+	 * @param target - element to target for lookup
+	 * @return lookup result
+	 * @throws Exception if an error occurred
+	 */
+	protected LookupResult lookup(int instrumentId, int arg, int tickref, int lookupKey, int target) throws Exception {
+		LookupResult result = host.lookup(elementId, instrumentId, arg, tickref, lookupKey, target);
+		return result;
+	}
 	/**
 	 * Lookup a value from the tickdata bus
 	 * 
@@ -367,11 +382,11 @@ public abstract class BaseElement implements SimElement {
 
 	
 	@Override
-	public LookupResult handleLookup(int instrumentId, int tickref, int lookupKey, int target) throws Exception {
+	public LookupResult handleLookup(int instrumentId, int arg, int tickref, int lookupKey, int target) throws Exception {
 		// default behaviour is timeout
 		LookupResult rslt = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		if ((target == elementId) || (target == MatElementDefs.EL_ID_ALL)) {
-			rslt = lookupBehaviour(instrumentId,tickref,lookupKey);
+			rslt = lookupBehaviour(instrumentId,arg,tickref,lookupKey);
 		}
 		return rslt;
 	}
@@ -386,7 +401,7 @@ public abstract class BaseElement implements SimElement {
 	 * @return the lookup result (validity = timeout if none)
 	 * @throws Exception 
 	 */
-	protected LookupResult lookupBehaviour(int instrumentId, int tickref, int lookupKey) throws Exception {
+	protected LookupResult lookupBehaviour(int instrumentId, int arg, int tickref, int lookupKey) throws Exception {
 		return new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 	}
 	

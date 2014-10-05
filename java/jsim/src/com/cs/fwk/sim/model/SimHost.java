@@ -60,13 +60,15 @@ public interface SimHost {
 	 * 
 	 * @param id 			- id of element doing the lookup
 	 * @param instrumentId - instrument to look up data for
+	 * @param arg			- arg to specify to service
 	 * @param tickref		- tick reference to look up data for (may be zero)
 	 * @param lookupKey		- type of data to find
 	 * @param target		- element to target (or EL_ID_ALL)
+	 * @param target2 
 	 * @return				- lookup result including validity
 	 * @throws Exception	- if an element had a problem replying
 	 */
-	public LookupResult lookup(int id, int instrumentId, int tickref, int lookupKey, int target) throws Exception;
+	public LookupResult lookup(int id, int instrumentId, int arg, int tickref, int lookupKey, int target) throws Exception;
 
 	/**
 	 * @return current simulation time in clks

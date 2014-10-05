@@ -49,7 +49,7 @@ import com.cs.fwk.util.comms.UDPCxn;
 
 public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 
-	private static final String SIM_VER = "SIM v1.01";
+	private static final String SIM_VER = "SIM v1.10";
 
 	private final static Logger logger = Logger.getLogger(MatSim.class);
 	private final Map<Integer,SimElement> simElements; // keyed on el id
@@ -267,7 +267,7 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 	}
 
 	@Override
-	public LookupResult lookup(int source, int instrumentId, int tickref, int lookupKey, int target)
+	public LookupResult lookup(int source, int instrumentId, int arg, int tickref, int lookupKey, int target)
 			throws Exception {
 		LookupResult result = null;
 		Timestamp startTime = clk.getSimTime();
@@ -275,7 +275,7 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 				",key=" + lookupKey + "): ";
 		Element responder = null;
 		for (SimElement se : simElements.values()) {
-			result = se.handleLookup(instrumentId, tickref, lookupKey, target);
+			result = se.handleLookup(instrumentId, arg, tickref, lookupKey, target);
 			if (!result.getValidity().equals(LookupValidity.TIMEOUT)) {
 				// this element handled the request - so break out of the loop
 				responder = mat.getModel().getElement(se.getId());
@@ -286,7 +286,6 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 		int lookupTime = (int) (endTime.getMicroticks() - startTime.getMicroticks());
 		LkuResult resultCode = result.getLkuResult();
 		Element sourceEl = mat.getModel().getElement(source);
-		int arg = 0;
 		lkuAuditLogger.addLog(startTime,sourceEl,instrumentId,tickref,lookupKey, arg, 
 				responder,resultCode,result.getFloatData(),lookupTime);
 		logger.debug(logstr + " returned " + result);

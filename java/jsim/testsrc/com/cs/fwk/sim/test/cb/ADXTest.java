@@ -50,7 +50,7 @@ public class ADXTest extends SimTestCase {
 	}
 
 	@Override
-	public LookupResult lookupBehaviour(int id, int instrumentId, int tickref, int lookupKey)
+	public LookupResult lookupBehaviour(int id, int instrumentId, int arg, int tickref, int lookupKey)
 			throws Exception {
 		int idx;
 		switch(lookupKey) {

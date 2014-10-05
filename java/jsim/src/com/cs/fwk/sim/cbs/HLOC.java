@@ -253,7 +253,7 @@ public class HLOC extends BaseElement implements SimElement {
 	}
 	
 	@Override
-	public LookupResult lookupBehaviour(int instrumentId, int tickref, int lookupKey) throws Exception {
+	public LookupResult lookupBehaviour(int instrumentId, int arg, int tickref, int lookupKey) throws Exception {
 		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
 		FloatValue data = getHLOCData(instrumentId,lookupKey);
 		if (data != null) {
