@@ -7,8 +7,11 @@ import org.apache.log4j.Logger;
 
 import com.cs.fwk.api.MatElementDefs;
 import com.cs.fwk.api.util.ConfigItem;
+import com.cs.fwk.sim.model.LookupResult;
+import com.cs.fwk.sim.model.LookupValidity;
 import com.cs.fwk.sim.model.SimHost;
 import com.cs.fwk.sim.types.Event;
+import com.cs.fwk.sim.types.IntValue;
 import com.cs.fwk.util.Conversion;
 
 /**
@@ -23,6 +26,7 @@ import com.cs.fwk.util.Conversion;
  */
 public abstract class SIBCore extends BaseElement {
 	private final static int MAX_SLOTS = 6;	// max # slots for config
+	private static final int LOOKUP_DLY = 2;	// lookup delay, microticks
 
 	private final static Logger logger = Logger.getLogger(SIBCore.class);
 	private Map<Integer,SlotConfig[]> i2sConfig; // map from underlying instr id to slots
@@ -170,7 +174,66 @@ public abstract class SIBCore extends BaseElement {
 		processExtConfigDone();
 	}
 
+	@Override
+	public LookupResult lookupBehaviour(int instrumentId, int arg, int tickref, int lookupKey) throws Exception {
+		LookupResult result;
+		switch (lookupKey) {
+		case MatElementDefs.EL_SIB_L_LEGID:		result = lookupLegId(instrumentId,arg);		break;
+		case MatElementDefs.EL_SIB_L_LEGDATA:	result = lookupLegData(instrumentId,arg);	break;
+		default: result = lookupBehaviourExt(instrumentId, arg, tickref, lookupKey);
+		}
+		return result;
+	}
 
+
+	/**
+	 * Get leg ID
+	 * 
+	 * @param sid
+	 * @param legNum (0..N)
+	 * @return TTII (tickref, leg instrID)
+	 */
+	private LookupResult lookupLegId(int sid, int legNum) {
+//		private Map<Integer,Integer[]> s2lConfig; // map from synth instr to leg instr_id
+//		private Map<Integer,SynthLegData> iStore[];	// map from instr id to instr data
+		LookupResult result = new LookupResult(elementId,LookupValidity.NODATA,LOOKUP_TIMEOUT_DLY);
+		Integer[] legInstrIds = s2lConfig.get(sid);
+		if (legInstrIds != null) {
+			if (legNum >= 0  &&  legNum < legInstrIds.length) {
+				int legInstrId = legInstrIds[legNum];
+				// get the data for this instr
+				SynthLegData ld = iStore[0].get(legInstrId);
+				if (ld != null) {
+					int data = (ld.getTickref() * 256) + ld.getInstrId();	// TTII
+					result = new LookupResult(elementId,new IntValue(data),LOOKUP_DLY);
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Get leg data
+	 * 
+	 * @param sid
+	 * @param legNum (0..N)
+	 * @return Leg Data
+	 */
+	private LookupResult lookupLegData(int sid, int legNum) {
+		LookupResult result = new LookupResult(elementId,LookupValidity.NODATA,LOOKUP_TIMEOUT_DLY);
+		Integer[] legInstrIds = s2lConfig.get(sid);
+		if (legInstrIds != null) {
+			if (legNum >= 0  &&  legNum < legInstrIds.length) {
+				int legInstrId = legInstrIds[legNum];
+				// get the data for this instr
+				SynthLegData ld = iStore[0].get(legInstrId);
+				if (ld != null) {
+					result = new LookupResult(elementId,new IntValue(ld.getRawData()),LOOKUP_DLY);
+				}
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * Template method for handling extended configuration
@@ -202,6 +265,20 @@ public abstract class SIBCore extends BaseElement {
 		logger.warn("processSyntheticLegEvent() - processing not handeled.");		
 	}
 
+	/**
+	 * Template method for handling lookup behaviour
+	 * 
+	 * @param instrumentId
+	 * @param arg
+	 * @param tickref
+	 * @param lookupKey
+	 * @return
+	 */
+	protected LookupResult lookupBehaviourExt(int instrumentId, int arg,
+			int tickref, int lookupKey) {
+		LookupResult result = new LookupResult(elementId,LookupValidity.TIMEOUT,LOOKUP_TIMEOUT_DLY);
+		return result;
+	}
 
 
 }
