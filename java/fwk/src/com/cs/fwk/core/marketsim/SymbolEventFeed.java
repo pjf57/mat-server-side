@@ -33,7 +33,8 @@ import com.cs.fwk.util.data.TickData;
  * @author pjf
  *
  */
-public class SymbolEventFeed implements EventFeedInt {
+public class SymbolEventFeed extends Thread implements EventFeedInt {
+	private final static String THREAD_NAME = "mkt_sim";
 	private final static Logger logger = Logger.getLogger(SymbolEventFeed.class);
 	private CxnInt cxn;
 	private final String ip;
@@ -41,6 +42,10 @@ public class SymbolEventFeed implements EventFeedInt {
 	private EventFeedCallbackInt cb;
 	private long totalSent = 0L;
 	private boolean loop;			// true if want to loop data for greater length
+	private String resource;
+	private int bursts;
+	private int ticksPerPkt;
+	private int gapMs;
 
 	private class EncodedFeedItemList {
 		private int itemCount;
@@ -91,6 +96,7 @@ public class SymbolEventFeed implements EventFeedInt {
 	}
 
 	public SymbolEventFeed(String ip, int port) throws SocketException, UnknownHostException {
+		setName(THREAD_NAME);
 		this.ip = ip;
 		this.port = port;
 		this.cxn = new UDPCxn(ip);
@@ -99,6 +105,7 @@ public class SymbolEventFeed implements EventFeedInt {
 	}
 
 	public SymbolEventFeed(CxnInt cxn, int port) throws SocketException, UnknownHostException {
+		setName(THREAD_NAME);
 		this.ip = cxn.getAddress();
 		this.port = port;
 		this.cxn = cxn;
@@ -107,6 +114,7 @@ public class SymbolEventFeed implements EventFeedInt {
 	}
 	
 	public SymbolEventFeed(CxnInt cxn, int port, boolean loop) throws SocketException, UnknownHostException {
+		setName(THREAD_NAME);
 		this.ip = cxn.getAddress();
 		this.port = port;
 		this.cxn = cxn;
@@ -125,23 +133,43 @@ public class SymbolEventFeed implements EventFeedInt {
 
 	@Override
 	public void sendTradeBurst(String resource, int bursts, int ticksPerPkt, int gapMs) throws Exception {
-		DataSource ds = new DataSource(resource);
-		ds.setLoop(loop);
-		for (int pkt=0; pkt<bursts; pkt++) {
-			EncodedFeedItemList list = new EncodedFeedItemList();
-			for (int tick=0; tick<ticksPerPkt; tick++) {
-				TickData data = ds.getNext();
-				list.put(data);
+		this.resource = resource;
+		this.bursts = bursts;
+		this.ticksPerPkt = ticksPerPkt;
+		this.gapMs = gapMs;
+		start();
+	}
+	
+	@Override
+	public void run() {
+		boolean error = false;
+		logger.info("Starting ...");
+		try {
+			DataSource ds = new DataSource(resource);
+			ds.setLoop(loop);
+			for (int pkt=0; pkt<bursts; pkt++) {
+				EncodedFeedItemList list = new EncodedFeedItemList();
+				for (int tick=0; tick<ticksPerPkt; tick++) {
+					TickData data = ds.getNext();
+					list.put(data);
+				}
+				logger.info("Sending stream of " + list.getItemCount() + " ticks with " + list.getLength() + " bytes.");
+				sendData(list);
+				totalSent += list.getItemCount();
+				notifyState("running",totalSent);
+				if (gapMs > 0) {
+					Thread.sleep(gapMs);
+				}
 			}
-			logger.info("Sending stream of " + list.getItemCount() + " ticks with " + list.getLength() + " bytes.");
-			sendData(list);
-			totalSent += list.getItemCount();
-			notifyState("running",totalSent);
-			if (gapMs > 0) {
-				Thread.sleep(gapMs);
-			}
+		} catch (Exception e) {
+			error = true;
+			logger.error("run(): error:" + e);
+			notifyState("error",totalSent);
 		}
-		notifyState("stopped",totalSent);
+		if (!error) {
+			notifyState("stopped",totalSent);
+		}
+		logger.info("Stopped.");
 	}
 	
 	/**
