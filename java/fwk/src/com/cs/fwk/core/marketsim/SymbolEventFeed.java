@@ -1,17 +1,16 @@
 package com.cs.fwk.core.marketsim;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-import org.apache.log4j.Logger; 
+
+import org.apache.log4j.Logger;
 
 import com.cs.fwk.api.comms.CFDatagram;
 import com.cs.fwk.api.comms.CxnInt;
 import com.cs.fwk.util.Conversion;
-import com.cs.fwk.util.data.DataSource;
 import com.cs.fwk.util.comms.UDPCxn;
+import com.cs.fwk.util.data.DataSource;
 import com.cs.fwk.util.data.TickData;
 
 
@@ -41,6 +40,7 @@ public class SymbolEventFeed implements EventFeedInt {
 	private int port;
 	private EventFeedCallbackInt cb;
 	private long totalSent = 0L;
+	private boolean loop;			// true if want to loop data for greater length
 
 	private class EncodedFeedItemList {
 		private int itemCount;
@@ -95,6 +95,7 @@ public class SymbolEventFeed implements EventFeedInt {
 		this.port = port;
 		this.cxn = new UDPCxn(ip);
 		this.cb = null;
+		this.loop = false;
 	}
 
 	public SymbolEventFeed(CxnInt cxn, int port) throws SocketException, UnknownHostException {
@@ -102,8 +103,16 @@ public class SymbolEventFeed implements EventFeedInt {
 		this.port = port;
 		this.cxn = cxn;
 		this.cb = null;
+		this.loop = false;
 	}
 	
+	public SymbolEventFeed(CxnInt cxn, int port, boolean loop) throws SocketException, UnknownHostException {
+		this.ip = cxn.getAddress();
+		this.port = port;
+		this.cxn = cxn;
+		this.cb = null;
+		this.loop = loop;
+	}
 	
 	/**
 	 * Set callback to receive progress notifications
@@ -114,18 +123,10 @@ public class SymbolEventFeed implements EventFeedInt {
 		this.cb = cb;
 	}
 
-	/**
-	 * Send a number of ticks as a single UDP frame
-	 * 
-	 * @param resource 		when to get the source data
-	 * @param bursts		number of bursts (pkts) to send
-	 * @param ticksPerPkt	number of ticks in each pkt 
-	 * @param gapMs			inter packet gap (ms)
-	 * @param i 
-	 * @throws Exception 
-	 */
-	public void sendTradeBurst(InputStream is, int bursts, int ticksPerPkt, int gapMs) throws Exception {
-		DataSource ds = new DataSource(is);
+	@Override
+	public void sendTradeBurst(String resource, int bursts, int ticksPerPkt, int gapMs) throws Exception {
+		DataSource ds = new DataSource(resource);
+		ds.setLoop(loop);
 		for (int pkt=0; pkt<bursts; pkt++) {
 			EncodedFeedItemList list = new EncodedFeedItemList();
 			for (int tick=0; tick<ticksPerPkt; tick++) {
@@ -153,14 +154,6 @@ public class SymbolEventFeed implements EventFeedInt {
 		if (cb != null) {
 			cb.notifyEventFeedState(status, totalSent);
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see com.pjf.marketsim.EventFeedInt#sendTradeBurst(java.lang.String, int, int, int)
-	 */
-	@Override
-	public void sendTradeBurst(String resource, int bursts, int ticksPerPkt, int gapMs) throws Exception {
-		sendTradeBurst(new FileInputStream(resource), bursts, ticksPerPkt, gapMs);
 	}
 	
 	
