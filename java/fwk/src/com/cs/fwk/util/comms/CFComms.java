@@ -3,6 +3,7 @@ package com.cs.fwk.util.comms;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.Logger;
 
@@ -30,6 +31,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	private CxnInt cxn;
 	private final Reader reader;
 	private EncodedConfigItemList configBuf;
+	private Semaphore rxSem;
 
 	// basis states
 	private final byte BS_INIT	= 1;
@@ -47,6 +49,13 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 		
 		@Override
 		public void run() {
+			logger.debug("Receiver waiting to start");
+			try {
+				rxSem.acquire();
+			} catch (InterruptedException e1) {
+				logger.error("run() - exception during sem acquire: " + e1);
+				e1.printStackTrace();
+			}
 			logger.debug("Receiver starting");
 			try {
 				while (keepGoing) {
@@ -80,6 +89,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 		hwStatus = new HwStatus();
 		this.cxn = cxn;
 		this.CFPort = CFPort;
+		rxSem = new Semaphore(0);
 		this.reader = new Reader();
 		this.reader.start();
 	}
@@ -148,12 +158,15 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	@Override
 	public void sendConfig() throws Exception {
 		cxn.send(new CFDatagram(CFPort,configBuf.getData()));
+		releaseRx();
 	}
+
 
 	@Override
 	public void sendSingleCmd(int cbId, int cmdId, int arg, int val) throws Exception {
 		EncodedConfigItemList buf = new EncodedConfigItemList();
 		buf.putCmdItem(cbId, cmdId, arg, val);
+		releaseRx();
 		cxn.send(new CFDatagram(CFPort,buf.getData()));
 	}
 
@@ -181,6 +194,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	public void resetCounters(int cbId) throws Exception {
 		EncodedConfigItemList buf = new EncodedConfigItemList();
 		buf.putSystemItem(MatElementDefs.EL_ID_ALL, MatElementDefs.EL_C_RESET_CNTRS, 0, 0);
+		releaseRx();
 		cxn.send(new CFDatagram(CFPort,buf.getData()));		
 	}
 
@@ -188,6 +202,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	public void resetCBConfig(int cbId) throws Exception {
 		EncodedConfigItemList buf = new EncodedConfigItemList();
 		buf.putSystemItem(cbId, MatElementDefs.EL_C_RESET, 0, 0);
+		releaseRx();
 		cxn.send(new CFDatagram(CFPort,buf.getData()));		
 	}
 
@@ -526,7 +541,10 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	}
 
 
-
-
+	private void releaseRx() {
+		if (rxSem.availablePermits() < 1) {
+			rxSem.release();
+		}
+	}
 
 }
