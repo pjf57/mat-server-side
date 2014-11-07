@@ -335,6 +335,8 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 		}
 		long hwSig = Conversion.getLongFromBytes(msg,1,8);
 		int microtickPeriod = 0;
+		byte flags = 0;
+		int cfgEvents = 0;
 		if (msg.length >= 11) {
 			microtickPeriod = Conversion.getIntFromBytes(msg,9,2);
 		}
@@ -344,8 +346,14 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			byte min = msg[12];
 			cf_version = "" + Conversion.toHexByteString(maj) + "." + Conversion.toHexByteString(min);
 		}
-		HwStatus st = new HwStatus(hwSig,microtickPeriod,cf_version);
-		logger.debug("processHWSigMsg() - CF Status received:" + st);
+		if (msg.length >= 18) {
+			flags = msg[13];
+		}
+		if (msg.length >= 16) {
+			cfgEvents = Conversion.getIntFromBytes(msg,14,4);
+		}
+		HwStatus st = new HwStatus(hwSig,microtickPeriod,cf_version,flags,cfgEvents);
+		logger.info("processHWSigMsg() - CF Status received:" + st);
 		if (callback == null) {
 			logger.warn("processCFStatusMsg(): no callback to deliver to");
 		} else {

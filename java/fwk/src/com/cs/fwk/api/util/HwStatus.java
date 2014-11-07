@@ -10,7 +10,13 @@ public class HwStatus {
 	private long hwSig;
 	private int microtickPeriod;	// picoseconds
 	private String cf_version;
-
+	private byte flags;				// flag byte from protocol
+	private int cfgEvents;			// #config events processed
+	// flag bits
+	private final byte F_INIT = 1;		// initialised
+	private final byte F_CFGRDY = 2;	// ready for config
+	private final byte F_CFGERR = 4;	// config error
+	
 	/**
 	 * Create empty (default) hw status
 	 */
@@ -19,6 +25,8 @@ public class HwStatus {
 		this.hwSig = 0;
 		this.microtickPeriod = 10000;	// default
 		this.cf_version = "";
+		this.flags = 0;
+		this.cfgEvents = 0;
 	}
 
 	/**
@@ -27,8 +35,10 @@ public class HwStatus {
 	 * @param hwSig
 	 * @param microtickPeriod (ps)
 	 * @param cf_version
+	 * @param flags - flagset
+	 * @param cfgEvents;
 	 */
-	public HwStatus(long hwSig, int microtickPeriod, String cf_version) {
+	public HwStatus(long hwSig, int microtickPeriod, String cf_version, byte flags, int cfgEvents) {
 		super();
 		this.hwSig = hwSig;
 		this.microtickPeriod = microtickPeriod;
@@ -56,10 +66,39 @@ public class HwStatus {
 	public String getCf_version() {
 		return cf_version;
 	}
+	
+	/**
+	 * @return #config events received by the HW
+	 */
+	public int getCfgEventCount() {
+		return cfgEvents;
+	}
+	
+	/**
+	 * @return true if HW is initialised
+	 */
+	public boolean isInitialised() {
+		return (flags & F_INIT) != 0;
+	}
+
+	/**
+	 * @return true if HW is ready for config
+	 */
+	public boolean isConfigReady() {
+		return (flags & F_CFGRDY) != 0;
+	}
+
+	/**
+	 * @return true if HW has had a config error
+	 */
+	public boolean hadConfigError() {
+		return (flags & F_CFGERR) != 0;
+	}
 
 	@Override
 	public String toString() {
-		return "sig=" + toHexLongString(hwSig) + " cf_ver=" + cf_version + " mtp=" + microtickPeriod + " ps";		
+		return "sig=" + toHexLongString(hwSig) + " cf_ver=" + cf_version + " mtp=" + microtickPeriod + " ps" +
+				" flags=x" + toHexByteString(flags) + " cfgEvts=" + cfgEvents;		
 	}
 
 	private String toHexLongString(long value) {
