@@ -184,5 +184,59 @@ public class Conversion {
 		return buf.toString();
 	}
 
+	/**
+	 * Convert a string of hex chars to an array of byte.
+	 * 
+	 * @param string
+	 * @return byte array
+	 * @throws Exception if non hex char found
+	 */
+	public static byte[] hextTobyte(String s) throws Exception {
+		int len = s.length() / 2;
+		byte[] data = new byte[len];
+		int si = 0;
+		for (int bi=0; bi<len; bi++) {
+			int d = hex(s.charAt(si)) * 16 + hex(s.charAt(si+1));
+			data[bi] = (byte) (d & 0xff);
+			si += 2;
+		}
+		return data;
+	}
+
+	/**
+	 * @param ch
+	 * @return hex value of ch
+	 * @throws Exception 
+	 */
+	private static int hex(char ch) throws Exception {
+		int d = 0;
+		switch(ch) {
+		case '0' :	d = 0; break;
+		case '1' :	d = 1; break;
+		case '2' :	d = 2; break;
+		case '3' :	d = 3; break;
+		case '4' :	d = 4; break;
+		case '5' :	d = 5; break;
+		case '6' :	d = 6; break;
+		case '7' :	d = 7; break;
+		case '8' :	d = 8; break;
+		case '9' :	d = 9; break;
+		case 'a' :	d = 10; break;
+		case 'A' :	d = 10; break;
+		case 'b' :	d = 11; break;
+		case 'B' :	d = 11; break;
+		case 'c' :	d = 12; break;
+		case 'C' :	d = 12; break;
+		case 'd' :	d = 13; break;
+		case 'D' :	d = 13; break;
+		case 'e' :	d = 14; break;
+		case 'E' :	d = 14; break;
+		case 'f' :	d = 15; break;
+		case 'F' :	d = 15; break;
+		default: throw new Exception("non-hex char found");
+		}
+		return d;
+	}
+
 
 }

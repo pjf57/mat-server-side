@@ -12,6 +12,7 @@ public class HwStatus {
 	private String cf_version;
 	private byte flags;				// flag byte from protocol
 	private int cfgEvents;			// #config events processed
+	private boolean flagsSet;		// indicates if we received flags or not
 	// flag bits
 	private final byte F_INIT = 1;		// initialised
 	private final byte F_CFGRDY = 2;	// ready for config
@@ -27,6 +28,7 @@ public class HwStatus {
 		this.cf_version = "";
 		this.flags = 0;
 		this.cfgEvents = 0;
+		this.flagsSet = false;
 	}
 
 	/**
@@ -35,17 +37,36 @@ public class HwStatus {
 	 * @param hwSig
 	 * @param microtickPeriod (ps)
 	 * @param cf_version
-	 * @param flags - flagset
-	 * @param cfgEvents;
 	 */
-	public HwStatus(long hwSig, int microtickPeriod, String cf_version, byte flags, int cfgEvents) {
+	public HwStatus(long hwSig, int microtickPeriod, String cf_version) {
 		super();
 		this.hwSig = hwSig;
 		this.microtickPeriod = microtickPeriod;
 		this.cf_version = cf_version;
+		this.flags = 0;
+		this.cfgEvents = 0;
+		this.flagsSet = false;
 	}
 
+	/**
+	 * Set additional parameters from V2 status
+	 * 
+	 * @param flags
+	 * @param cfgEvents
+	 */
+	public void setV2parameters(byte flags, int cfgEvents) {
+		this.flags = flags;
+		this.flagsSet = true;
+		this.cfgEvents = cfgEvents;
+	}
 
+	/**
+	 * @return true if we have configuration status (ready, init, etc)
+	 */
+	public boolean hasConfigStatus() {
+		return flagsSet;
+	}
+	
 	/**
 	 * @return hardware signature (or 0)
 	 */

@@ -346,13 +346,15 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			byte min = msg[12];
 			cf_version = "" + Conversion.toHexByteString(maj) + "." + Conversion.toHexByteString(min);
 		}
-		if (msg.length >= 18) {
+		HwStatus st = new HwStatus(hwSig,microtickPeriod,cf_version);
+		if (msg.length >= 14) {
 			flags = msg[13];
 		}
 		if (msg.length >= 16) {
 			cfgEvents = Conversion.getIntFromBytes(msg,14,4);
+			st.setV2parameters(flags, cfgEvents);
 		}
-		HwStatus st = new HwStatus(hwSig,microtickPeriod,cf_version,flags,cfgEvents);
+		
 		logger.info("processHWSigMsg() - CF Status received:" + st);
 		if (callback == null) {
 			logger.warn("processCFStatusMsg(): no callback to deliver to");
