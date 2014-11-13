@@ -48,6 +48,7 @@ public class MatInterface implements MatApi {
 	@Override
 	public void requestHWStatus() {
 		try {
+			comms.getHWSignature();	
 			comms.requestStatus();
 		} catch (Exception e) {
 			logger.error("Error requesting status: " + e);

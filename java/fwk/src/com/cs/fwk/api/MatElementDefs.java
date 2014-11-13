@@ -24,6 +24,7 @@ public class MatElementDefs {
 	public static final int EL_TYP_ADX			= 0x62;
 	public static final int EL_TYP_RMO			= 0x70;
 	public static final int EL_TYP_SIB			= 0x80;
+	public static final int EL_TYP_IF			= 0x90;
 
 //	--------------------------------
 //	-- Standard communications ports
@@ -213,6 +214,12 @@ public class MatElementDefs {
 	public static final int EL_SIB_L_LEGID			= 0x14; // lookup leg ID
 	public static final int EL_SIB_L_LEGDATA		= 0x15; // lookup leg data
 
+//	------------------------------
+//	-- IF
+//	------------------------------
+	
+	public static final int EL_IF_C_CTRL		= 0x01; // control flags, data = xxxxx0 (bit 0 indicates Global control)
+	
 
 // ---------------------- utilities ----------------------------------------
 	
@@ -256,6 +263,8 @@ public class MatElementDefs {
 		case MatElementDefs.EL_TYP_UDP_MFD_SYM	: typeStr = "UDPrawMKTSYM";	break;
 		case MatElementDefs.EL_TYP_MFD_SYM		: typeStr = "UDP_MFD_SYM";	break;
 		case MatElementDefs.EL_TYP_RMO			: typeStr = "RMO";			break;
+		case MatElementDefs.EL_TYP_SIB			: typeStr = "SIB";			break;
+		case MatElementDefs.EL_TYP_IF			: typeStr = "IF";			break;
 		default					: typeStr = "unknown(" + type + ")";		break;
 		}
 		return typeStr;
