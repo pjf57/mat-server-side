@@ -19,7 +19,8 @@ public class L4IPOperCalc extends BaseAttributeCalculator implements AttributeCa
 		int p = getRawVal("P");
 		int q = getRawVal("Q");
 		int z = getRawVal("Z");
-		int oper = p | q | z;
+		int always = getRawVal("Type");
+		int oper = always | p | q | z;
 		setValueHex(oper);
 	}
 }

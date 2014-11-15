@@ -21,18 +21,20 @@ import com.cs.fwk.util.Conversion;
  *--		where operations are configurable as are K1, K2.
  *--		A,B,C,D are ip0,ip1,ip2,ip3 resectively
  *--		all data is sp fp.
- *--		output z generates an event 1 on transition to true, and an event 0 on transition to false.
+ *--		output z generates an event:
+ *--			if 1shot:  1 on transition to true, and an event 0 on transition to false,
+ *--			if always: 1 or 0 on every event in
  *--
  *--		config is 
- *--					 16   15 12 11  8 7  6 5  4 3 0
- *--		  			--------------------------------
- *--		C_OPS		|1sht| cf1 | cf2 |xsel|ysel|lop|
- *--		  			--------------------------------
+ *--					 16     15 12 11  8 7  6 5  4 3 0
+ *--		  			----------------------------------
+ *--		C_OPS		|always| cf1 | cf2 |xsel|ysel|lop|
+ *--		  			----------------------------------
  *--
- *--					1sht	   cf          sel       lop
- *--					---        --	       ---		 ---
- *--					0 Follow  0000 EQ     00 IP		0000 p and q
- *--					1 1sht    0001 LT     01 K	   	0001 p or q
+ *--					always     cf         sel      	lop
+ *--					------     --	      ---		---
+ *--					0 1shot   0000 EQ     00 IP		0000 p and q
+ *--					1 always  0001 LT     01 K	   	0001 p or q
  *--				  			  0010 LE				0010 p nand q
  *--			     			  0011 GT				0011 p nor q
  *--				  			  0100 GE				0100 p
@@ -53,7 +55,7 @@ public class L4IP extends BaseElement implements SimElement {
 	private int c_xsel;			// x = b or K1
 	private int c_ysel;			// y = d or K2
 	private int c_lop;			// Z = fn(p,q)
-	private boolean c_oneShot;	// event output only if Z changes
+	private boolean c_always;	// always output event, otherwise only if Z changes
 	private FloatValue c_k1;
 	private FloatValue c_k2;
 	private FloatValue[][] lastValue;	// last value on each input [instr][ip 1..4]
@@ -84,9 +86,9 @@ public class L4IP extends BaseElement implements SimElement {
 			c_cf2 = (cfg.getRawData() >> 8) & 0xf;
 			c_cf1 = (cfg.getRawData() >> 12) & 0xf;
 			if ((cfg.getRawData() & 0x10000) == 0) {
-				c_oneShot = false;
+				c_always = false;
 			} else {
-				c_oneShot = true;
+				c_always = true;
 			}
 			break;
 		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
@@ -103,7 +105,7 @@ public class L4IP extends BaseElement implements SimElement {
 		BooleanValue q = fn(c_cf2,lastValue[instr][2],y);
 		BooleanValue z = lop(c_lop,p,q);
 		if (z.isValid()){
-			if (!c_oneShot || !lastZ.isValid() ||  (lastZ.getValue() != z.getValue())) {
+			if (c_always || !lastZ.isValid() ||  (lastZ.getValue() != z.getValue())) {
 				Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,
 						evt.getTickref(), z.getRawData());
 				host.publishEvent(evtOut,LATENCY);
