@@ -83,6 +83,7 @@ public class ATR extends BaseElement implements SimElement {
 			if (output.isValid()) {
 				atrStore.put(output.getValue(), instr);
 				Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,0,output.getValue());
+				logger.info("Publishing evt: " + evtOut);
 				host.publishEvent(evtOut,LATENCY);
 			}
 		}

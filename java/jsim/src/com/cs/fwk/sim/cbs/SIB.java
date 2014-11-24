@@ -39,7 +39,7 @@ public class SIB extends SIBCore {
 			int opLeg = c_opLeg[op];
 			if (opLeg >= 0  &&  opLeg < legData.length) {
 				if (legData[opLeg] != null  &&  legData[opLeg].isValid()) {
-					Event evtOut = new Event(host.getCurrentSimTime(),elementId,op,synthInstrId,
+					Event evtOut = new Event(host.getCurrentSimTime(),elementId,op+1,synthInstrId,
 							tickref, legData[opLeg].getRawData());
 					host.publishEvent(evtOut,LATENCY);
 				}

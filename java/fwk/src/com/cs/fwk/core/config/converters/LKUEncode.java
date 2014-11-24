@@ -50,7 +50,7 @@ public class LKUEncode implements AttrConfigGenerator {
 			int channel = rd.getInt(5);
 			// encode into the 32 bit config value
 			if (target == 0) {
-				target = 0xff;
+				target = MatElementDefs.EL_ID_ALL;
 			}
 			channel--;
 			int cfgData = (target << 24) + (function << 16) + (arg << 8) + (type << 6) + (event << 4) + channel;

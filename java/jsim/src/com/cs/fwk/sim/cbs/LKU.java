@@ -93,7 +93,7 @@ public class LKU extends BaseElement implements SimElement {
 
 	@Override
 	protected void processEvent(int input, Event evt) {
-		logger.debug("processEvent() - " + evt);
+		logger.info("processEvent() - " + evt + " on input " + input);
 		int ip = input - 1;
 		ChnSpec cs = c_chnSpecs[ip];
 		if (cs != null) {
