@@ -34,6 +34,12 @@ public class GridRowData {
 	public String get(int idx) {
 		return data.get(idx);
 	}
+	
+	public int getInt(int idx) {
+		String s = data.get(idx);
+		return Integer.parseInt(s);
+	}
+
 
 	public void set(int idx, String value) {
 		data.set(idx,value);
@@ -53,5 +59,6 @@ public class GridRowData {
 		buf.append("]");
 		return buf.toString();
 	}
+
 
 }

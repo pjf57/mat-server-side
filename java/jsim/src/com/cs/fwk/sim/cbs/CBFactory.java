@@ -32,6 +32,7 @@ public class CBFactory {
 		case MatElementDefs.EL_TYP_RMO:			el = new RMO(id,host);			break;
 		case MatElementDefs.EL_TYP_SIB:			el = new SIB(id,host);			break;
 		case MatElementDefs.EL_TYP_IF:			el = new IF(id,host);			break;
+		case MatElementDefs.EL_TYP_LKU:			el = new LKU(id,host);			break;
 		case MatElementDefs.EL_TYP_UDP_RAW_MKT:	// not supported in sim
 		default:
 		}
