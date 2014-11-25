@@ -35,9 +35,26 @@ public class GridRowData {
 		return data.get(idx);
 	}
 	
+	// decimal
 	public int getInt(int idx) {
 		String s = data.get(idx);
 		return Integer.parseInt(s);
+	}
+
+	// decimal with default value
+	public int getInt(int idx, int dflt) {
+		int ret = dflt;
+		String s = data.get(idx);
+		if ((s != null) && (s.length() > 0)) {
+			ret = Integer.parseInt(s);
+		}
+		return ret;
+	}
+
+	// decimal or hex
+	public int decodeInt(int idx) {
+		String s = data.get(idx);
+		return Integer.decode(s);
 	}
 
 
@@ -59,6 +76,8 @@ public class GridRowData {
 		buf.append("]");
 		return buf.toString();
 	}
+
+
 
 
 }

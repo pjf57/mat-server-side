@@ -305,7 +305,7 @@ public class MatInterfaceModel implements MatModel {
 		String converter = parts[1];
 		// parse the colspec
 		List<GridColumnSpec> gcs = new ArrayList<GridColumnSpec>();
-		String[] cols = colSpec.split(",");
+		String[] cols = colSpec.split(";");
 		if (cols.length == 0) {
 			throw new Exception("createGridAttribute() - zero cols for gridspec " + attrName + " [" + gridSpec + "]");		
 		}
@@ -315,7 +315,15 @@ public class MatInterfaceModel implements MatModel {
 			if (csa.length != 2) {
 				throw new Exception("createGridAttribute() - bad format for colspec on " + attrName + " [" + cs + "]");		
 			}
-			GridColumnSpec s = new GridColumnSpec(csa[0],csa[1],cn);			
+			String[] typeParts = csa[1].split("\\{");
+			String typ = typeParts[0];
+			GridColumnSpec s = new GridColumnSpec(csa[0],typ,cn);
+			if (typeParts.length > 1) {
+				String enumSpec = "{" + typeParts[1];
+				enumSpec = enumSpec.replaceAll("~", ":");
+				s.setEnumSpec(enumSpec);
+			}
+			logger.info("Adding colspec: " + s);
 			gcs.add(s);
 			cn++;
 		}

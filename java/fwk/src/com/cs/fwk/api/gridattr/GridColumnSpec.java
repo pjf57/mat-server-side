@@ -10,6 +10,7 @@ public class GridColumnSpec {
 	private final String name;
 	private final String type;
 	private final int colNumber;
+	private String enumSpec;		// form {"e1","e2","e3"} or null
 	
 	/**
 	 * 
@@ -22,6 +23,16 @@ public class GridColumnSpec {
 		this.name = name;
 		this.type = type;
 		this.colNumber = colNum;
+		this.enumSpec = null;
+	}
+
+	/**
+	 * Set a new spec for an enum
+	 * 
+	 * @param spec	{"e1","e2","e3"}
+	 */
+	public void setEnumSpec(String spec) {
+		this.enumSpec = spec;
 	}
 	
 	public String getName() {
@@ -35,4 +46,20 @@ public class GridColumnSpec {
 	public int getColNumber() {
 		return colNumber;
 	}
+
+	public boolean isEnum() {
+		return enumSpec != null;
+	}
+
+	public String getEnumValues() {
+		return enumSpec;
+	}
+
+	@Override
+	public String toString() {
+		return "GridColumnSpec [name=" + name + ", type=" + type
+				+ ", colNumber=" + colNumber + ", enumSpec=" + enumSpec + "]";
+	}
+	
+	
 }

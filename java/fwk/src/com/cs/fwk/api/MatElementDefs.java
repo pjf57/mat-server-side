@@ -226,7 +226,7 @@ public class MatElementDefs {
 //	-- LKU
 //	------------------------------
 
-	public static final int EL_LKU_C_CHN_SPEC = 0;
+	public static final int EL_LKU_C_CHN_SPEC 	= 0x01; // Channel spec: CB.FN.ARG.[TY.EV.IP] size: 8.8.8.2.2.4
 
 // ---------------------- utilities ----------------------------------------
 	
