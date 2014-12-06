@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.cs.fwk.api.gridattr.GridAttribute;
+import com.cs.fwk.api.util.CBConfigText;
 
 /**
  * Defines and Element in the model. For example, a Cheetah Block
@@ -47,6 +48,20 @@ public interface Element extends Item {
 	 * @return the commands that the element has
 	 */
 	public List<Cmd> getCmds();
+	
+	/**
+	 * @return list of string that describe current config. May return null.
+	 * @throws Exception if an error occurred
+	 */
+	public CBConfigText getConfigText() throws Exception;
+
+	/**
+	 * Set the name of the class that can calculate the config textual description
+	 * based on the current attribute values
+	 * 
+	 * @param className - name of class that implements ConfigTextCalcInt
+	 */
+	public void setConfigTextCalc(String className);
 
 	/**
 	 * Set the status of the element
@@ -105,4 +120,14 @@ public interface Element extends Item {
 	 * Remove all connections to this element
 	 */
 	public void removeAllConnections();
+	
+	/**
+	 * @return true if the cb has at least one calculated attribute
+	 */
+	public boolean hasCalculatedAttrs();
+
+	/**
+	 * @return name of class that can calculate a textual description of the config, or null
+	 */
+	public String getConfigInterpreterClassName();
 }

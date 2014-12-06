@@ -16,10 +16,14 @@ import com.cs.fwk.api.InputPort;
 import com.cs.fwk.api.OutputPort;
 import com.cs.fwk.api.Status;
 import com.cs.fwk.api.gridattr.GridAttribute;
+import com.cs.fwk.api.util.CBConfigText;
+import com.cs.fwk.api.util.ConfigTextCalcInt;
 import com.cs.fwk.util.ElementStatus;
 
 public class BasicElement extends BasicItem implements Element {
 	private final static Logger logger = Logger.getLogger(BasicElement.class);
+	
+	private static final String CONFIG_TEXT_PKG = "com.cs.fwk.core.config.text";
 
 	private final String type;
 	private final int hwType;					// the HW ID for this type
@@ -29,9 +33,12 @@ public class BasicElement extends BasicItem implements Element {
 	private List<Cmd> cmds;
 	private ElementStatus status;
 	private boolean statusHasChanged;
+	private String configInterpreterClassName;
+	private boolean hasCalculatedAttr;
 	
 	/**
 	 * Basic constructor to make a type
+	 * Type initially is bare. Add attrs, ips, ops with addXxx() methods.
 	 * 
 	 * @param id
 	 * @param type
@@ -40,12 +47,14 @@ public class BasicElement extends BasicItem implements Element {
 		super(id);
 		this.type = type;
 		this.hwType = hwType;
+		this.hasCalculatedAttr = false;
 		this.inputs = new ArrayList<InputPort>();
 		this.outputs = new ArrayList<OutputPort>();
 		this.attributes = new HashMap<String,Attribute>();
 		this.cmds = new ArrayList<Cmd>();
 		this.status = new ElementStatus();
 		this.statusHasChanged = true;
+		this.configInterpreterClassName = null;
 	}
 
 	/**
@@ -60,6 +69,8 @@ public class BasicElement extends BasicItem implements Element {
 		super(id);
 		this.type = elType;
 		this.hwType = type.getHWType();
+		this.hasCalculatedAttr = false;
+		this.configInterpreterClassName = type.getConfigInterpreterClassName();
 		this.inputs = cloneInputsFromType(type);
 		this.outputs = cloneOutputsFromType(type);
 		this.attributes = cloneAttributesFromType(this,type);
@@ -75,6 +86,9 @@ public class BasicElement extends BasicItem implements Element {
 			if (a.getSysType() == AttrSysType.LKU_TARGET) {
 				// default value of LKU Targets is "ALL"
 				a.setValue("63");
+			}
+			if (a.isCalculated()) {
+				hasCalculatedAttr = true;
 			}
 			attrs.put(a.getName(),a);
 		}
@@ -160,6 +174,10 @@ public class BasicElement extends BasicItem implements Element {
 	
 	public void addAttribute(Attribute attr) {
 		attributes.put(attr.getName(),attr);
+		if (attr.isCalculated()) {
+			hasCalculatedAttr = true;
+		}
+
 	}
 
 	public void addInputPort(InputPort ip) {
@@ -202,8 +220,11 @@ public class BasicElement extends BasicItem implements Element {
 				buf.append(x); buf.append(' ');
 			}
 		} catch (Exception e) {
-			logger.error("Error getting attributes for element " + getShortName() + ": " + e.getMessage());
+			logger.error("Error getting components of element " + getShortName() + ": " + e.getMessage());
 			buf.append("*error*");
+		}
+		if (configInterpreterClassName != null) {
+			buf.append(" CFGtxt:" + configInterpreterClassName);
 		}
 		buf.append(']');
 		return buf.toString();
@@ -273,6 +294,33 @@ public class BasicElement extends BasicItem implements Element {
 			statusHasChanged = false;
 		}
 		return ret;
+	}
+
+	@Override
+	public CBConfigText getConfigText() throws Exception {
+		CBConfigText configText = null;
+		if (configInterpreterClassName != null) {
+			// load the class and execute to determine the config text
+			String ctn = CONFIG_TEXT_PKG + "." + configInterpreterClassName;
+			ConfigTextCalcInt calc = (ConfigTextCalcInt) ClassLoader.getSystemClassLoader().loadClass(ctn).newInstance();
+			configText = calc.calculate(this);
+		}
+		return configText;
+	}
+
+	@Override
+	public void setConfigTextCalc(String className) {
+		this.configInterpreterClassName = className;
+	}
+
+	@Override
+	public String getConfigInterpreterClassName() {
+		return configInterpreterClassName;
+	}
+
+	@Override
+	public boolean hasCalculatedAttrs() {
+		return hasCalculatedAttr;
 	}
 
 

@@ -103,7 +103,7 @@ public class DesignUtils {
 
 	/**
 	 * Parse a design and load it into the model
-	 * @param design - JSON encoded design
+	 * @param design - JSON encoded design, containing an obj called "design"
 	 * @param model - model to load into
 	 * @throws Exception on parse error
 	 */

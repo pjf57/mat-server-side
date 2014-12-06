@@ -109,6 +109,10 @@ public class MatInterfaceModel implements MatModel {
 				logger.error("No such type: " + elType + " for element " + id);
 			}
 			el = new BasicElement(id,elType,type);
+			String cfgTextCalc = props.getProperty(e + ".configTextCalc");
+			if (cfgTextCalc != null) {
+				el.setConfigTextCalc(cfgTextCalc);
+			}
 		}
 		return el;
 	}
@@ -132,6 +136,13 @@ public class MatInterfaceModel implements MatModel {
 			int hwType = Integer.parseInt(components[1]);
 			type = new BasicElement(Integer.parseInt(ids),typeName,hwType);
 		}
+		// process other features at the type level
+		
+		String cIcn = props.getProperty(t + ".configTextCalc");
+		if (cIcn != null) {
+			type.setConfigTextCalc(cIcn);
+		}
+		
 		// read attributes
 		int an = 1;
 		boolean keepReading = true;
