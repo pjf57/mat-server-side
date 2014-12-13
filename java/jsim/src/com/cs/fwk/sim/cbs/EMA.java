@@ -35,7 +35,10 @@ public class EMA extends BaseElement implements SimElement {
 		switch (cfg.getItemId()) {
 		case MatElementDefs.EL_EMA_C_ALPHA: c_alpha = cfg.getFloatData();	break;
 		case MatElementDefs.EL_EMA_C_LEN: 	c_len   = cfg.getRawData();		break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 	

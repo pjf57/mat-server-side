@@ -46,7 +46,10 @@ public class TG1 extends BaseElement implements SimElement {
 		case MatElementDefs.EL_TG1_C_P1: c_p1 = cfg.getFloatData();	break;
 		case MatElementDefs.EL_TG1_C_LEN: c_len = cfg.getRawData();	break;
 		case MatElementDefs.EL_TG1_C_GAP: c_gap = cfg.getRawData();	break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 

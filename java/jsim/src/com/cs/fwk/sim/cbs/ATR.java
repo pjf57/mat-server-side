@@ -49,7 +49,10 @@ public class ATR extends BaseElement implements SimElement {
 		case MatElementDefs.EL_ATR_C_IP_CN1: 
 			c_ipHasCloseN1 = (cfg.getRawData() & 1) == 1;
 			break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 
@@ -102,6 +105,9 @@ public class ATR extends BaseElement implements SimElement {
 
 	private LookupResult HlocLookup(int instr, int tickref, int key) throws Exception {
 		LookupResult rslt = lookup(instr, tickref, key, getLookupTarget(0));
+		if (!rslt.isValid()) {
+			setErrorCode(MatElementDefs.CB_EC_GEN_FETCH_ERR);
+		}
 		return rslt;
 	}
 

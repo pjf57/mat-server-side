@@ -31,7 +31,10 @@ public class IF extends BaseElement implements SimElement {
 	protected void processConfig(ConfigItem cfg) {
 		switch (cfg.getItemId()) {
 		case MatElementDefs.EL_IF_C_CTRL: c_global = ((cfg.getRawData() & 0x0001) == 1);	break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 				break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 

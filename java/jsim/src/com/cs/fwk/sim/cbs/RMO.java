@@ -55,7 +55,10 @@ public class RMO extends BaseElement implements SimElement {
 		case MatElementDefs.EL_RMO_C_MAX_POSN: 	c_maxPosn = cfg.getRawData();	break;
 		case MatElementDefs.EL_RMO_C_UDPPORT: 	c_port = cfg.getRawData();		break;
 		case MatElementDefs.EL_RMO_C_UDPIP: 	c_ip = cfg.getRawData();		break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 
@@ -143,6 +146,9 @@ public class RMO extends BaseElement implements SimElement {
 								publishEvent(evtOut,1);	
 							}
 						}
+					} else {
+						// some tick data not valid
+						setErrorCode(MatElementDefs.CB_EC_GEN_FETCH_ERR);
 					}
 				} catch (Exception e) {
 					logger.error("Error placing order - " + e.getMessage());

@@ -91,7 +91,10 @@ public class L4IP extends BaseElement implements SimElement {
 				c_always = true;
 			}
 			break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 

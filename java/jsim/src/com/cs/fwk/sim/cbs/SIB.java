@@ -53,7 +53,10 @@ public class SIB extends SIBCore {
 	protected void processExtConfig(ConfigItem cfg) {
 		switch (cfg.getItemId()) {
 		case MatElementDefs.EL_SIB_C_OPCFG: processOpCfg(cfg);	break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg);
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 

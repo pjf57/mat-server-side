@@ -24,6 +24,7 @@ public class Logger extends BaseElement implements SimElement {
 	@Override
 	protected void processConfig(ConfigItem cfg) {
 		logger.warn(getIdStr() + "Unexpected configuration: " + cfg);
+		setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
 	}
 
 	@Override

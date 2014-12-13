@@ -60,7 +60,10 @@ public class MACD extends BaseElement implements SimElement {
 		case MatElementDefs.EL_MACD_C_SL_LEN: 	c_slow_len   = cfg.getRawData();	break;
 		case MatElementDefs.EL_MACD_C_SG_ALPHA: c_signal_alpha = cfg.getFloatData();break;
 		case MatElementDefs.EL_MACD_C_SG_LEN: 	c_signal_len   = cfg.getRawData();	break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 	

@@ -75,7 +75,10 @@ public class A4IP extends BaseElement implements SimElement {
 			c_cf2 = (cfg.getRawData() >> 8) & 0xf;
 			c_cf1 = (cfg.getRawData() >> 12) & 0xf;
 			break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 

@@ -173,7 +173,10 @@ public class HLOC extends BaseElement implements SimElement {
 		case MatElementDefs.EL_HLOC_C_PERIOD: 		c_period 	= cfg.getRawData();	break;
 		case MatElementDefs.EL_HLOC_C_OP_THROT: 	c_throttle 	= cfg.getRawData();	break;
 		case MatElementDefs.EL_HLOC_C_OP_METRIC:	c_opMetric  = cfg.getRawData(); break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 

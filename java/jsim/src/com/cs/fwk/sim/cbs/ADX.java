@@ -59,7 +59,10 @@ public class ADX extends BaseElement implements SimElement {
 		case MatElementDefs.EL_ADX_C_NDN_LEN:   c_ndn_len   = cfg.getRawData();		break;
 		case MatElementDefs.EL_ADX_C_ADX_ALPHA: c_adx_alpha = cfg.getFloatData();	break;
 		case MatElementDefs.EL_ADX_C_ADX_LEN:   c_adx_len   = cfg.getRawData();		break;
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 
@@ -122,11 +125,17 @@ public class ADX extends BaseElement implements SimElement {
 
 	private LookupResult HlocLookup(int instr, int tickref, int key) throws Exception {
 		LookupResult rslt = lookup(instr, tickref, key, getLookupTarget(0));
+		if (!rslt.isValid()) {
+			setErrorCode(MatElementDefs.CB_EC_GEN_FETCH_ERR);
+		}
 		return rslt;
 	}
 
 	private LookupResult AtrLookup(int instr, int tickref, int key) throws Exception {
 		LookupResult rslt = lookup(instr, tickref, key, getLookupTarget(1));
+		if (!rslt.isValid()) {
+			setErrorCode(MatElementDefs.CB_EC_GEN_FETCH_ERR);
+		}
 		return rslt;
 	}
 
