@@ -6,9 +6,11 @@ import java.net.UnknownHostException;
 import junit.framework.TestCase;
 
 
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
+import com.cs.fwk.api.ErrorState;
 import com.cs.fwk.api.Timestamp;
 import com.cs.fwk.api.comms.CxnInt;
 import com.cs.fwk.api.comms.LoopbackInt;
@@ -40,7 +42,7 @@ public class SimTestCase extends TestCase implements SimHost {
 
 	@Override
 	public void publishElementStatusUpdate(int elementId, String type,
-			String basisState, int intState, int evtCount) {
+			String basisState, int intState, int evtCount, ErrorState errState) {
 		// TODO Auto-generated method stub
 		
 	}

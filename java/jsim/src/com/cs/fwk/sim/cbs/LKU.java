@@ -86,7 +86,10 @@ public class LKU extends BaseElement implements SimElement {
 			}
 			break;
 			
-		default: logger.warn(getIdStr() + "Unexpected configuration: " + cfg); break;
+		default: 
+			logger.warn(getIdStr() + "Unexpected configuration: " + cfg); 
+			setErrorCode(MatElementDefs.CB_EC_GEN_CFG_ERR);
+			break;
 		}
 	}
 
@@ -117,6 +120,8 @@ public class LKU extends BaseElement implements SimElement {
 						if (rslt.isValid()) {
 							gotData = true;
 							data = rslt.getIntData();
+						} else {
+							setErrorCode(MatElementDefs.CB_EC_GEN_FETCH_ERR);
 						}
 					} catch (Exception e) {
 						logger.warn("Error in LKU lookup - " + e.getMessage());
@@ -132,6 +137,8 @@ public class LKU extends BaseElement implements SimElement {
 							} else {
 								data = (int) (rslt.getRawData() & 0xffffffff);
 							}
+						} else {
+							setErrorCode(MatElementDefs.CB_EC_GEN_FETCH_ERR);
 						}
 					} catch (Exception e) {
 						logger.warn("Error in tickdata lookup - " + e.getMessage());

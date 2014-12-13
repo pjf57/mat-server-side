@@ -17,6 +17,7 @@ import com.cs.fwk.api.AttrSysType;
 import com.cs.fwk.api.Attribute;
 import com.cs.fwk.api.Cmd;
 import com.cs.fwk.api.Element;
+import com.cs.fwk.api.ErrorState;
 import com.cs.fwk.api.InputPort;
 import com.cs.fwk.api.LkuResult;
 import com.cs.fwk.api.MatElementDefs;
@@ -49,7 +50,7 @@ import com.cs.fwk.util.comms.UDPCxn;
 
 public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 
-	private static final String SIM_VER = "SIM v1.10";
+	private static final String SIM_VER = "SIM v1.20";
 
 	private final static Logger logger = Logger.getLogger(MatSim.class);
 	private final Map<Integer,SimElement> simElements; // keyed on el id
@@ -169,7 +170,7 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 		}
 		BaseState rbs = router.getBaseState();
 		int rcnt = router.getCount();
-		publishElementStatusUpdate(0, "Router",rbs.toString(),0,rcnt);
+		publishElementStatusUpdate(0, "Router",rbs.toString(),0,rcnt,new ErrorState());
 	}
 
 	@Override
@@ -237,8 +238,8 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 
 	@Override
 	public void publishElementStatusUpdate(int elementId, String type,
-			String basisState, int intState, int evtCount) {
-		CBRawStatus st = new CBRawStatus(elementId, type, basisState, intState, evtCount);
+			String basisState, int intState, int evtCount, ErrorState errState) {
+		CBRawStatus st = new CBRawStatus(elementId, type, basisState, intState, evtCount,errState);
 		List<CBRawStatus> list = new ArrayList<CBRawStatus>();
 		list.add(st);
 		processCBStatus(list);

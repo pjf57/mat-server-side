@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import com.cs.fwk.api.Cmd;
 import com.cs.fwk.api.Element;
+import com.cs.fwk.api.ErrorState;
 import com.cs.fwk.api.MatElementDefs;
 import com.cs.fwk.api.util.ConfigItem;
 import com.cs.fwk.sim.model.BaseState;
@@ -53,6 +54,7 @@ public abstract class BaseElement implements SimElement {
 	private int[] lkuTargets;	
 	private Map<Integer,TickRefData> tickrefData; // index by tickref
 	private boolean[] opEnable;
+	private ErrorState errState;
 
 	/**
 	 * Class to hold a source route specification for one input
@@ -115,6 +117,7 @@ public abstract class BaseElement implements SimElement {
 		for (int i=0; i<4; i++) {
 			opEnable[i] = true;
 		}
+		this.errState = new ErrorState();
 	}
 	
 
@@ -290,7 +293,7 @@ public abstract class BaseElement implements SimElement {
 	@Override
 	public void getStatus() {
 		host.publishElementStatusUpdate(elementId, getTypeName(),
-				baseState.toString(), 0, evtCount);
+				baseState.toString(), 0, evtCount,errState);
 	}
 
 	@Override
@@ -365,6 +368,16 @@ public abstract class BaseElement implements SimElement {
 	@Override
 	public void shutdown() {
 		logger.debug("Element shutdown (default behaviour)");
+	}
+	
+	/**
+	 * Set the error code on the CB
+	 * 
+	 * @param errorCode
+	 */
+	protected void setErrorCode(byte errorCode) {
+		errState.setErrorCode(errorCode);
+		logger.warn("setErrorCode(x" + Conversion.toHexByteString(errorCode) + ") on " + this + " num errs = " + errState.getNumErrors());
 	}
 	
 	/**

@@ -4,6 +4,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 import com.cs.fwk.sim.types.Event;
+import com.cs.fwk.api.ErrorState;
 import com.cs.fwk.api.Timestamp;
 import com.cs.fwk.api.comms.CxnInt;
 import com.cs.fwk.api.comms.LoopbackInt;
@@ -43,9 +44,10 @@ public interface SimHost {
 	 * @param basisState
 	 * @param intState
 	 * @param evtCount
+	 * @param errState
 	 */
 	public void publishElementStatusUpdate(int elementId, String type,
-			String basisState, int intState, int evtCount);
+			String basisState, int intState, int evtCount, ErrorState errState);
 
 	/**
 	 * Indicate that an error has occurred
