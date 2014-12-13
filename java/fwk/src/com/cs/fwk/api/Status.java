@@ -10,6 +10,7 @@ public interface Status {
 	public Collection<Attribute> getAttributes() throws Exception;
 	public boolean isInConfigState();
 	public boolean isInRunState();
+	public ErrorState getErrorState();
 	
 	public final String INIT = "INIT";
 	public final String CFG = "CFG";

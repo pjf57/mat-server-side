@@ -93,6 +93,20 @@ public class MatElementDefs {
 	public static final int EL_C_LKU_AUDIT_REQ		= 0x05; // request immed tx of lku audit logs	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
 	public static final int EL_C_RTR_AUDIT_REQ		= 0x06; // request immed tx of Router audit logs	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
 
+//	------------------------------
+//	-- EL Configs for CC_BASIS
+//	------------------------------
+
+	public static final byte CC_EC_BASIS_CFG_ERR	= 0x01; // config error occurred	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
+	public static final byte CC_EC_BASIS_CMD_ERR	= 0x02; // cmd error occurred	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
+	
+//	------------------------------
+//	-- Generic CB error codes
+//	------------------------------
+
+	public static final byte CB_EC_GEN_CFG_ERR		= 0x11; // CB config error occurred                                                  	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
+	public static final byte CB_EC_GEN_FETCH_ERR	= 0x12; // CB data fetch error occurred	                                                    	                                         	constant EL_C_LKU_AUDIT_REQ: config_id_t := x"8";	-- request immediate tx of lku audit data
+	
 
 //	------------------------------
 //	-- EMA

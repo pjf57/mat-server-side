@@ -46,7 +46,7 @@ import com.cs.fwk.util.comms.CFComms;
 
 public class MATComms implements MATCommsApi, CFCallback {
 
-	private static final String COMMS_VER = "01.03";
+	private static final String COMMS_VER = "0v2.00";
 
 	private final static Logger logger = Logger.getLogger(MATComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
@@ -296,7 +296,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 	/**
 	 * Handle status update for a CB
 	 * 
-	 * NOTE: this does not send any notifications
+	 * NOTE: this updates the model, but does not send any notifications
 	 * 
 	 * @param id - id of the CB (used to select from model)
 	 * @param type - type of the CB - to update
@@ -312,7 +312,7 @@ public class MATComms implements MATCommsApi, CFCallback {
 		if (element != null) {			
 			srcName = element.getType();
 			// Update status in the element
-			Status newStatus = new ElementStatus(s.getBasisStateStr(),s.getIntState(),s.getEvtCount());
+			Status newStatus = new ElementStatus(s.getBasisStateStr(),s.getIntState(),s.getEvtCount(),s.getErrState());
 			element.setStatus(newStatus);
 			logger.debug("processNewStatusUpdate(): id=" + cbId + " name=" + srcName + " state=[" + s + "]");
 		} else {

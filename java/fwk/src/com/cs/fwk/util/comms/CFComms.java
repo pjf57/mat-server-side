@@ -7,6 +7,7 @@ import java.util.concurrent.Semaphore;
 
 import org.apache.log4j.Logger;
 
+import com.cs.fwk.api.ErrorState;
 import com.cs.fwk.api.LkuResult;
 import com.cs.fwk.api.MatElementDefs;
 import com.cs.fwk.api.Status;
@@ -367,16 +368,25 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	/**
 	 * Process a CB status message. May contain one or more status elements
 	 * 
+	 * Handles unversioned and v2 formats
+	 * 
 	 * @param msg	- message, starting from cmd byte
 	 * @param isVersioned - indicates that the msg is versioned
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private void processStatusMsg(byte[] msg, boolean isVersioned) throws Exception {
+		byte ver = 1;
+		byte size = 8;
+		int upto = 1;
 		if (isVersioned) {
-			throw new Exception("processStatusMsg() - versioning not supported");
+			ver = msg[1];
+			size = msg[2];
+			upto = 3;
 		}
-		byte items = msg[1];
-		int upto = 2;
+		if (ver > 2) {
+			throw new Exception("processStatusMsg() - version " + ver + " not supported. Size= " + size);
+		}
+		byte items = msg[upto++];
 		List<CBRawStatus> statusList = new ArrayList<CBRawStatus>();
 		while (items-- > 0) {
 			// process first/next status item
@@ -386,6 +396,13 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			int intState = msg[upto++];
 			int evtCount = Conversion.getIntFromBytes(msg,upto,4);
 			upto += 4;
+			int numErrs = 0;
+			int lastErrCode = 0;
+			if (ver >= 2) {
+				numErrs = msg[upto++];
+				lastErrCode = msg[upto++];
+			}
+			ErrorState es = new ErrorState(numErrs,lastErrCode);
 			String typeStr = MatElementDefs.ElementTypeToString(type);
 			String basisStateStr = "";
 			switch(basisState) {
@@ -395,7 +412,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			case BS_RUN:	basisStateStr = Status.RUN;									break;
 			default:		basisStateStr = Status.UNKNOWN + "(" + basisState + ")";	break;
 			}
-			CBRawStatus rst = new CBRawStatus(id,typeStr,basisStateStr,intState,evtCount);
+			CBRawStatus rst = new CBRawStatus(id,typeStr,basisStateStr,intState,evtCount,es);
 			statusList.add(rst);
 		}
 		logger.debug("processStatusMsg(): received status for " + statusList.size() + " CBs");

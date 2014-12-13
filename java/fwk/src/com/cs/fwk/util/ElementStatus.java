@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import com.cs.fwk.api.AttrSysType;
 import com.cs.fwk.api.Attribute;
+import com.cs.fwk.api.ErrorState;
 import com.cs.fwk.api.Status;
 import com.cs.fwk.util.attr.IntegerAttribute;
 import com.cs.fwk.util.attr.StringAttribute;
@@ -13,23 +14,27 @@ public class ElementStatus implements Status{
 	private String basisState;					// state of basis of element
 	private int el_state;						// state of element
 	private long evt_cnt;						// #evts processed by element
+	private ErrorState errState;
 	
 	public ElementStatus() {
 		this.basisState = "unknown";
 		this.el_state = 0;
 		this.evt_cnt = -1;
+		errState = new ErrorState();
 	}
 
-	public ElementStatus(String basisState, int elState, long ip_evt_cnt) {
+	public ElementStatus(String basisState, int elState, long ip_evt_cnt, ErrorState errState) {
 		this.basisState = basisState;
 		this.el_state = elState;
 		this.evt_cnt = ip_evt_cnt;
+		this.errState = errState;
 	}
 
-	public void setElementStatus(String basis_state, int el_state, long evt_cnt) {
+	public void setElementStatus(String basis_state, int el_state, long evt_cnt, ErrorState errState) {
 		this.basisState = basis_state;
 		this.el_state = el_state;
 		this.evt_cnt = evt_cnt;
+		this.errState = errState;
 	}
 
 	@Override
@@ -125,6 +130,11 @@ public class ElementStatus implements Status{
 		if (evt_cnt != other.evt_cnt)
 			return false;
 		return true;
+	}
+
+	@Override
+	public ErrorState getErrorState() {
+		return errState;
 	}
 	
 	

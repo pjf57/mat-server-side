@@ -242,7 +242,7 @@ public class BasicElement extends BasicItem implements Element {
 		}
 		this.status = new ElementStatus(newStatus.getBaseState(),
 							newStatus.getRawRunState(),
-							newStatus.getEventInCount());
+							newStatus.getEventInCount(), newStatus.getErrorState());
 	}
 
 	@Override
