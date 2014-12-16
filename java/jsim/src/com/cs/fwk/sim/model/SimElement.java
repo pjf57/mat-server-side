@@ -14,4 +14,19 @@ public interface SimElement {
 	public LookupResult handleLookup(int instrumentId, int arg, int tickref, int lookupKey, int target) throws Exception;
 	public int getId();
 	public TickdataResult handleTickdata(int tickref, int tickdataKey) throws Exception;
+	
+	/**
+	 * @return true if the element is in an error state
+	 */
+	public boolean isInError();
+
+	/**
+	 * @return true if the element is in config state
+	 */
+	public boolean isInConfig();	
+	/**
+	 * @return true if the element is initialised
+	 */
+	public boolean isInitialised();
+
 }

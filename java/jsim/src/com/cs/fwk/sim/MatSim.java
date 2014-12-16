@@ -61,6 +61,7 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 	private Clock clk;
 	private boolean stopOnError;
 	private int nextTickref;
+	private int cfgEvents;
 	
 	public MatSim(MatLogger logger, SystemServicesInt sysServices) throws SocketException, UnknownHostException {
 		super(0);
@@ -78,6 +79,7 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 		lkuAuditLogger = new LkuAuditLogger();
 		rtrAuditLogger = new RtrAuditLogger();
 		router = new Router(this);
+		cfgEvents = 0;
 	}
 
 	@Override
@@ -131,6 +133,7 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 	public void sendConfig(List<Element> collection) throws Exception {
 		for (Element el : collection) {
 			// set attributes
+			cfgEvents++;
 			for (Attribute attr : el.getAttributes()) {
 				if (attr.getConfigId() > 0) {
 					// only config items that are not pseudo-attrs
@@ -214,7 +217,21 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 
 	@Override
 	public long getHWSignature() throws Exception {
+		// first determine overall state of the system
+		byte flags = 0x03;	// start with cfg + init
+		for (SimElement se : simElements.values()) {
+			if (se.isInError()) {
+				flags |= 0x08;		// add error flag if any in error
+			}
+			if (!se.isInConfig()) {
+				flags &= 0xfd;		// kill cfg if any not config rdy
+			}
+			if (!se.isInitialised()) {
+				flags &= 0xfe;		// kill init if any not intialised
+			}
+		}
 		HwStatus st = new HwStatus(mat.getSWSignature(),10000,SIM_VER);
+		st.setV2parameters(flags, cfgEvents);
 		setHwStatus(st);
 		return getHWStatus().getHwSig();
 	}

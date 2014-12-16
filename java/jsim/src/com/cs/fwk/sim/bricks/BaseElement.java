@@ -473,9 +473,23 @@ public abstract class BaseElement implements SimElement {
 			host.publishEvent(evt,latency);			
 		}
 	}
-
-
 	
+	@Override
+	public boolean isInError() {
+		return errState.isInError();
+	}
+
+
+	@Override
+	public boolean isInConfig() {
+		return baseState.equals(BaseState.CFG);
+	}
+	
+	@Override
+	public boolean isInitialised() {
+		return baseState.equals(BaseState.RUN);
+	}
+
 	/**
 	 * @return an ID that can be used to identify the element for logging.
 	 */
