@@ -25,7 +25,7 @@ import com.cs.fwk.core.util.DesignUtils;
 
 public class MatInterface implements MatApi {
 
-	private static final String MI_VERS = "1.03.000";
+	private static final String MI_VERS = "1.03.001";
 
 	private final static Logger logger = Logger.getLogger(MatInterface.class);
 	private static final String CALCULATOR_PKG = "com.cs.fwk.core.config.calculators";

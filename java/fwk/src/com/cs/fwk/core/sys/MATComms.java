@@ -46,7 +46,7 @@ import com.cs.fwk.util.comms.CFComms;
 
 public class MATComms implements MATCommsApi, CFCallback {
 
-	private static final String COMMS_VER = "0v2.00";
+	private static final String COMMS_VER = "0v3.01";
 
 	private final static Logger logger = Logger.getLogger(MATComms.class);
 	private static final long HWSIG_TIMEOUT_MS = 2000;
