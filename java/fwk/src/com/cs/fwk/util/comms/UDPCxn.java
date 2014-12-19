@@ -85,7 +85,7 @@ public class UDPCxn implements CxnInt {
     		byte[] data = datagram.getData();
     		int port = datagram.getDstPort();
     		DatagramPacket pkt = new DatagramPacket(data, data.length, dstIP, port);
-			logger.debug("Msg sent (port=" + port + "):  [" + toHexString(data) + "]");
+			logger.info("Msg sent (port=" + port + "):  [" + toHexString(data) + "]");
 			if (loopbackCb != null) {
 				// perform the loopback
 				loopbackCb.injectLoopbackMsg(port, data);

@@ -71,12 +71,16 @@ public class MatElementDefs {
 //	------------------------------
 	
 //	-- SYSTEM CONFIG IDS
-	public static final int EL_C_RESET 			= 0x00;
 	public static final int EL_C_SRC_ROUTE 		= 0x01;	// xxxx xxxx xxxI xxSS (for source SS on input I)
 	public static final int EL_C_CFG_DONE 		= 0x02;	// config is done
 	public static final int EL_C_CFG_LKU_TRG	= 0x03;	// xxxx xxxx xxxx xNTT (entry N with target TT)
 	public static final int EL_C_CFG_OP_ENA		= 0x04;	// xxxx xxxx xxxx xxxE (set op enable bitmask)
 	public static final int EL_C_RESET_CNTRS	= 0x05;	// xxxx xxxx xxxx xxxx
+	public static final int EL_C_RESET_CONFIG	= 0x06;	// xxxx xxxx xxxx xxxx (reset CB config to default values)
+
+//	-- GENERIC CMDS
+	public static final int EL_C_RESET	 		= 0x00;	// Send to config mode
+	public static final int EL_C_RESET_ERR 		= 0x01;	// reset CB error state
 
 	
 //	------------------------------

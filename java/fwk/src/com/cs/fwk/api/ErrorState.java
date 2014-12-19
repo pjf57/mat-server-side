@@ -1,5 +1,7 @@
 package com.cs.fwk.api;
 
+import com.cs.fwk.util.Conversion;
+
 /**
  * Holds the error status of a CB
  *
@@ -42,8 +44,8 @@ public class ErrorState {
 	
 	@Override
 	public String toString() {
-		return "ErrorState [numErrors=" + numErrors + ", lastErrorCode="
-				+ lastErrorCode + "]";
+		return "ErrorState [numErrors=" + numErrors + ", lastErrorCode=x"
+				+ Conversion.toHexByteString(lastErrorCode) + "]";
 	}
 
 	/**

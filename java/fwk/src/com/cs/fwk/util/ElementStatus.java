@@ -87,7 +87,7 @@ public class ElementStatus implements Status{
 	
 	@Override
 	public String toString() {
-		return "[" + basisState + "," + el_state + "," + evt_cnt + "]";
+		return "[" + basisState + "," + el_state + "," + evt_cnt + ", " + errState + "]";
 	}
 
 	@Override

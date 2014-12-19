@@ -219,6 +219,7 @@ public class BasicElement extends BasicItem implements Element {
 			for (Attribute x : status.getAttributes()) {
 				buf.append(x); buf.append(' ');
 			}
+			buf.append(" " + status.getErrorState());
 		} catch (Exception e) {
 			logger.error("Error getting components of element " + getShortName() + ": " + e.getMessage());
 			buf.append("*error*");

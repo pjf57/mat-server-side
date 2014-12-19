@@ -202,7 +202,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	@Override
 	public void resetCBConfig(int cbId) throws Exception {
 		EncodedConfigItemList buf = new EncodedConfigItemList();
-		buf.putSystemItem(cbId, MatElementDefs.EL_C_RESET, 0, 0);
+		buf.putSystemItem(cbId, MatElementDefs.EL_C_RESET_CONFIG, 0, 0);
 		releaseRx();
 		cxn.send(new CFDatagram(CFPort,buf.getData()));		
 	}
@@ -356,7 +356,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			st.setV2parameters(flags, cfgEvents);
 		}
 		
-		logger.info("processHWSigMsg() - CF Status received:" + st);
+		logger.debug("processHWSigMsg() - CF Status received:" + st);
 		if (callback == null) {
 			logger.warn("processCFStatusMsg(): no callback to deliver to");
 		} else {
@@ -399,7 +399,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			int numErrs = 0;
 			int lastErrCode = 0;
 			if (ver >= 2) {
-				numErrs = msg[upto++];
+				numErrs = msg[upto++] & 0xff;
 				lastErrCode = msg[upto++];
 			}
 			ErrorState es = new ErrorState(numErrs,lastErrCode);
