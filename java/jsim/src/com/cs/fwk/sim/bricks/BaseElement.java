@@ -55,6 +55,7 @@ public abstract class BaseElement implements SimElement {
 	private Map<Integer,TickRefData> tickrefData; // index by tickref
 	private boolean[] opEnable;
 	private ErrorState errState;
+	private boolean connected;				// true if at least one input is connected
 
 	/**
 	 * Class to hold a source route specification for one input
@@ -118,6 +119,7 @@ public abstract class BaseElement implements SimElement {
 			opEnable[i] = true;
 		}
 		this.errState = new ErrorState();
+		this.connected = false;
 	}
 	
 
@@ -206,6 +208,7 @@ public abstract class BaseElement implements SimElement {
 			int port = (cfg.getRawData() >> 8) & 3;	// 0..3
 			int source = cfg.getRawData() & 0x3f;
 			srcRouting[input].set(source,port);
+			connected = true;
 			break;
 		case MatElementDefs.EL_C_CFG_OP_ENA:
 			if ((cfg.getRawData() & 0x01) == 0) {
@@ -228,6 +231,9 @@ public abstract class BaseElement implements SimElement {
 		case MatElementDefs.EL_C_RESET_CNTRS:
 			evtCount = 0;
 			break;
+		case MatElementDefs.EL_C_RESET_CONFIG:
+			baseResetConfig();
+			break;
 		case MatElementDefs.EL_C_CFG_DONE: 
 			processConfigDone();
 			setBaseState(BaseState.RUN);
@@ -235,6 +241,28 @@ public abstract class BaseElement implements SimElement {
 		default: throw new Exception("Unhandled configuration item: " + cfg);
 		}
 	}
+	
+	
+	/**
+	 * Reset config to defaults: baseElement and CB
+	 */
+	private void baseResetConfig() {
+		for (int i=0; i<MAX_INPUTS; i++) {
+			srcRouting[i] = new SourceRoute();	// init with no connection
+		}
+		// default is to address all lookup targets
+		for (int i=0; i<=MAX_LKU_TARGETS; i++) {
+			lkuTargets[i] = MatElementDefs.EL_ID_ALL;
+		}
+		opEnable = new boolean[4];
+		for (int i=0; i<4; i++) {
+			opEnable[i] = true;
+		}
+		this.connected = false;
+		// process any CB config reset
+		resetConfig();
+	}
+
 
 	/**
 	 * Lookup a value from the lookup bus (with zero arg)
@@ -300,11 +328,17 @@ public abstract class BaseElement implements SimElement {
 	public void putCmd(Cmd cmd) {
 		Element parent = cmd.getParent();
 		if (((parent == null) || parent.getId() == elementId) || (parent.getId() == MatElementDefs.EL_ID_ALL)) {
-			if (cmd.getConfigId() == MatElementDefs.EL_C_RESET) {
+			switch(cmd.getConfigId()) {
+			case MatElementDefs.EL_C_RESET:
 				// reset the element
 				setBaseState(BaseState.RST);
 				processReset();
-			} else {
+				break;
+			case MatElementDefs.EL_C_RESET_ERR:
+				// reset the element error status
+				this.errState = new ErrorState();
+				break;
+			default:
 				processCmd(cmd);
 			}
 		}		
@@ -316,6 +350,14 @@ public abstract class BaseElement implements SimElement {
 		// default behaviour is to ignore clock ticks
 	}
 
+	
+	/**
+	 * Template method to reset to default config values
+	 */
+	protected void resetConfig() {
+		// default behaviour is nothing
+	}
+	
 	/**
 	 * Template method to process a config item
 	 * 
@@ -490,6 +532,12 @@ public abstract class BaseElement implements SimElement {
 		return baseState.equals(BaseState.RUN);
 	}
 
+	/**
+	 * @return true if at least one input is connected
+	 */
+	protected boolean isConnected() {
+		return isConnected();
+	}
 	/**
 	 * @return an ID that can be used to identify the element for logging.
 	 */

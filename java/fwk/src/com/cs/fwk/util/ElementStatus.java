@@ -129,6 +129,8 @@ public class ElementStatus implements Status{
 			return false;
 		if (evt_cnt != other.evt_cnt)
 			return false;
+		if (!errState.equals(other.getErrorState()))
+			return false;
 		return true;
 	}
 

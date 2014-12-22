@@ -32,6 +32,7 @@ import com.cs.fwk.api.logging.MatLogger;
 import com.cs.fwk.api.logging.RtrAuditLog;
 import com.cs.fwk.api.util.ConfigItem;
 import com.cs.fwk.api.util.HwStatus;
+import com.cs.fwk.core.impl.element.BasicCmd;
 import com.cs.fwk.core.sys.MATComms;
 import com.cs.fwk.sim.cbs.CBFactory;
 import com.cs.fwk.sim.model.BaseState;
@@ -50,7 +51,7 @@ import com.cs.fwk.util.comms.UDPCxn;
 
 public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 
-	private static final String SIM_VER = "SIM v1.20";
+	private static final String SIM_VER = "SIM v1.21";
 
 	private final static Logger logger = Logger.getLogger(MatSim.class);
 	private final Map<Integer,SimElement> simElements; // keyed on el id
@@ -461,6 +462,21 @@ public class MatSim extends MATComms implements SimHost, SimAccess, MatSimInt {
 			}
 		}
 	}
+	
+	@Override
+	public void resetErrorState() throws Exception {
+		logger.info("resetErrorState()");
+		router.resetErrorState();
+		Cmd cmd = new BasicCmd("ResetError", MatElementDefs.EL_C_RESET_ERR, 0);
+		for (SimElement se : simElements.values()) {
+			try {
+				se.putCmd(cmd);
+			} catch (Exception e) {
+				throw new IOException("resetCounters(): " + e.getMessage());
+			}
+		}
+	}
+	
 
 	@Override
 	public MATCommsApi getComms() {

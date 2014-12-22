@@ -72,6 +72,12 @@ public interface MatApi {
 	public void resetCounters();
 
 	/**
+	 * Reset the system error state
+	 */
+	public void resetErrorState();
+
+
+	/**
 	 * Check the HW signature against the signature of the model
 	 * This essentially confirms that the palette loaded into the model
 	 * matches the HW build.
@@ -141,5 +147,6 @@ public interface MatApi {
 	 * @return version of API
 	 */
 	public String getApiVersion();
+
 
 }

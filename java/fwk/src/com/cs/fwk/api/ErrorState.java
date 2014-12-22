@@ -1,6 +1,7 @@
 package com.cs.fwk.api;
 
 import com.cs.fwk.util.Conversion;
+import com.cs.fwk.util.ElementStatus;
 
 /**
  * Holds the error status of a CB
@@ -59,6 +60,24 @@ public class ErrorState {
 		}
 		lastErrorCode = errorCode;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ErrorState other = (ErrorState) obj;
+		if (numErrors != other.numErrors)
+			return false;
+		if (lastErrorCode != other.lastErrorCode)
+			return false;
+		return true;
+		
+	}
+	
 	
 	
 

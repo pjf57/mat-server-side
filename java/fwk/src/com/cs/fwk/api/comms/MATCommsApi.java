@@ -112,7 +112,14 @@ public interface MATCommsApi extends LoopbackInt {
 	 * @throws Exception if request could not be delivered
 	 */
 	public void resetCounters() throws Exception;
-	
+
+	/**
+	 * Send a request to the HW to reset error state on all CBs.
+	 * 
+	 * @throws Exception if request could not be delivered
+	 */
+	public void resetErrorState() throws Exception;
+
 	/**
 	 * Send a request to the HW to reset the configuration for a particular (or all) CBs to default values.
 	 * 
@@ -142,4 +149,5 @@ public interface MATCommsApi extends LoopbackInt {
 	 * @return version of API
 	 */
 	public String getApiVersion();
+
 }

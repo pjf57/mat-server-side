@@ -239,4 +239,9 @@ public class DummyComms implements MATCommsApi {
 		return COMMS_VER;
 	}
 
+	@Override
+	public void resetErrorState() throws Exception {
+		logger.info("Reset Error State");
+	}
+
 }

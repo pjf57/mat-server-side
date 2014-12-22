@@ -225,7 +225,16 @@ public class MatInterface implements MatApi {
 		try {
 			comms.resetCounters();
 		} catch (Exception e) {
-			logger.error("Error requesting status: " + e);
+			logger.error("Error resetting counters: " + e);
+		}		
+	}
+
+	@Override
+	public void resetErrorState() {
+		try {
+			comms.resetErrorState();
+		} catch (Exception e) {
+			logger.error("Error resetting Error State: " + e);
 		}		
 	}
 
@@ -255,9 +264,5 @@ public class MatInterface implements MatApi {
 	public String getApiVersion() {
 		return MI_VERS + " (" + model.getApiVersion() + "/" + comms.getApiVersion() + ")";
 	}
-
-
-
-
-
+	
 }

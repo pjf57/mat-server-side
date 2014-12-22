@@ -163,5 +163,12 @@ public class Router {
 		evtCount = 0;		
 	}
 
+	/**
+	 * Reset error status in the Router
+	 */
+	public void resetErrorState() {
+		// nothing to do
+	}
+
 
 }

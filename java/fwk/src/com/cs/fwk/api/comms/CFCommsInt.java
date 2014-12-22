@@ -1,5 +1,6 @@
 package com.cs.fwk.api.comms;
 
+
 /**
  * Low level interface to Cheetah Framework
  * 
@@ -134,11 +135,23 @@ public interface CFCommsInt {
 	/**
 	 * Reset counters in the specified CB
 	 * 
-	 * @param cbId - ID of CB
+	 * @param cbId - ID of CB or ID_ALL
 	 * 
 	 * @throws Exception if it was not possible to deliver the request
 	 */
 	public void resetCounters(int cbId) throws Exception;
+	
+	
+	/**
+	 * Reset Error state in the specified CB
+	 * 
+	 * @param cbId - ID of CB or ID_ALL
+	 * @throws Exception 
+	 * 
+	 * @throws Exception if it was not possible to deliver the request
+	 */
+	public void resetErrorState(int cbId) throws Exception;
+
 
 	/**
 	 * Reset config in the specified CB

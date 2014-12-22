@@ -194,10 +194,18 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	@Override
 	public void resetCounters(int cbId) throws Exception {
 		EncodedConfigItemList buf = new EncodedConfigItemList();
-		buf.putSystemItem(MatElementDefs.EL_ID_ALL, MatElementDefs.EL_C_RESET_CNTRS, 0, 0);
+		buf.putSystemItem(cbId, MatElementDefs.EL_C_RESET_CNTRS, 0, 0);
 		releaseRx();
 		cxn.send(new CFDatagram(CFPort,buf.getData()));		
 	}
+	
+	@Override
+	public void resetErrorState(int cbId) throws IOException {
+		EncodedConfigItemList buf = new EncodedConfigItemList();
+		buf.putCmdItem(cbId, MatElementDefs.EL_C_RESET_ERR, 0, 0);
+		releaseRx();
+		cxn.send(new CFDatagram(CFPort,buf.getData()));		
+	}	
 
 	@Override
 	public void resetCBConfig(int cbId) throws Exception {
