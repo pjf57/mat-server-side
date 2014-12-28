@@ -39,6 +39,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 	private final byte BS_CFG	= 2;
 	private final byte BS_RST	= 3;
 	private final byte BS_RUN	= 4;
+	private final byte BS_AKRST	= 5;
 
 	class Reader extends Thread {
 		private boolean keepGoing = true;
@@ -418,6 +419,7 @@ public class CFComms implements CFCommsInt, LoopbackInt {
 			case BS_CFG:	basisStateStr = Status.CFG;									break;
 			case BS_RST:	basisStateStr = Status.RST;									break;
 			case BS_RUN:	basisStateStr = Status.RUN;									break;
+			case BS_AKRST:	basisStateStr = Status.AKRST;								break;
 			default:		basisStateStr = Status.UNKNOWN + "(" + basisState + ")";	break;
 			}
 			CBRawStatus rst = new CBRawStatus(id,typeStr,basisStateStr,intState,evtCount,es);

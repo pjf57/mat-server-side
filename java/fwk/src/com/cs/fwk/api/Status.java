@@ -16,6 +16,7 @@ public interface Status {
 	public final String CFG = "CFG";
 	public final String RST = "RST";
 	public final String RUN = "RUN";
+	public final String AKRST = "AKRST";
 	public final String UNKNOWN = "unknown";
 
 }
