@@ -80,7 +80,7 @@ public class MatElementDefs {
 
 //	-- GENERIC CMDS
 	public static final int EL_C_RESET	 		= 0x00;	// Send to config mode
-	public static final int EL_C_RESET_ERR 		= 0x01;	// reset CB error state
+	public static final int EL_C_RESET_ERR 		= 0x0f;	// reset CB error state
 
 	
 //	------------------------------
