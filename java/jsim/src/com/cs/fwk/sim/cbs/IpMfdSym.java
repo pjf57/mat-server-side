@@ -135,10 +135,8 @@ public class IpMfdSym extends BaseElement implements SimElement, LoopbackInt {
 		if (started) {
 			int numEvts = msg[0];
 			int upto = 1;
-			int latency = 0;
 			for (int n=1; n<=numEvts; n++) {
-				processEvent(n,msg,upto,latency);
-				latency += LATENCY;
+				processEvent(n,msg,upto,LATENCY);
 				upto += 18;
 			}
 		}
@@ -192,6 +190,7 @@ public class IpMfdSym extends BaseElement implements SimElement, LoopbackInt {
 					TickRefData trd = new TickRefData(tickref,c_mktId,instrId,td);
 					putTickrefData(tickref,trd);
 					Event evt = new Event(host.getCurrentSimTime(),elementId, opc.port, instrId, tickref, data);
+					logger.debug(getTypeName() + ":" + getId() + " MFDevent: " + evt);
 					host.publishEvent(evt,latency);							
 				}
 			}

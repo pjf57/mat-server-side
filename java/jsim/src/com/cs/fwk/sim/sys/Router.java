@@ -1,5 +1,6 @@
 package com.cs.fwk.sim.sys;
 
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import org.apache.log4j.Logger;
@@ -23,7 +24,7 @@ import com.cs.fwk.api.Timestamp;
 public class Router {
 	private final static Logger logger = Logger.getLogger(Router.class);
 	private final SimAccess sim;
-	private PriorityBlockingQueue<Event> queue;
+	private LinkedBlockingQueue<Event> queue;
 	private int nextTag;
 	private int evtCount;
 	private BaseState baseState;
@@ -32,7 +33,7 @@ public class Router {
 		this.sim = sim;
 		nextTag = 0;
 		evtCount = 0;
-		queue = new PriorityBlockingQueue<Event>();
+		queue = new LinkedBlockingQueue<Event>();
 		baseState = BaseState.CFG;
 	}
 
@@ -41,7 +42,7 @@ public class Router {
 	}
 	
 	public synchronized void post(Event evt, int latency) {
-		logger.debug("publishEvent(" + evt + "," + latency + ")");
+		logger.debug("publishEvent(" + evt + ", latency=" + latency + ")");
 		if (!baseState.equals(BaseState.RUN)) {
 			logger.error("publishEvent(" + evt + "," + latency + ") - no publish as RTR in state: " + baseState);
 		} else {
@@ -51,11 +52,12 @@ public class Router {
 				latency = 1;
 			}
 			Timestamp evtTime = evt.getTimestamp();
-			Timestamp newTime = sim.getCurrentSimTime();
+			Timestamp curTime = sim.getCurrentSimTime();
+			Timestamp newTime = new Timestamp(curTime);
 			newTime.add(latency);
 			evt.setTimestamp(newTime);
 			if (logger.isDebugEnabled()) {
-				logger.debug("post(" + evt + "," + latency + "): evtTime was " + evtTime +
+				logger.debug("post(" + evt + "," + latency + "): cur/evt/new Time: " + curTime + "/" + evtTime + "/" + newTime + 
 						", queue: " + queue);
 			}
 			evt.setTag(nextTag);
@@ -67,6 +69,7 @@ public class Router {
 	/**
 	 * Take all events from queue upto and including specified time
 	 * and propagate them into all the elements.
+	 * Must ensure that queue order is preserved.
 	 */
 	private void propagateEvents() {
 		Timestamp now = sim.getCurrentSimTime();

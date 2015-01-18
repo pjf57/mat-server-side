@@ -101,6 +101,7 @@ public class L4IP extends BaseElement implements SimElement {
 	@Override
 	protected void processEvent(int input, Event evt) {
 		int instr = evt.getInstrument_id();
+		logger.debug(getTypeName() + ":" + getId() + " processEvent() tickref=" + evt.getTickref() + " start data=" + evt.getFloatData());
 		lastValue[instr][input-1].set(evt.getFloatData());
 		FloatValue x = (c_xsel == 0) ? lastValue[instr][1] : c_k1;
 		FloatValue y = (c_ysel == 0) ? lastValue[instr][3] : c_k2;
@@ -109,6 +110,7 @@ public class L4IP extends BaseElement implements SimElement {
 		BooleanValue z = lop(c_lop,p,q);
 		if (z.isValid()){
 			if (c_always || !lastZ.isValid() ||  (lastZ.getValue() != z.getValue())) {
+				logger.debug(getTypeName() + ":" + getId() + " processEvent() tickref=" + evt.getTickref() + " put event: " + z.getRawData());
 				Event evtOut = new Event(host.getCurrentSimTime(),elementId,instr,
 						evt.getTickref(), z.getRawData());
 				host.publishEvent(evtOut,LATENCY);
