@@ -33,7 +33,7 @@ public class CheetahExample1mfd implements NotificationCallback {
 	private void run() throws Exception {
 		int runSeconds = 0;
 		// initialise model with specified palette
-		init("resources/mat.32v83.csp","192.168.2.9",2000);
+		init("resources/mat.32v02.csp","192.168.2.9",2000);
 		logger.info("Example runtime processing");
 		while (running) {
 			sleep(1000);
@@ -111,26 +111,26 @@ public class CheetahExample1mfd implements NotificationCallback {
 		macd.getAttribute("SLOW_EMA_len").setValue("7");	// 
 		macd.getAttribute("SIGNAL_EMA_len").setValue("3");	// 
 		macd.getAttribute("OP_ENABLE_MASK").setValue("4");	// enable hist op
-		macd.getInputs().get(0).connectTo(mfd.getOutputs().get(2));
+		macd.getInput("input").connectTo(mfd.getOutput("MFD.tick.2"));
 		// Configure logic 1
 		logicBuy.getAttribute("Z").setValue("P");
 		logicBuy.getAttribute("P").setValue("A>K1");
 		logicBuy.getAttribute("k1").setValue("0.15");
-		logicBuy.getInputs().get(0).connectTo(macd.getOutputs().get(2));
+		logicBuy.getInput("A").connectTo(macd.getOutput("macd"));
 		logicSell.getAttribute("Z").setValue("P");
 		logicSell.getAttribute("P").setValue("A<K1");
 		logicSell.getAttribute("k1").setValue("-0.06");	 	
-		logicSell.getInputs().get(0).connectTo(macd.getOutputs().get(2));
+		logicSell.getInput("A").connectTo(macd.getOutput("macd"));
 		// Configure RMO
 		rmo.getAttribute("udp_ip").setValue("0C0A80205");	// 
 		rmo.getAttribute("udp_port").setValue("3500");	// 
 		rmo.getAttribute("min_vol").setValue("100");	// 
 		rmo.getAttribute("max_vol").setValue("500");	// 
-		rmo.getInputs().get(0).connectTo(logicBuy.getOutputs().get(0));
-		rmo.getInputs().get(1).connectTo(logicSell.getOutputs().get(0));
+		rmo.getInput("BUY").connectTo(logicBuy.getOutput("Z"));
+		rmo.getInput("SELL").connectTo(logicSell.getOutput("Z"));
 
 		// logger connections
-		lgr.getInputs().get(0).connectTo(rmo.getOutputs().get(0));
+		lgr.getInputs().get(0).connectTo(rmo.getOutput("ORDER"));
 		
 		// Push config to FPGA
 		logger.info("mat is: " + mat);

@@ -40,10 +40,16 @@ public interface Element extends Item {
 	public List<InputPort> getInputs();
 
 	/**
+	 * @return the input with the specified name
+	 * @throws Exception if no such input
+	 */
+	public InputPort getInput(String name) throws Exception;
+
+	/**
 	 * @return the outputs that the element has
 	 */
 	public List<OutputPort> getOutputs();
-	
+
 	/**
 	 * @return the commands that the element has
 	 */

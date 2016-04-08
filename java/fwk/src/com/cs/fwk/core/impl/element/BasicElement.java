@@ -281,6 +281,21 @@ public class BasicElement extends BasicItem implements Element {
 	}
 
 	@Override
+	public InputPort getInput(String name) throws Exception {
+		InputPort ip = null;
+		for (InputPort p : inputs) {
+			if (p.getName().equals(name)) {
+				ip = p;
+				break;
+			}
+		}
+		if (ip == null) {
+			throw new Exception("No such input named [" + name + "] on element " + getShortName());
+		}
+		return ip;
+	}
+
+	@Override
 	public void removeAllConnections() {
 		for (InputPort ip : inputs) {
 			ip.removeCxn();
