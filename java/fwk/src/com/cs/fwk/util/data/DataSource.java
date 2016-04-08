@@ -61,7 +61,7 @@ public class DataSource {
 				throw new Exception("Unable to rewind file");
 			}
 		}
-		String[] cols = line.split(";");
+		String[] cols = line.split(",");
 		String sym = cols[2];
 		float price = Float.parseFloat(cols[3]);
 		float vol = Float.parseFloat(cols[4]);
