@@ -46,6 +46,7 @@ public class CheetahBaseExample implements NotificationCallback {
 		mat = new MatInterface(comms,model);
 		comms.setMat(mat);
 		mat.checkHWSignature();
+		mat.resetErrorState();
 		logger.info("init(): configure the HW");
 		mat.putIntoConfigMode();
 		configure(mat);

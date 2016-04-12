@@ -42,16 +42,13 @@ public class CheetahExample2mfd extends CheetahBaseExample {
 		Element logicBuy = mat.getModel().getElement(15);
 		Element logicSell = mat.getModel().getElement(16);
 
-		// configure system attributes
-		sys.getAttribute("lookup_audit_autosend").setValue("4");
-		sys.getAttribute("router_audit_autosend").setValue("4");
 		// configure MFD 
 		mfd.getAttribute("udp_listen_port").setValue("15000");
 		mfd.getAttribute("market_ID").setValue("1");
 		mfd.getAttribute("trade").setValue("0");	// trade to this op
 		mfd.getAttribute("bid").setValue("1");		// bid to this op
 		mfd.getAttribute("ask").setValue("2");		// ask to this op
-		mfd.getAttribute("symbols").setValue("IBM:5,APPL:7");		
+		mfd.getAttribute("symbols").setValue("IBM:4,CSCO:5");		
 		// Configure MACD
 		macd.getAttribute("FAST_EMA_len").setValue("3");	// 
 		macd.getAttribute("SLOW_EMA_len").setValue("7");	// 

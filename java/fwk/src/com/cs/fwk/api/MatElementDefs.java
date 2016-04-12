@@ -265,6 +265,8 @@ public class MatElementDefs {
 		case EL_HLOC_L_PRVM1_C:	str = "Close(n-1)";		break;
 		case EL_ATR_L_ATR:		str = "ATR(c)    ";		break;
 		case EL_ADX_L_ADX:		str = "ADX(c)    ";		break;
+		case EL_SIB_L_LEGDATA:	str = "Leg Data  ";		break;
+		case EL_SIB_L_LEGID:	str = "Leg ID    ";		break;
 		default:		str = "Unknown[" + op + "]";	break;
 		}
 		return str;
