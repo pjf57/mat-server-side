@@ -18,6 +18,7 @@ public class LKUConfigTextCalc implements ConfigTextCalcInt{
 		
 		// build one line for each row in the grid
 		
+		boolean hasATAI = ga.getColumnSpecs().size() > 4;
 		int rows = ga.getNumRows();
 		for (int row=0; row<rows; row++) {	
 			GridRowData rd = ga.getRow(row);
@@ -28,7 +29,16 @@ public class LKUConfigTextCalc implements ConfigTextCalcInt{
 			int type = (fnVal >> 8) & 0xff;
 			int argv = (fnVal >> 16) & 0xff;
 			int arg = rd.getInt(2,0) + argv;
-			int target = rd.getInt(3,0);
+			int target = 0;
+			int adopt_tickref = 0;
+			int adopt_instr = 0;
+			if (hasATAI) {
+				adopt_tickref = rd.getInt(3,0);
+				adopt_instr = rd.getInt(4,0);
+				target = rd.getInt(5,0);
+			} else {
+				target = rd.getInt(3,0);
+			}
 			int fn = fnVal & 0xff;
 			int channel = row+1; // 1..4
 			if (target == 0) {
@@ -43,6 +53,12 @@ public class LKUConfigTextCalc implements ConfigTextCalcInt{
 				case 3:	line.append("A: ");	break;
 				}
 				line.append(getFn(type,fn,arg));
+				if (adopt_tickref == 1) {
+					line.append("T");
+				}
+				if (adopt_instr == 1) {
+					line.append("I");
+				}
 				if (target != MatElementDefs.EL_ID_ALL) {
 					line.append(" ->CB" + target);
 				}
@@ -72,7 +88,15 @@ public class LKUConfigTextCalc implements ConfigTextCalcInt{
 			
 		case 1:
 			// lookup
-			ret = MatElementDefs.LkuOpToString(fn).trim();
+			String s = MatElementDefs.LkuOpToString(fn).trim();
+			switch (fn) {
+			case MatElementDefs.EL_SIB_L_LEGDATA : 
+			case MatElementDefs.EL_SIB_L_LEGID : 
+					ret = s + "(" + arg + ")";
+					break;
+			default:
+					ret = s;
+			}
 			break;
 		}
 		return ret;

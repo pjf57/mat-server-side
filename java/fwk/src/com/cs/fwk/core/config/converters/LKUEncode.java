@@ -25,7 +25,12 @@ import com.cs.fwk.api.util.ConfigItem;
  *--					ARG = arg to provide to LKU fn (8 bit) or Tickdata bitselect (0:low 32 bits, 1: high 32 bits)
  *--					TY  = 00:Tickdata, 01:LKU (2 bit)
  *--					EV  = TF - sens to ip=True,False, or both. (2 bit)
- *--					IP  = which input to apply fn to (4 bit = 0,1,2,3)
+ *--    				AT  = adopt Tickref from LKU rsp (1 bit)
+ *-- 					AI  = adopt instr_id from LKU rsp (1 bit)
+ *--					IP  = which input to apply fn to (2 bit = 0,1,2,3)
+ **
+ *		Handles AT and AI as optional, defaulting to zero if cols missing
+ *
  * @author pjf
  *
  */
@@ -37,6 +42,7 @@ public class LKUEncode implements AttrConfigGenerator {
 	public List<ConfigItem> generate(Attribute attr) throws Exception {
 		List<ConfigItem> configs = new ArrayList<ConfigItem>();
 		GridAttribute ga = (GridAttribute) attr;
+		boolean hasATAI = ga.getColumnSpecs().size() > 4;
 		int elId = attr.getParent().getId();
 		
 		// build config item for each row in the grid
@@ -52,7 +58,16 @@ public class LKUEncode implements AttrConfigGenerator {
 			int type = (fnVal >> 8) & 0xff;
 			int argv = (fnVal >> 16) & 0xff;
 			int arg = rd.getInt(2,0) + argv;
-			int target = rd.getInt(3,0);
+			int target = 0;
+			int adopt_tickref = 0;
+			int adopt_instr = 0;
+			if (hasATAI) {
+				adopt_tickref = rd.getInt(3,0);
+				adopt_instr = rd.getInt(4,0);
+				target = rd.getInt(5,0);
+			} else {
+				target = rd.getInt(3,0);
+			}
 			int fn = fnVal & 0xff;
 			int channel = row+1; // 1..4
 			// encode into the 32 bit config value
@@ -60,7 +75,7 @@ public class LKUEncode implements AttrConfigGenerator {
 				target = MatElementDefs.EL_ID_ALL;
 			}
 			channel--;	// 0..3
-			int cfgData = (target << 24) + (fn << 16) + (arg << 8) + (type << 6) + (event << 4) + channel;
+			int cfgData = (target << 24) + (fn << 16) + (arg << 8) + (type << 6) + (event << 4) + (adopt_tickref<<3) + (adopt_instr<<2) + channel;
 			ConfigItem cfg = new ConfigItem(elId,AttrSysType.NORMAL,
 						MatElementDefs.EL_LKU_C_CHN_SPEC, 0, cfgData);
 			logger.info("generate() - cfg is " + cfg);
