@@ -16,6 +16,7 @@ public class MatElementDefs {
 	public static final int EL_TYP_LOG 			= 0x30;
 	public static final int EL_TYP_LOGIC_4IP	= 0x40;
 	public static final int EL_TYP_ARITH_4IP	= 0x41;
+	public static final int EL_TYP_LOGIC_4IPE	= 0x42;
 	public static final int EL_TYP_UDP_RAW_MKT	= 0x50;
 	public static final int EL_TYP_UDP_MFD_SYM	= 0x51;
 	public static final int EL_TYP_MFD_SYM		= 0x52;
@@ -139,7 +140,7 @@ public class MatElementDefs {
 	public static final int EL_TG1_C_P1 			= 0x07; // set parameter p1
 
 //	------------------------------
-//	-- LOGIC_4IP block
+//	-- LOGIC_4IP and 4IPE blocks
 //	------------------------------
 	public static final int EL_L4IP_C_OPS 			= 0x03; // operators
 	public static final int EL_L4IP_C_K1			= 0x04; // public static final int K1
@@ -285,6 +286,7 @@ public class MatElementDefs {
 		case MatElementDefs.EL_TYP_EMA			: typeStr = "EMA";			break;
 		case MatElementDefs.EL_TYP_LOG			: typeStr = "LOGGER";		break;
 		case MatElementDefs.EL_TYP_LOGIC_4IP	: typeStr = "Logic_4IP";	break;
+		case MatElementDefs.EL_TYP_LOGIC_4IPE	: typeStr = "Logic_4IPE";	break;
 		case MatElementDefs.EL_TYP_ARITH_4IP	: typeStr = "Arith_4IP";	break;
 		case MatElementDefs.EL_TYP_UDP_RAW_MKT	: typeStr = "UDPrawMKT";	break;
 		case MatElementDefs.EL_TYP_UDP_MFD_SYM	: typeStr = "UDPrawMKTSYM";	break;

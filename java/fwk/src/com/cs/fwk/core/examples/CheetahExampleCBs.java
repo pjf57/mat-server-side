@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 
 import com.cs.fwk.api.Element;
 import com.cs.fwk.api.MatApi;
+import com.cs.fwk.api.gridattr.GridAttribute;
 
 public class CheetahExampleCBs extends CheetahBaseExample {
 	
@@ -40,8 +41,9 @@ public class CheetahExampleCBs extends CheetahBaseExample {
 		Element adx = mat.getModel().getElement(29);
 		Element lgr = mat.getModel().getElement(1);
 		Element rmo = mat.getModel().getElement(31);
-		Element logicBuy = mat.getModel().getElement(15);
-		Element logicSell = mat.getModel().getElement(16);
+		Element logicBuy = mat.getModel().getElement(17);
+		Element logicSell = mat.getModel().getElement(18);
+		Element lku = mat.getModel().getElement(15);
 
 		// configure MFD 
 		mfd.getAttribute("udp_listen_port").setValue("15000");
@@ -77,6 +79,10 @@ public class CheetahExampleCBs extends CheetahBaseExample {
 		rmo.getAttribute("max_vol").setValue("500");	// 
 		rmo.getInput("BUY").connectTo(logicBuy.getOutput("Z"));
 		rmo.getInput("SELL").connectTo(logicSell.getOutput("Z"));
+		// Configure LKU
+		GridAttribute lkuGrid = lku.getGridAttribute("Functions");
+		lkuGrid.clearGrid();
+		lkuGrid.addRow(new String[] {"price", "0", "0", "0", ""});
 
 		// logger connections
 		lgr.getInputs().get(0).connectTo(rmo.getOutput("ORDER"));
